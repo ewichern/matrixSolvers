@@ -1,18 +1,18 @@
 /*
- * matrixGenerator.cpp
+ * sampleMatrix.cpp
  *
  *  Created on: Jan 21, 2015
  *      Author: erik
  */
 
-#include "matrixGenerator.h"
+#include "sampleMatrix.h"
 
-matrixGenerator::matrixGenerator() {
+sampleMatrix::sampleMatrix() {
 	// TODO Auto-generated constructor stub
 
 }
 
-matrixGenerator::~matrixGenerator() {
+sampleMatrix::~sampleMatrix() {
 	// TODO Auto-generated destructor stub
 }
 
