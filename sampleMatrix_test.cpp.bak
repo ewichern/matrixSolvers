@@ -8,7 +8,7 @@
 #include "sampleMatrix.h"
 #include "gtest/gtest.h"
 
-class sampleMatrixTests : public :: testing :: Test {
+class sampleMatrixTests: public ::testing::Test {
 public:
 	virtual void SetUp() {
 
@@ -19,6 +19,8 @@ public:
 	}
 };
 
+/**
 TEST_F (sampleMatrixTests, constructor) {
 
 }
+*/
