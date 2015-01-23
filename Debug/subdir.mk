@@ -4,19 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../googleTestsMain.cpp \
-../sampleMatrix.cpp \
-../sampleMatrix_test.cpp 
+../matrixSolver.cpp \
+../scratch.cpp 
 
 OBJS += \
-./googleTestsMain.o \
-./sampleMatrix.o \
-./sampleMatrix_test.o 
+./matrixSolver.o \
+./scratch.o 
 
 CPP_DEPS += \
-./googleTestsMain.d \
-./sampleMatrix.d \
-./sampleMatrix_test.d 
+./matrixSolver.d \
+./scratch.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
