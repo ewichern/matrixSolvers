@@ -26,26 +26,29 @@ pair<int, int> askForMatrixSize(std::istream& input) {
 	return std::make_pair(m, n);
 }
 
-void randomFillMatrix(matrix& A,
+template <class genType, class distribType>
+void randomFillMatrix(matrix& mat,
 		const std::random_device& randDevice,
-		std::mt19937& generator) {
+		genType& generator,
+		distribType& dist) {
 
-	std::uniform_real_distribution<double> dist (-9.9, 9.9);
-
-	for (int m = 0; m < A.numrows(); ++m) {
+	for (int m = 0; m < mat.numrows(); ++m) {
 
 		double rowTotal = 0;
 
-		for (int n = 0; n < A.numcols(); ++n) {
+		for (int n = 0; n < mat.numcols(); ++n) {
 			double newValue = dist(generator);
 			rowTotal += std::abs(newValue);
-			A[m][n] = newValue;
+			mat[m][n] = newValue;
 		}
 
-		A[m][m] = rowTotal;
+		mat[m][m] = rowTotal;
 	}
 
 }
 
+void randomSolution(matrix& x) {
+
+}
 
 #endif

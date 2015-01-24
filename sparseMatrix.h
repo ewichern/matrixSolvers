@@ -4,6 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -167,6 +168,22 @@ public:
 	 { }
 	 */
 
+	// Copy constructor
+	sparseMatrix(const sparseMatrix<Object>& right) {
+
+		nRows = right.nRows;
+		nCols = right.nCols;
+		defaultValue = right.defaultValue;
+		data = right.data;
+
+	}
+
+	const sparseMatrix operator=(const sparseMatrix<Object>& right) {
+		if (this != right){
+
+		}
+	}
+
 	const ConstRow operator[](int row) const {
 		return ConstRow(this, row);
 	}
@@ -207,8 +224,8 @@ template<typename Object>
 std::ostream& operator<<(std::ostream& out, const sparseMatrix<Object>& m) {
 	for (int j = 0; j < m.numrows(); ++j) {
 		for (int i = 0; i < m.numcols(); ++i) {
-			if (i > 0)
-				out << ' ';
+			// if (i > 0) out << ' ';
+			out << setprecision(5) << setw(8);
 			out << m[j][i];
 		}
 		out << "\n";
