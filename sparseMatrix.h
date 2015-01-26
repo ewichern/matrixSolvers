@@ -30,7 +30,6 @@ class sparseMatrix {
 	};
 
 	class TupleHash {
-		/** add your code here */
 		// Going to assign each member of the tuple a different
 		// prime multiplier.
 	public:
@@ -40,8 +39,7 @@ class sparseMatrix {
 		}
 	};
 
-	/** add your code here to use unordered_map to create
-	 a hash table mapping Tuples onto Objects */
+	/** use unordered_map to create a hash table mapping Tuples onto Objects */
 	typedef std::unordered_map<Tuple, Object, TupleHash> HashTable;
 
 	typedef typename HashTable::value_type valueType;
@@ -58,10 +56,7 @@ public:
 		}
 
 		Object& operator[](int col) const {
-			/**
-			 Add your code here to locate the [rowNum][col]
-			 element of the matrix.
-			 */
+			/**locate the [rowNum][col] element of the matrix.*/
 
 			HashTable &mapRef = m->data;
 			Tuple keyAt(rowNum, col);
@@ -77,30 +72,8 @@ public:
 				loc = mapRef.insert(newVal).first;
 
 			}
-			/*
-			 else {
-			 //std::cerr << "Found " << loc->second << " at ";
-			 //keyAt.put(std::cerr);
-			 //std::cerr << "." << endl;
-			 //return newLoc.first->second;
-			 }
-			 */
+
 			return loc->second;
-			/*
-			 if (loc != mapRef.end()) {
-			 //std::cerr << "Found " << loc->second << " at ";
-			 //keyAt.put(std::cerr);
-			 //std::cerr << "." << endl;
-			 return loc->second;
-			 } else {
-			 //std::cerr << "Did not find a value for coords ";
-			 //keyAt.put(std::cerr);
-			 //std::cerr << ". Default value is " << m->defaultValue << endl;
-			 valueType newVal(keyAt, m->defaultValue);
-			 auto newLoc = mapRef.insert(newVal);
-			 return newLoc.first->second;
-			 }
-			 */
 		}
 
 	};
@@ -114,104 +87,40 @@ public:
 		}
 
 		Object operator[](int col) const {
-			/**
-			 Add your code here to locate the [rowNum][col]
-			 element of the matrix (or return the default
+			/** locate the [rowNum][col] element of the matrix (or return the default
 			 value if that element does not exist.
 			 */
-
-			// const Object& defaultValue = m->defaultValue;
 
 			const HashTable & mapRef = m->data;
 			Tuple keyAt(rowNum, col);
 
 			hashConstIt loc = mapRef.find(keyAt);
 
-			if (loc != mapRef.cend()) {
-				//std::cerr << "Found " << loc->second << " at ";
-				//keyAt.put(std::cerr);
-				//std::cerr << "." << endl;
-				return loc->second;
-			} else {
-				//std::cerr << "Did not find a value for coords ";
-				//keyAt.put(cerr);
-				//std::cerr << ". Default value is " << m->defaultValue << endl;
+			if (loc == mapRef.cend()) {
 				return m->defaultValue;
 			}
+
+			return loc->second;
 		}
 	};
 
-	sparseMatrix(int rows, int cols, const Object& defaultv = Object()) :
-			nRows(rows), nCols(cols), defaultValue(defaultv) {
-	}
+	sparseMatrix();
+	sparseMatrix(int, int, const Object&);
+	sparseMatrix(const vector<vector<Object>> &,
+				const Object&);
+	sparseMatrix(const sparseMatrix<Object>&);
+	~sparseMatrix() { data.clear(); }
 
-	/* not yet supported
-	 sparseMatrix( initializer_list<vector<Object>> lst ) : array( lst.size( ) )
-	 {
-	 int i = 0;
-	 for( auto & v : lst )
-	 array[ i++ ] = std::move( v );
-	 }
-	 */
+	bool operator==(const sparseMatrix<Object>&) const;
+	const sparseMatrix<Object>& operator=(const sparseMatrix<Object>&);
+	const sparseMatrix<Object>& operator*(const sparseMatrix<Object>&);
 
-	sparseMatrix(const vector<vector<Object>> & v, const Object& defaultv =
-			Object()) :
-			nRows(v.size()), nCols(v[0].size()), defaultValue(defaultv) {
-		for (int i = 0; i < nRows; ++i)
-			for (int j = 0; j < nCols; ++j) {
-				Tuple t(i, j);
-				data[t] = v[j][i];
-			}
-	}
-	/* not yet supported
-	 sparseMatrix( vector<vector<Object>> && v ) : array{ std::move( v ) }
-	 { }
-	 */
+	const ConstRow operator[](int row) const {return ConstRow(this, row);}
+	Row operator[](int row) {return Row(this, row);}
 
-	// Copy constructor
-	sparseMatrix(const sparseMatrix<Object>& right) {
+	int numrows() const {return nRows;}
+	int numcols() const {return nCols;}
 
-		nRows = right.nRows;
-		nCols = right.nCols;
-		defaultValue = right.defaultValue;
-		data = right.data;
-
-	}
-
-	const sparseMatrix operator=(const sparseMatrix<Object>& right) {
-		if (this != right){
-
-		}
-	}
-
-	const ConstRow operator[](int row) const {
-		return ConstRow(this, row);
-	}
-
-	Row operator[](int row) {
-		return Row(this, row);
-	}
-
-	int numrows() const {
-		return nRows;
-	}
-	int numcols() const {
-		return nCols;
-	}
-
-	bool operator==(const sparseMatrix<Object>& m) const {
-		if (numcols() != m.numcols() || numrows() != m.numrows())
-			return false;
-
-		const sparseMatrix<Object>& self = *this;
-
-		for (int j = 0; j < m.numrows(); ++j)
-			for (int i = 0; i < m.numcols(); ++i) {
-				if (self[j][i] != m[j][i])
-					return false;
-			}
-		return true;
-	}
 private:
 
 	int nRows;
@@ -219,6 +128,97 @@ private:
 	Object defaultValue;
 	std::unordered_map<Tuple, Object, TupleHash> data;
 };
+
+
+template<typename Object>
+sparseMatrix<Object>::sparseMatrix() :
+			nRows(0), nCols(0), defaultValue(Object()) {
+	}
+
+// Constructor for matrix of size rows*cols, filled with defaultValue
+template<typename Object>
+sparseMatrix<Object>::sparseMatrix(int rows, int cols, const Object& defaultv = Object()) :
+			nRows(rows), nCols(cols), defaultValue(defaultv) {
+	}
+
+// Constructor from an existing STL vector<vector>
+template<typename Object>
+sparseMatrix<Object>::sparseMatrix(const vector<vector<Object>> & v,
+		const Object& defaultv = Object()) :
+		nRows(v.size()), nCols(v[0].size()), defaultValue(defaultv) {
+
+	for (int i = 0; i < nRows; ++i)
+		for (int j = 0; j < nCols; ++j) {
+			Tuple t(i, j);
+			data[t] = v[j][i];
+		}
+}
+
+// Copy constructor
+template<typename Object>
+sparseMatrix<Object>::sparseMatrix(const sparseMatrix<Object>& right) {
+
+	nRows = right.nRows;
+	nCols = right.nCols;
+	defaultValue = right.defaultValue;
+	data = right.data;
+
+}
+
+// Overloaded operators
+template<typename Object>
+bool sparseMatrix<Object>::operator==(const sparseMatrix<Object>& m) const {
+	if (numcols() != m.numcols() || numrows() != m.numrows())
+		return false;
+
+	const sparseMatrix<Object>& self = *this;
+
+	for (int j = 0; j < m.numrows(); ++j)
+		for (int i = 0; i < m.numcols(); ++i) {
+			if (self[j][i] != m[j][i])
+				return false;
+		}
+	return true;
+}
+
+template<typename Object>
+const sparseMatrix<Object>& sparseMatrix<Object>::operator=(
+		const sparseMatrix<Object>& right) {
+	if (this != right) {
+		data.clear();
+		data = right.data;
+		nRows = right.nRows;
+		nCols = right.nCols;
+		defaultValue = right.defaultValue;
+	}
+	return *this;
+}
+
+template<typename Object>
+const sparseMatrix<Object>& sparseMatrix<Object>::operator*(
+		const sparseMatrix<Object>& right) {
+	if (nCols == right.nRows) {
+		sparseMatrix<Object> solution(nRows, right.nCols, Object());
+		for (int i = 0; i < solution.numrows(); ++i){
+			for (int j = 0; j < solution.numcols(); ++j){
+				Object tempValue;
+				for (int k = 0; k < nRows; ++k){
+					if (k == 0) {
+						tempValue = this[i][k] * right[k][j];
+					}
+					else
+						tempValue += this[i][k] * right[k][j];
+				}
+				solution[i][j] = tempValue;
+			}
+		}
+		return solution;
+	}
+	else {
+		sparseMatrix<double> failMatrix(1, 1, -999.0);
+		return failMatrix;
+	}
+}
 
 template<typename Object>
 std::ostream& operator<<(std::ostream& out, const sparseMatrix<Object>& m) {

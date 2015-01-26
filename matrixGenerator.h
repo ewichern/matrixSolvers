@@ -12,9 +12,7 @@ using namespace std;
 
 typedef sparseMatrix<double> matrix;
 
-pair<int, int> askForMatrixSize(std::istream& input) {
-
-	int m = 1, n = 1;
+void askForMatrixSize(std::istream& input, int& m, int& n) {
 
 	while (!(input >> m >> n)) {
 		input.clear();
@@ -22,8 +20,6 @@ pair<int, int> askForMatrixSize(std::istream& input) {
 		std::cout << "Invalid input, try again: \n";
 	}
 	input.ignore( std::numeric_limits<std::streamsize>::max(), '\n');
-
-	return std::make_pair(m, n);
 }
 
 template <class genType, class distribType>
