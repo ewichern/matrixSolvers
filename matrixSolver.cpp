@@ -28,8 +28,8 @@ int main (int argc, char **argv) {
 
 	std::random_device randDevice;
 	std::mt19937 generator(randDevice());
-	//std::uniform_real_distribution<double> dist (min, max);
-	std::uniform_int_distribution<> dist ((int)min, (int)max);
+	std::uniform_real_distribution<double> dist (min, max);
+	//std::uniform_int_distribution<> dist ((int)min, (int)max);
 
 	matrix A (m, n, 0.0);
 	matrix x (n, 1, 0.0);

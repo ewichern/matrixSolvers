@@ -200,14 +200,16 @@ const sparseMatrix<Object>& sparseMatrix<Object>::operator*(
 	if (nCols == right.nRows) {
 		sparseMatrix<Object> solution(nRows, right.nCols, Object());
 		for (int i = 0; i < solution.numrows(); ++i){
+			sparseMatrix<Object> Ai(this, i);
+
 			for (int j = 0; j < solution.numcols(); ++j){
 				Object tempValue;
 				for (int k = 0; k < nRows; ++k){
 					if (k == 0) {
-						tempValue = this[i][k] * right[k][j];
+						tempValue = (Ai[k]) * (right[k][j]);
 					}
 					else
-						tempValue += this[i][k] * right[k][j];
+						tempValue += (Ai[k]) * (right[k][j]);
 				}
 				solution[i][j] = tempValue;
 			}
