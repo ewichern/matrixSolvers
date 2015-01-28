@@ -28,8 +28,8 @@ int main (int argc, char **argv) {
 
 	std::random_device randDevice;
 	std::mt19937 generator(randDevice());
-	std::uniform_real_distribution<double> dist (min, max);
-	//std::uniform_int_distribution<> dist ((int)min, (int)max);
+	//std::uniform_real_distribution<double> dist (min, max);
+	std::uniform_int_distribution<> dist ((int)min, (int)max);
 
 	matrix A (m, n, 0.0);
 	matrix x (n, 1, 0.0);
@@ -38,6 +38,9 @@ int main (int argc, char **argv) {
 	randomFillMatrix (x, randDevice, generator, dist);
 
 	matrix copyA (A);
+	matrix assignA (1, 1, 0.0);
+
+	assignA = A;
 
 	std::cerr << "A:" << "\n";
 	std::cerr << A << "\n";
@@ -47,6 +50,12 @@ int main (int argc, char **argv) {
 
 	std::cerr << "copyA == A?" << "\n";
 	std::cerr << (copyA == A) << "\n\n";
+
+	std::cerr << "assignA:" << "\n";
+	std::cerr << assignA << "\n";
+
+	std::cerr << "assignA == A?" << "\n";
+	std::cerr << (assignA == A) << "\n\n";
 
 	std::cerr << "x:" << "\n";
 	std::cerr << x << "\n";

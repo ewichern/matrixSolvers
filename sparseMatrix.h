@@ -55,7 +55,7 @@ public:
 				m(matrix), rowNum(row) {
 		}
 
-		Object& operator[](int col) const {
+		Object& operator[](int col) {
 			/**locate the [rowNum][col] element of the matrix.*/
 
 			HashTable &mapRef = m->data;
@@ -106,20 +106,31 @@ public:
 
 	sparseMatrix();
 	sparseMatrix(int, int, const Object&);
-	sparseMatrix(const vector<vector<Object>> &,
-				const Object&);
+	sparseMatrix(const vector<vector<Object>> &, const Object&);
 	sparseMatrix(const sparseMatrix<Object>&);
-	~sparseMatrix() { data.clear(); }
+	~sparseMatrix() {
+		data.clear();
+	}
 
 	bool operator==(const sparseMatrix<Object>&) const;
-	const sparseMatrix<Object>& operator=(const sparseMatrix<Object>&);
-	const sparseMatrix<Object>& operator*(const sparseMatrix<Object>&);
+	sparseMatrix<Object>& operator=(const sparseMatrix<Object>&);
+	sparseMatrix<Object> operator*(const sparseMatrix<Object>&) const;
+	sparseMatrix<Object> operator+(const sparseMatrix<Object>&) const;
+	sparseMatrix<Object> operator-(const sparseMatrix<Object>&) const;
 
-	const ConstRow operator[](int row) const {return ConstRow(this, row);}
-	Row operator[](int row) {return Row(this, row);}
+	const ConstRow operator[](int row) const {
+		return ConstRow(this, row);
+	}
+	Row operator[](int row) {
+		return Row(this, row);
+	}
 
-	int numrows() const {return nRows;}
-	int numcols() const {return nCols;}
+	int numrows() const {
+		return nRows;
+	}
+	int numcols() const {
+		return nCols;
+	}
 
 private:
 
@@ -129,17 +140,17 @@ private:
 	std::unordered_map<Tuple, Object, TupleHash> data;
 };
 
-
 template<typename Object>
 sparseMatrix<Object>::sparseMatrix() :
-			nRows(0), nCols(0), defaultValue(Object()) {
-	}
+		nRows(0), nCols(0), defaultValue(Object()) {
+}
 
 // Constructor for matrix of size rows*cols, filled with defaultValue
 template<typename Object>
-sparseMatrix<Object>::sparseMatrix(int rows, int cols, const Object& defaultv = Object()) :
-			nRows(rows), nCols(cols), defaultValue(defaultv) {
-	}
+sparseMatrix<Object>::sparseMatrix(int rows, int cols, const Object& defaultv =
+		Object()) :
+		nRows(rows), nCols(cols), defaultValue(defaultv) {
+}
 
 // Constructor from an existing STL vector<vector>
 template<typename Object>
@@ -182,9 +193,9 @@ bool sparseMatrix<Object>::operator==(const sparseMatrix<Object>& m) const {
 }
 
 template<typename Object>
-const sparseMatrix<Object>& sparseMatrix<Object>::operator=(
+sparseMatrix<Object>& sparseMatrix<Object>::operator=(
 		const sparseMatrix<Object>& right) {
-	if (this != right) {
+	if (!(*this == right)) {
 		data.clear();
 		data = right.data;
 		nRows = right.nRows;
@@ -195,31 +206,58 @@ const sparseMatrix<Object>& sparseMatrix<Object>::operator=(
 }
 
 template<typename Object>
-const sparseMatrix<Object>& sparseMatrix<Object>::operator*(
-		const sparseMatrix<Object>& right) {
-	if (nCols == right.nRows) {
-		sparseMatrix<Object> solution(nRows, right.nCols, Object());
-		for (int i = 0; i < solution.numrows(); ++i){
-			sparseMatrix<Object> Ai(this, i);
+sparseMatrix<Object> sparseMatrix<Object>::operator*(
+		const sparseMatrix<Object>& right) const {
 
-			for (int j = 0; j < solution.numcols(); ++j){
+	sparseMatrix<Object>* solution = new sparseMatrix<Object>(nRows,
+			right.nCols, Object());
+
+	if (nCols == right.nRows) {
+		for (int i = 0; i < solution->numrows(); ++i) {
+			for (int j = 0; j < solution->numcols(); ++j) {
+
 				Object tempValue;
-				for (int k = 0; k < nRows; ++k){
+				for (int k = 0; k < nRows; ++k) {
 					if (k == 0) {
-						tempValue = (Ai[k]) * (right[k][j]);
-					}
-					else
-						tempValue += (Ai[k]) * (right[k][j]);
+						tempValue = (this->operator[](i)[k]) * (right[k][j]);
+					} else
+						tempValue += (this->operator[](i)[k]) * (right[k][j]);
 				}
-				solution[i][j] = tempValue;
+				(solution->operator [](i))[j] = tempValue;
+
 			}
 		}
-		return solution;
+	} else {
+		solution = new sparseMatrix<Object>(1, 1, -999);
 	}
-	else {
-		sparseMatrix<double> failMatrix(1, 1, -999.0);
-		return failMatrix;
+	return *solution;
+}
+
+template<typename Object>
+sparseMatrix<Object> sparseMatrix<Object>::operator+(
+		const sparseMatrix<Object>& right) const {
+
+	sparseMatrix<Object>* solution = new sparseMatrix<Object>(nRows,
+			right.nCols, Object());
+
+	if ((nRows == right.nRows) && (nCols == right.nCols)) {
+		for (int i = 0; i < solution->numrows(); ++i) {
+			for (int j = 0; j < solution->numcols(); ++j) {
+
+				solution->operator [](i)[j] = this->operator[](i)[j] + right[i][j];
+
+			}
+		}
+	} else {
+		solution = new sparseMatrix<Object>(1, 1, -999);
 	}
+	return *solution;
+}
+
+template<typename Object>
+sparseMatrix<Object> sparseMatrix<Object>::operator-(
+		const sparseMatrix<Object>& right) const {
+
 }
 
 template<typename Object>
