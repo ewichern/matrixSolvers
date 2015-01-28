@@ -2,8 +2,8 @@
 #define MATRIXGENERATOR_H
 
 #include "sparseMatrix.h"
-#include <utility>
 #include <iostream>
+#include <fstream>
 #include <limits>
 #include <random>
 #include <cmath>
@@ -20,6 +20,56 @@ void askForMatrixSize(std::istream& input, int& m, int& n) {
 		std::cout << "Invalid input, try again: \n";
 	}
 	input.ignore( std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+// File format:
+// integer sizes provided for rows*cols, each followed by \n
+// then sufficient values to fill A and b,
+// each separated by whitespace or newline
+void readMatrixFromFile(std::ifstream& input, matrix& A, matrix& b) {
+
+	int m = 0, n = 0;
+	input >> m >> n;
+
+	A = matrix(m, n);
+	b = matrix(m, 1);
+
+	double tempValue = 0.0;
+
+	for (int i = 0; i < A.numrows(); ++i){
+		for (int j = 0; j < A.numcols(); ++j) {
+			input >> tempValue;
+			A[i][j] = tempValue;
+		}
+	}
+
+	for (int i = 0; i < b.numrows(); ++i) {
+		input >> tempValue;
+		b[i][0] = tempValue;
+	}
+
+}
+
+// Overloaded from above, only reads in one matrix
+// File format:
+// integer sizes provided for rows*cols, each followed by \n
+// then sufficient values to fill A,
+// each separated by whitespace or newline
+void readMatrixFromFile(std::ifstream& input, matrix& A) {
+
+	int m = 0, n = 0;
+	input >> m >> n;
+
+	A = matrix(m, n);
+
+	double tempValue = 0.0;
+
+	for (int i = 0; i < A.numrows(); ++i){
+		for (int j = 0; j < A.numcols(); ++j) {
+			input >> tempValue;
+			A[i][j] = tempValue;
+		}
+	}
 }
 
 template <class genType, class distribType>

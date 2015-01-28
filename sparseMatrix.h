@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <iomanip>
+#include <exception>
 
 using namespace std;
 
@@ -113,10 +114,15 @@ public:
 	}
 
 	bool operator==(const sparseMatrix<Object>&) const;
+	bool operator!=(const sparseMatrix<Object>&) const;
+
 	sparseMatrix<Object>& operator=(const sparseMatrix<Object>&);
-	sparseMatrix<Object> operator*(const sparseMatrix<Object>&) const;
-	sparseMatrix<Object> operator+(const sparseMatrix<Object>&) const;
-	sparseMatrix<Object> operator-(const sparseMatrix<Object>&) const;
+	//sparseMatrix<Object> operator*(const sparseMatrix<Object>&) const;
+	//sparseMatrix<Object> operator+(const sparseMatrix<Object>&) const;
+	//sparseMatrix<Object> operator-(const sparseMatrix<Object>&) const;
+
+	void eye();
+	void eye(int, int);
 
 	const ConstRow operator[](int row) const {
 		return ConstRow(this, row);
@@ -132,12 +138,22 @@ public:
 		return nCols;
 	}
 
+	Object getDefault() const {
+		return defaultValue;
+	}
+
 private:
 
 	int nRows;
 	int nCols;
 	Object defaultValue;
 	std::unordered_map<Tuple, Object, TupleHash> data;
+};
+
+struct MatrixSizeException: public exception {
+	const char * what() const throw () {
+		return "Matrix size mismatch";
+	}
 };
 
 template<typename Object>
@@ -150,6 +166,32 @@ template<typename Object>
 sparseMatrix<Object>::sparseMatrix(int rows, int cols, const Object& defaultv =
 		Object()) :
 		nRows(rows), nCols(cols), defaultValue(defaultv) {
+}
+
+template<typename Object>
+void sparseMatrix<Object>::eye() {
+
+	sparseMatrix<Object>& self = *this;
+	if (nRows != nCols) {
+		throw std::logic_error("Matrix size mismatch");
+	} else {
+		data.clear();
+		for (int i = 0; i < nRows; ++i) {
+			self[i][i] = 1.0;
+		}
+	}
+}
+
+template<typename Object>
+void sparseMatrix<Object>::eye(int rows, int cols) {
+
+	sparseMatrix<Object>& self = *this;
+	data.clear();
+	nRows = rows;
+	nCols = cols;
+	for (int i = 0; i < nRows; ++i) {
+		self[i][i] = 1.0;
+	}
 }
 
 // Constructor from an existing STL vector<vector>
@@ -193,6 +235,11 @@ bool sparseMatrix<Object>::operator==(const sparseMatrix<Object>& m) const {
 }
 
 template<typename Object>
+bool sparseMatrix<Object>::operator!=(const sparseMatrix<Object>& m) const {
+	return (!(*this == m));
+}
+
+template<typename Object>
 sparseMatrix<Object>& sparseMatrix<Object>::operator=(
 		const sparseMatrix<Object>& right) {
 	if (!(*this == right)) {
@@ -206,58 +253,103 @@ sparseMatrix<Object>& sparseMatrix<Object>::operator=(
 }
 
 template<typename Object>
-sparseMatrix<Object> sparseMatrix<Object>::operator*(
-		const sparseMatrix<Object>& right) const {
+sparseMatrix<Object> operator*(const sparseMatrix<Object>& left,
+		const sparseMatrix<Object>& right) {
 
-	sparseMatrix<Object>* solution = new sparseMatrix<Object>(nRows,
-			right.nCols, Object());
-
-	if (nCols == right.nRows) {
+	if (left.numcols() != right.numrows()) {
+		throw std::logic_error("Matrix size mismatch");
+	} else {
+		sparseMatrix<Object>* solution = new sparseMatrix<Object>(
+				left.numrows(), right.numcols(), Object());
 		for (int i = 0; i < solution->numrows(); ++i) {
 			for (int j = 0; j < solution->numcols(); ++j) {
 
 				Object tempValue;
-				for (int k = 0; k < nRows; ++k) {
+				for (int k = 0; k < left.numrows(); ++k) {
 					if (k == 0) {
-						tempValue = (this->operator[](i)[k]) * (right[k][j]);
+						tempValue = (left[i][k]) * (right[k][j]);
 					} else
-						tempValue += (this->operator[](i)[k]) * (right[k][j]);
+						tempValue += (left[i][k]) * (right[k][j]);
 				}
-				(solution->operator [](i))[j] = tempValue;
-
+				(solution->operator[](i)[j]) = tempValue;
 			}
 		}
-	} else {
-		solution = new sparseMatrix<Object>(1, 1, -999);
+		return *solution;
+	}
+}
+
+template<typename Object>
+sparseMatrix<Object> operator*(double scaler, const sparseMatrix<Object>& m) {
+
+	sparseMatrix<Object>* solution = new sparseMatrix<Object>(m.numrows(),
+			m.numcols());
+	for (int i = 0; i < solution->numrows(); ++i) {
+		for (int j = 0; j < solution->numcols(); ++j) {
+
+			(solution->operator[](i)[j]) = scaler * m[i][j];
+		}
 	}
 	return *solution;
 }
 
 template<typename Object>
-sparseMatrix<Object> sparseMatrix<Object>::operator+(
-		const sparseMatrix<Object>& right) const {
+sparseMatrix<Object> operator*( const sparseMatrix<Object>& m, double scaler) {
 
-	sparseMatrix<Object>* solution = new sparseMatrix<Object>(nRows,
-			right.nCols, Object());
+	sparseMatrix<Object>* solution = new sparseMatrix<Object>(m.numrows(),
+			m.numcols());
+	for (int i = 0; i < solution->numrows(); ++i) {
+		for (int j = 0; j < solution->numcols(); ++j) {
 
-	if ((nRows == right.nRows) && (nCols == right.nCols)) {
+			(solution->operator[](i)[j]) = scaler * m[i][j];
+		}
+	}
+	return *solution;
+}
+
+template<typename Object>
+sparseMatrix<Object> operator+(const sparseMatrix<Object>& left,
+		const sparseMatrix<Object>& right) {
+
+	if (!(left.numrows() == right.numrows())
+			|| !(left.numcols() == right.numcols())) {
+		throw std::logic_error("Matrix size mismatch");
+	} else {
+
+		sparseMatrix<Object>* solution = new sparseMatrix<Object>(
+				left.numrows(), right.numcols(), Object());
+
 		for (int i = 0; i < solution->numrows(); ++i) {
 			for (int j = 0; j < solution->numcols(); ++j) {
 
-				solution->operator [](i)[j] = this->operator[](i)[j] + right[i][j];
+				solution->operator [](i)[j] = left[i][j] + right[i][j];
 
 			}
 		}
-	} else {
-		solution = new sparseMatrix<Object>(1, 1, -999);
+		return *solution;
 	}
-	return *solution;
 }
 
 template<typename Object>
-sparseMatrix<Object> sparseMatrix<Object>::operator-(
-		const sparseMatrix<Object>& right) const {
+sparseMatrix<Object> operator-(const sparseMatrix<Object>& left,
+		const sparseMatrix<Object>& right) {
 
+	if (!(left.numrows() == right.numrows())
+			|| !(left.numcols() == right.numcols())) {
+		throw std::logic_error("Matrix size mismatch");
+	} else {
+
+		sparseMatrix<Object>* solution = new sparseMatrix<Object>(
+				left.numrows(), right.numcols(), Object());
+
+		for (int i = 0; i < solution->numrows(); ++i) {
+			for (int j = 0; j < solution->numcols(); ++j) {
+
+				solution->operator [](i)[j] = left[i][j] - right[i][j];
+
+			}
+		}
+		return *solution;
+	}
 }
 
 template<typename Object>

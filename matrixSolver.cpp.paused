@@ -7,8 +7,8 @@
 
 #include "sparseMatrix.h"
 #include "matrixGenerator.h"
-#include <utility>
 #include <iostream>
+#include <fstream>
 #include <random>
 
 using namespace std;
@@ -16,6 +16,22 @@ using namespace std;
 typedef sparseMatrix<double> matrix;
 
 int main (int argc, char **argv) {
+
+	matrix A;
+	//matrix x;
+	matrix b;
+
+	if (argc > 2) {
+		std::cerr << "Usage: \n";
+		std::cerr << "   " << argv[0] << "matrixDataFile" << endl;
+		return 1;
+	}
+
+	if (argc == 2) {
+		ifstream matricesIn (argv[1]);
+		readMatrixFromFile(matricesIn, A, b);
+	}
+
 
 	std::cout << "Enter desired size (m x n) for matrix A \n"
 				<< "-- in integers, separated by a space: \n";
@@ -31,42 +47,48 @@ int main (int argc, char **argv) {
 	//std::uniform_real_distribution<double> dist (min, max);
 	std::uniform_int_distribution<> dist ((int)min, (int)max);
 
-	matrix A (m, n, 0.0);
+	matrix Arand (m, n, 0.0);
 	matrix x (n, 1, 0.0);
 
-	randomFillMatrix (A, randDevice, generator, dist);
+	randomFillMatrix (Arand, randDevice, generator, dist);
 	randomFillMatrix (x, randDevice, generator, dist);
 
-	matrix copyA (A);
+	matrix copyA (Arand);
 	matrix assignA (1, 1, 0.0);
 
-	assignA = A;
+	assignA = Arand;
 
-	std::cerr << "A:" << "\n";
+	std::cerr << "A (from file):" << "\n";
 	std::cerr << A << "\n";
+
+	std::cerr << "b (from file):" << "\n";
+	std::cerr << b << "\n";
+
+	std::cerr << "Arand:" << "\n";
+	std::cerr << Arand << "\n";
 
 	std::cerr << "copyA:" << "\n";
 	std::cerr << copyA << "\n";
 
-	std::cerr << "copyA == A?" << "\n";
-	std::cerr << (copyA == A) << "\n\n";
+	std::cerr << "copyA == Arand?" << "\n";
+	std::cerr << (copyA == Arand) << "\n\n";
 
 	std::cerr << "assignA:" << "\n";
 	std::cerr << assignA << "\n";
 
-	std::cerr << "assignA == A?" << "\n";
-	std::cerr << (assignA == A) << "\n\n";
+	std::cerr << "assignA == Arand?" << "\n";
+	std::cerr << (assignA == Arand) << "\n\n";
 
 	std::cerr << "x:" << "\n";
 	std::cerr << x << "\n";
 
 	std::cerr << "x == A?" << "\n";
-	std::cerr << (x == A) << "\n\n";
+	std::cerr << (x == Arand) << "\n\n";
 
-	matrix b = A*x;
+	matrix calcB = Arand*x;
 
-	std::cerr << "b = A*x:" << "\n";
-	std::cerr << b << "\n";
+	std::cerr << "b = Arand*x:" << "\n";
+	std::cerr << calcB << "\n";
 
 	return 0;
 }
