@@ -10,6 +10,8 @@
 #include "gtest/gtest.h"
 #include <fstream>
 #include <exception>
+#include <random>
+#include <string>
 
 typedef sparseMatrix<double> matrix;
 
@@ -114,6 +116,7 @@ TEST_F (sparseMatrixTests, eye) {
 
 	ifstream input("eye.dat");
 	readMatrixFromFile(input, id2);
+	input.close();
 
 	EXPECT_EQ(id1, id2);
 }
@@ -125,6 +128,7 @@ TEST_F (sparseMatrixTests, multiplyScaler) {
 
 	ifstream input("eyeTimes2.dat");
 	readMatrixFromFile(input, id2);
+	input.close();
 
 	EXPECT_EQ(idtest, id2);
 
@@ -141,6 +145,7 @@ TEST_F (sparseMatrixTests, add) {
 
 	ifstream input("eyeTimes2.dat");
 	readMatrixFromFile(input, id2);
+	input.close();
 
 	EXPECT_EQ(idtest, id2);
 }
@@ -151,12 +156,69 @@ TEST_F (sparseMatrixTests, subtract) {
 
 	ifstream input("eyeTimes2.dat");
 	readMatrixFromFile(input, id2);
+	input.close();
 
 	idtest = id2 - id1;
 
-	EXPECT_EQ(idtest, id1);
+	EXPECT_EQ(id1, idtest);
 }
 
-// TEST_F (sparseMatrixTests, ) {
+TEST_F (sparseMatrixTests, writeToFile) {
+	matrix id1, idTest;
+	id1.eye(3, 3);
+
+	ofstream output("test.dat");
+	writeMatrixToFile(output, id1);
+	output.close();
+
+	ifstream input("test.dat");
+	readMatrixFromFile(input, idTest);
+	input.close();
+
+	EXPECT_EQ(id1, idTest);
+}
+
+TEST_F (sparseMatrixTests, writeToFile2) {
+	matrix A1test, b1test;
+
+	ofstream output("test.dat");
+	writeMatrixToFile(output, A1, b1);
+	output.close();
+
+	ifstream input("test.dat");
+	readMatrixFromFile(input, A1test, b1test);
+	input.close();
+
+	EXPECT_EQ(A1, A1test);
+	EXPECT_EQ(b1, b1test);
+}
+
+TEST_F (sparseMatrixTests, generateSamples) {
+
+	double min = -4.9;
+	double max = 4.9;
+	string filenameRoot = "test1";
+
+	std::random_device randDevice;
+	std::mt19937 generator(randDevice());
+	//std::uniform_real_distribution<double> dist (min, max);
+	std::uniform_int_distribution<> dist((int) min, (int) max);
+
+	generateSamples(filenameRoot, randDevice, generator, dist);
+
+	matrix A1test, x1test, b1test, b1calc;
+
+	ifstream input1(filenameRoot + "_Ab.dat");
+	readMatrixFromFile(input1, A1test, b1test);
+	input1.close();
+
+	ifstream input2(filenameRoot + "_x.dat");
+	readMatrixFromFile(input2, x1test);
+	input2.close();
+
+	b1calc = A1test * x1test;
+
+	EXPECT_EQ(b1test, b1calc);
+}
 
 }

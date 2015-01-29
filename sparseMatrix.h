@@ -194,6 +194,20 @@ void sparseMatrix<Object>::eye(int rows, int cols) {
 	}
 }
 
+/**
+class eye {
+public:
+	template<typename Object>
+	sparseMatrix<Object> eye(int rows, int cols) {
+		sparseMatrix<Object> m(rows, cols, 0);
+		for (int i = 0; i < m.numrows(); ++i) {
+			m[i][i] = 1.0;
+		}
+		return *m;
+	}
+};
+*/
+
 // Constructor from an existing STL vector<vector>
 template<typename Object>
 sparseMatrix<Object>::sparseMatrix(const vector<vector<Object>> & v,
@@ -293,7 +307,7 @@ sparseMatrix<Object> operator*(double scaler, const sparseMatrix<Object>& m) {
 }
 
 template<typename Object>
-sparseMatrix<Object> operator*( const sparseMatrix<Object>& m, double scaler) {
+sparseMatrix<Object> operator*(const sparseMatrix<Object>& m, double scaler) {
 
 	sparseMatrix<Object>* solution = new sparseMatrix<Object>(m.numrows(),
 			m.numcols());

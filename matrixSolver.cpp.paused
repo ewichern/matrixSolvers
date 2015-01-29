@@ -36,7 +36,7 @@ int main (int argc, char **argv) {
 	std::cout << "Enter desired size (m x n) for matrix A \n"
 				<< "-- in integers, separated by a space: \n";
 
-	int m = 0, n = 0;
+	int m = 3, n = 3;
 	askForMatrixSize(std::cin, m, n);
 
 	double min = -9.9;
@@ -47,48 +47,11 @@ int main (int argc, char **argv) {
 	//std::uniform_real_distribution<double> dist (min, max);
 	std::uniform_int_distribution<> dist ((int)min, (int)max);
 
-	matrix Arand (m, n, 0.0);
+	matrix aRand (m, n, 0.0);
 	matrix x (n, 1, 0.0);
 
-	randomFillMatrix (Arand, randDevice, generator, dist);
+	randomFillMatrix (aRand, randDevice, generator, dist);
 	randomFillMatrix (x, randDevice, generator, dist);
-
-	matrix copyA (Arand);
-	matrix assignA (1, 1, 0.0);
-
-	assignA = Arand;
-
-	std::cerr << "A (from file):" << "\n";
-	std::cerr << A << "\n";
-
-	std::cerr << "b (from file):" << "\n";
-	std::cerr << b << "\n";
-
-	std::cerr << "Arand:" << "\n";
-	std::cerr << Arand << "\n";
-
-	std::cerr << "copyA:" << "\n";
-	std::cerr << copyA << "\n";
-
-	std::cerr << "copyA == Arand?" << "\n";
-	std::cerr << (copyA == Arand) << "\n\n";
-
-	std::cerr << "assignA:" << "\n";
-	std::cerr << assignA << "\n";
-
-	std::cerr << "assignA == Arand?" << "\n";
-	std::cerr << (assignA == Arand) << "\n\n";
-
-	std::cerr << "x:" << "\n";
-	std::cerr << x << "\n";
-
-	std::cerr << "x == A?" << "\n";
-	std::cerr << (x == Arand) << "\n\n";
-
-	matrix calcB = Arand*x;
-
-	std::cerr << "b = Arand*x:" << "\n";
-	std::cerr << calcB << "\n";
 
 	return 0;
 }
