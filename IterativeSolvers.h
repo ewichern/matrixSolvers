@@ -22,7 +22,8 @@ public:
 //	IterativeSolvers();
 //	virtual ~IterativeSolvers();
 
-	static matrix jacobiSolver(const matrix&, const matrix&);
+	static int jacobiSolver(const matrix&, matrix&, const matrix&);
+
 };
 
 #endif /* ITERATIVESOLVERS_H_ */

@@ -21,7 +21,7 @@
  }
  */
 
-matrix IterativeSolvers::jacobiSolver(const matrix& A, const matrix& b)
+int IterativeSolvers::jacobiSolver(const matrix& A, matrix& x_k, const matrix& b)
 {
 	if (!(A.numcols() == A.numrows()) || !(A.numcols() == b.numrows()))
 	{
@@ -36,13 +36,10 @@ matrix IterativeSolvers::jacobiSolver(const matrix& A, const matrix& b)
 	double errLimit = 0.00001;
 	double err = 1.0;
 
-	matrix xOld;
-	matrix xNew(A.numcols(), 1, 0.1);
+	matrix x_kPlus1(x_k);
 
 	while (err > errLimit)
 	{
-		xOld = xNew;
-
 		for (int i = 0; i < A.numrows(); ++i)
 		{
 			double rowSum = 0.0;
@@ -50,18 +47,21 @@ matrix IterativeSolvers::jacobiSolver(const matrix& A, const matrix& b)
 			{
 				if (j != i)
 				{
-					rowSum += (A[i][j] * xOld[j][0]);
+					rowSum += (A[i][j] * x_k[j][0]);
 				}
 			}
-			xNew[i][0] = ((b[i][0] - rowSum) / A[i][i]);
+			x_kPlus1[i][0] = ((b[i][0] - rowSum) / A[i][i]);
 		}
 		++iterationCount;
+		x_k = x_kPlus1;
+
 		std::cerr << "iterationCount: " << iterationCount << std::endl;
-		std::cerr << "xNew: " << xNew << std::endl;
-		matrix bTest = A * xNew;
+		std::cerr << "x_k: " << x_k << std::endl;
+		matrix bTest = A * x_k;
 		err = relError(bTest, b);
+
 	}
 
-	return matrix(xNew);
+	return iterationCount;
 
 }
