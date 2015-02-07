@@ -28,8 +28,10 @@ public:
 	iterativeSolverTests()
 	{
 
-		ifstream a1b1input("sampleData1ab.dat");
-		ifstream x1input("sampleData1x.dat");
+		string testFile = "sampleData1";
+
+		ifstream a1b1input(testFile+"Ab.dat");
+		ifstream x1input(testFile+"x.dat");
 
 		MatrixGenerator::readMatrixFromFile(a1b1input, A1, b1);
 		a1b1input.close();

@@ -124,6 +124,7 @@ public:
 	sparseMatrix();
 	sparseMatrix(int, int, const Object&);
 	sparseMatrix(const vector<vector<Object>> &, const Object&);
+	sparseMatrix(const vector<Object> &, const Object&);
 	sparseMatrix(const sparseMatrix<Object>&);
 	~sparseMatrix()
 	{
@@ -204,6 +205,20 @@ sparseMatrix<Object>::sparseMatrix(const vector<vector<Object>> & v,
 			Tuple t(i, j);
 			data[t] = v[j][i];
 		}
+}
+
+// Constructor from an existing STL vector<vector>
+template<typename Object>
+sparseMatrix<Object>::sparseMatrix(const vector<Object> & v,
+		const Object& defaultv = Object()) :
+		nRows(v.size()), nCols(1), defaultValue(defaultv)
+{
+
+	for (int i = 0; i < nRows; ++i)
+	{
+		Tuple t(i, 0);
+		data[t] = v[i];
+	}
 }
 
 // Copy constructor
@@ -440,7 +455,7 @@ std::ostream& operator<<(std::ostream& out, const sparseMatrix<Object>& m)
 		for (int i = 0; i < m.numcols(); ++i)
 		{
 			// if (i > 0) out << ' ';
-			out << setprecision(5) << setw(8);
+			out << setprecision(17) << setw(20);
 			out << m[j][i];
 		}
 		out << "\n";
@@ -469,14 +484,18 @@ double relError (const sparseMatrix<Object>& left, const sparseMatrix<Object>& r
 			double diffSquared = pow((diff[i][j]), 2.0);
 			diffSumOfSquares += diffSquared;
 
+			/*
 			std::cerr << "diff[" << i << "][" << j << "]:" << std::endl;
 			std::cerr << diff[i][j] << std::endl;
 			std::cerr << "diffSquared: " << diffSquared << std::endl;
 			std::cerr << "diffSumOfSquares: " << diffSumOfSquares << std::endl;
+			*/
 		}
 	}
 
-	return sqrt(diffSumOfSquares);
+	double err = sqrt(diffSumOfSquares);
+	std::cerr << "relError: " << err << endl;
+	return err;
 
 }
 

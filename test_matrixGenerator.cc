@@ -26,7 +26,7 @@ public:
 	matrixGeneratorTests()
 	{
 
-		ifstream a1b1input("sampleData1ab.dat");
+		ifstream a1b1input("sampleData1Ab.dat");
 
 		MatrixGenerator::readMatrixFromFile(a1b1input, A1, b1);
 		a1b1input.close();
@@ -102,8 +102,7 @@ TEST_F (matrixGeneratorTests, generateSamples)
 
 	double errLimit = 0.00001;
 	double err = relError(b1test, b1calc);
-	cerr << "Calculated relative error: " << endl
-			<< err << endl;
+	// cerr << "Calculated relative error: " << err << endl;
 
 	EXPECT_LT(err, errLimit);
 
