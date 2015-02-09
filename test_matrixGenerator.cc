@@ -86,7 +86,8 @@ TEST_F (matrixGeneratorTests, generateSamples)
 	distribType dist(min, max);
 	//distribType dist((int) min, (int) max);
 
-	MatrixGenerator::generateSamples<distribType > (filenameRoot, randDevice, generator, dist);
+	MatrixGenerator::generateSamples<distribType>(3, 3, filenameRoot, randDevice,
+			generator, dist);
 
 	matrix A1test, x1test, b1test, b1calc;
 
@@ -105,7 +106,6 @@ TEST_F (matrixGeneratorTests, generateSamples)
 	// cerr << "Calculated relative error: " << err << endl;
 
 	EXPECT_LT(err, errLimit);
-
 
 	//EXPECT_EQ(b1test, b1calc);
 }

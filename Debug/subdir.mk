@@ -11,8 +11,7 @@ CC_SRCS += \
 
 CPP_SRCS += \
 ../IterativeSolvers.cpp \
-../matrixGenerator.cpp \
-../matrixSolver.cpp 
+../matrixGenerator.cpp 
 
 CC_DEPS += \
 ./googleTestsMain.d \
@@ -24,15 +23,13 @@ OBJS += \
 ./IterativeSolvers.o \
 ./googleTestsMain.o \
 ./matrixGenerator.o \
-./matrixSolver.o \
 ./test_iterativeSolvers.o \
 ./test_matrixGenerator.o \
 ./test_sparseMatrix.o 
 
 CPP_DEPS += \
 ./IterativeSolvers.d \
-./matrixGenerator.d \
-./matrixSolver.d 
+./matrixGenerator.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

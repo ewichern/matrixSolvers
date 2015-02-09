@@ -7,6 +7,7 @@
 
 #include "sparseMatrix.h"
 #include "matrixGenerator.h"
+#include "IterativeSolvers.h"
 #include <iostream>
 #include <fstream>
 #include <random>
@@ -39,14 +40,10 @@ int printMenuOptions()
 	return selection;
 }
 
-void generateMatrices()
+string getFilenameRoot(istream& input)
 {
-	typedef std::uniform_real_distribution<double> distribType;
-	//typedef std::uniform_int_distribution<> distribType;
 
-	double min = -100.0;
-	double max = 100.0;
-	string filenameRoot;
+	string filenameRoot = "";
 
 	cout << "Enter the root of a filename where these "
 			<< "matrices should be saved. The final filenames "
@@ -54,21 +51,44 @@ void generateMatrices()
 			<< "Any existing files will be overwritten." << endl;
 	cout << "Filename root: " << endl;
 
-	while (!(cin >> filenameRoot))
+	while (!(input >> filenameRoot))
 	{
-		cin.clear();
-		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		input.clear();
+		input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		std::cout << "Invalid input, try again: \n";
 	}
-	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
+	return filenameRoot;
+}
+
+void generateMatrices()
+{
+
+	int m = 3, n = 3;
+	MatrixGenerator::askForMatrixSize(std::cin, m, n);
+
+	typedef std::uniform_real_distribution<double> distribType;
+	//typedef std::uniform_int_distribution<> distribType;
+
+	double min = -100.0;
+	double max = 100.0;
+	string filenameRoot = "";
+
+	filenameRoot = getFilenameRoot(cin);
 
 	std::random_device randDevice;
 	std::mt19937 generator(randDevice());
 	distribType dist(min, max);
 	//distribType dist((int) min, (int) max);
 
-	MatrixGenerator::generateSamples<distribType > (filenameRoot, randDevice, generator, dist);
+	MatrixGenerator::generateSamples<distribType>(m, n, filenameRoot,
+			randDevice, generator, dist);
+}
+
+void inputFromFile()
+{
+
 }
 
 void mainMenu()
@@ -95,25 +115,34 @@ void mainMenu()
 
 int main(int argc, char **argv)
 {
-
-	matrix A;
-	//matrix x;
-	matrix b;
+	// end of 1/15 video for initial detailed explanation
 
 	if (argc > 2)
 	{
 		std::cerr << "Usage: \n";
-		std::cerr << "   " << argv[0] << "matrixDataFile" << endl;
+		std::cerr << "   " << argv[0] << "Ab_matrixDataFile" << endl;
 		return 1;
 	}
 
-	if (argc == 2)
+	else if (argc == 2)
 	{
+		matrix A;
+		matrix b;
 		ifstream matricesIn(argv[1]);
 		MatrixGenerator::readMatrixFromFile(matricesIn, A, b);
+
+		matrix x(A.numcols(), 1, 0.1);
+		int numIterations = IterativeSolvers::jacobiSolver(A, x, b);
+		cout << "Jacobi solution: " << endl;
+		cout << x;
+
+		cout << "Jacobi completed in " << numIterations << " iterations."
+				<< endl;
+
 	}
 
-	mainMenu();
+	else
+		mainMenu();
 
 	return 0;
 }

@@ -44,7 +44,7 @@ public:
 			std::mt19937& generator, distribType& dist);
 
 	template<typename distribType>
-	static void generateSamples(string filenameRoot,
+	static void generateSamples(int rows, int cols, string filenameRoot,
 			const std::random_device& randDevice, std::mt19937& generator,
 			distribType& dist);
 

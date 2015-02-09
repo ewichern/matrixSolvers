@@ -161,17 +161,14 @@ template void MatrixGenerator::randomFillMatrix<distribReal>(matrix& mat,
 		distribReal& dist);
 
 template<typename distribType>
-void MatrixGenerator::generateSamples(string filenameRoot,
+void MatrixGenerator::generateSamples(int rows, int cols, string filenameRoot,
 		const std::random_device& randDevice, std::mt19937& generator,
 		distribType& dist)
 {
 
-	int m = 3, n = 3;
 
-	askForMatrixSize(std::cin, m, n);
-
-	matrix aRand(m, n, 0.0);
-	matrix xRand(n, 1, 0.0);
+	matrix aRand(rows, cols, 0.0);
+	matrix xRand(cols, 1, 0.0);
 
 	randomFillMatrix(aRand, randDevice, generator, dist);
 	randomFillMatrix(xRand, randDevice, generator, dist);
@@ -188,6 +185,6 @@ void MatrixGenerator::generateSamples(string filenameRoot,
 	output2.close();
 }
 
-template void MatrixGenerator::generateSamples<distribReal>(string filenameRoot,
-		const std::random_device& randDevice, std::mt19937& generator,
-		distribReal& dist);
+template void MatrixGenerator::generateSamples<distribReal>(int rows, int cols,
+		string filenameRoot, const std::random_device& randDevice,
+		std::mt19937& generator, distribReal& dist);
