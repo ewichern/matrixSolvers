@@ -494,7 +494,7 @@ double relError (const sparseMatrix<Object>& left, const sparseMatrix<Object>& r
 	}
 
 	double err = sqrt(diffSumOfSquares);
-	std::cerr << "relError: " << err << endl;
+	//std::cerr << "relError: " << err << endl;
 	return err;
 
 }

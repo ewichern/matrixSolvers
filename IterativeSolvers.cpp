@@ -55,8 +55,8 @@ int IterativeSolvers::jacobiSolver(const matrix& A, matrix& x_k, const matrix& b
 		++iterationCount;
 		x_k = x_kPlus1;
 
-		std::cerr << "iterationCount: " << iterationCount << std::endl;
-		std::cerr << "x_k: " << endl << x_k << std::endl;
+		//std::cerr << "iterationCount: " << iterationCount << std::endl;
+		//std::cerr << "x_k: " << endl << x_k << std::endl;
 		matrix bTest = A * x_k;
 		err = relError(bTest, b);
 

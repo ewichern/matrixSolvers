@@ -7,6 +7,7 @@ CC_SRCS += \
 ../googleTestsMain.cc \
 ../test_iterativeSolvers.cc \
 ../test_matrixGenerator.cc \
+../test_matrixSolver.cc \
 ../test_sparseMatrix.cc 
 
 CPP_SRCS += \
@@ -17,6 +18,7 @@ CC_DEPS += \
 ./googleTestsMain.d \
 ./test_iterativeSolvers.d \
 ./test_matrixGenerator.d \
+./test_matrixSolver.d \
 ./test_sparseMatrix.d 
 
 OBJS += \
@@ -25,6 +27,7 @@ OBJS += \
 ./matrixGenerator.o \
 ./test_iterativeSolvers.o \
 ./test_matrixGenerator.o \
+./test_matrixSolver.o \
 ./test_sparseMatrix.o 
 
 CPP_DEPS += \

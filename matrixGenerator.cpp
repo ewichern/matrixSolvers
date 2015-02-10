@@ -135,8 +135,7 @@ void MatrixGenerator::writeMatrixToFile(std::ofstream& output, const matrix& A,
 typedef std::uniform_real_distribution<double> distribReal;
 
 template<typename distribType>
-void MatrixGenerator::randomFillMatrix(matrix& mat,
-		const std::random_device& randDevice, std::mt19937& generator,
+void MatrixGenerator::randomFillMatrix(matrix& mat, std::mt19937& generator,
 		distribType& dist)
 {
 
@@ -157,21 +156,18 @@ void MatrixGenerator::randomFillMatrix(matrix& mat,
 
 }
 template void MatrixGenerator::randomFillMatrix<distribReal>(matrix& mat,
-		const std::random_device& randDevice, std::mt19937& generator,
-		distribReal& dist);
+		std::mt19937& generator, distribReal& dist);
 
 template<typename distribType>
 void MatrixGenerator::generateSamples(int rows, int cols, string filenameRoot,
-		const std::random_device& randDevice, std::mt19937& generator,
-		distribType& dist)
+		std::mt19937& generator, distribType& dist)
 {
-
 
 	matrix aRand(rows, cols, 0.0);
 	matrix xRand(cols, 1, 0.0);
 
-	randomFillMatrix(aRand, randDevice, generator, dist);
-	randomFillMatrix(xRand, randDevice, generator, dist);
+	randomFillMatrix(aRand, generator, dist);
+	randomFillMatrix(xRand, generator, dist);
 
 	matrix bRand;
 	bRand = aRand * xRand;
@@ -186,5 +182,4 @@ void MatrixGenerator::generateSamples(int rows, int cols, string filenameRoot,
 }
 
 template void MatrixGenerator::generateSamples<distribReal>(int rows, int cols,
-		string filenameRoot, const std::random_device& randDevice,
-		std::mt19937& generator, distribReal& dist);
+		string filenameRoot, std::mt19937& generator, distribReal& dist);
