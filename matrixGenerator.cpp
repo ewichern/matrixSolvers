@@ -15,6 +15,8 @@ typedef sparseMatrix<double> matrix;
 
 void MatrixGenerator::askForMatrixSize(std::istream& input, int& m, int& n)
 {
+	std::cout << "Enter desired size (m x n) for matrix A \n"
+			<< "-- in integers, separated by a space: \n";
 
 	while (!(input >> m >> n))
 	{
@@ -133,8 +135,7 @@ void MatrixGenerator::writeMatrixToFile(std::ofstream& output, const matrix& A,
 typedef std::uniform_real_distribution<double> distribReal;
 
 template<typename distribType>
-void MatrixGenerator::randomFillMatrix(matrix& mat,
-		const std::random_device& randDevice, std::mt19937& generator,
+void MatrixGenerator::randomFillMatrix(matrix& mat, std::mt19937& generator,
 		distribType& dist)
 {
 
@@ -154,28 +155,19 @@ void MatrixGenerator::randomFillMatrix(matrix& mat,
 	}
 
 }
-template void MatrixGenerator::randomFillMatrix<distribReal >(matrix& mat,
-		const std::random_device& randDevice, std::mt19937& generator,
-		distribReal& dist);
+template void MatrixGenerator::randomFillMatrix<distribReal>(matrix& mat,
+		std::mt19937& generator, distribReal& dist);
 
 template<typename distribType>
-void MatrixGenerator::generateSamples(string filenameRoot,
-		const std::random_device& randDevice, std::mt19937& generator,
-		distribType& dist)
+void MatrixGenerator::generateSamples(int rows, int cols, string filenameRoot,
+		std::mt19937& generator, distribType& dist)
 {
 
-	int m = 3, n = 3;
-	/*
-	 std::cout << "Enter desired size (m x n) for matrix A \n"
-	 << "-- in integers, separated by a space: \n";
-	 askForMatrixSize(std::cin, m, n);
-	 */
+	matrix aRand(rows, cols, 0.0);
+	matrix xRand(cols, 1, 0.0);
 
-	matrix aRand(m, n, 0.0);
-	matrix xRand(n, 1, 0.0);
-
-	randomFillMatrix(aRand, randDevice, generator, dist);
-	randomFillMatrix(xRand, randDevice, generator, dist);
+	randomFillMatrix(aRand, generator, dist);
+	randomFillMatrix(xRand, generator, dist);
 
 	matrix bRand;
 	bRand = aRand * xRand;
@@ -189,6 +181,5 @@ void MatrixGenerator::generateSamples(string filenameRoot,
 	output2.close();
 }
 
-template void MatrixGenerator::generateSamples<distribReal >(string filenameRoot,
-		const std::random_device& randDevice, std::mt19937& generator,
-		distribReal& dist);
+template void MatrixGenerator::generateSamples<distribReal>(int rows, int cols,
+		string filenameRoot, std::mt19937& generator, distribReal& dist);

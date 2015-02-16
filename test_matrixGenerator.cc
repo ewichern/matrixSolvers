@@ -26,7 +26,7 @@ public:
 	matrixGeneratorTests()
 	{
 
-		ifstream a1b1input("sampleData1ab.dat");
+		ifstream a1b1input("sampleData1Ab.dat");
 
 		MatrixGenerator::readMatrixFromFile(a1b1input, A1, b1);
 		a1b1input.close();
@@ -44,11 +44,11 @@ TEST_F (matrixGeneratorTests, writeToFile)
 	matrix id1, idTest;
 	id1.eye(3, 3);
 
-	ofstream output("test.dat");
+	ofstream output("unitTest.dat");
 	MatrixGenerator::writeMatrixToFile(output, id1);
 	output.close();
 
-	ifstream input("test.dat");
+	ifstream input("unitTest.dat");
 	MatrixGenerator::readMatrixFromFile(input, idTest);
 	input.close();
 
@@ -59,11 +59,11 @@ TEST_F (matrixGeneratorTests, writeToFile2)
 {
 	matrix A1test, b1test;
 
-	ofstream output("test.dat");
+	ofstream output("unitTest.dat");
 	MatrixGenerator::writeMatrixToFile(output, A1, b1);
 	output.close();
 
-	ifstream input("test.dat");
+	ifstream input("unitTest.dat");
 	MatrixGenerator::readMatrixFromFile(input, A1test, b1test);
 	input.close();
 
@@ -79,14 +79,15 @@ TEST_F (matrixGeneratorTests, generateSamples)
 
 	double min = -100.0;
 	double max = 100.0;
-	string filenameRoot = "test1";
+	string filenameRoot = "unitTest";
 
 	std::random_device randDevice;
 	std::mt19937 generator(randDevice());
 	distribType dist(min, max);
 	//distribType dist((int) min, (int) max);
 
-	MatrixGenerator::generateSamples<distribType > (filenameRoot, randDevice, generator, dist);
+	MatrixGenerator::generateSamples<distribType>(3, 3, filenameRoot, generator,
+			dist);
 
 	matrix A1test, x1test, b1test, b1calc;
 
@@ -100,13 +101,11 @@ TEST_F (matrixGeneratorTests, generateSamples)
 
 	b1calc = A1test * x1test;
 
-	double errLimit = 0.00001;
+	double errLimit = 0.000001;
 	double err = relError(b1test, b1calc);
-	cerr << "Calculated relative error: " << endl
-			<< err << endl;
+	// cerr << "Calculated relative error: " << err << endl;
 
 	EXPECT_LT(err, errLimit);
-
 
 	//EXPECT_EQ(b1test, b1calc);
 }

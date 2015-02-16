@@ -24,18 +24,18 @@ public:
 	sparseMatrixTests()
 	{
 
-		ifstream a1b1input("sampleData1ab.dat");
+		ifstream a1b1input("sampleData1Ab.dat");
 		ifstream x1input("sampleData1x.dat");
 
 		MatrixGenerator::readMatrixFromFile(a1b1input, A1, b1);
 
 		a1b1input.close();
-		a1b1input.open("sampleData1ab.dat");
+		a1b1input.open("sampleData1Ab.dat");
 
 		MatrixGenerator::readMatrixFromFile(a1b1input, A1again, b1again);
 		MatrixGenerator::readMatrixFromFile(x1input, x1);
 
-		ifstream a2b2input("sampleData2ab.dat");
+		ifstream a2b2input("sampleData2Ab.dat");
 		ifstream x2input("sampleData2x.dat");
 
 		MatrixGenerator::readMatrixFromFile(a2b2input, A2, b2);

@@ -40,13 +40,12 @@ public:
 			const matrix& b);
 
 	template<typename distribType>
-	static void randomFillMatrix(matrix& mat, const std::random_device& randDevice,
-			std::mt19937& generator, distribType& dist);
+	static void randomFillMatrix(matrix& mat, std::mt19937& generator,
+			distribType& dist);
 
 	template<typename distribType>
-	static void generateSamples(string filenameRoot,
-			const std::random_device& randDevice, std::mt19937& generator,
-			distribType& dist);
+	static void generateSamples(int rows, int cols, string filenameRoot,
+			std::mt19937& generator, distribType& dist);
 
 };
 #endif
