@@ -19,4 +19,6 @@ Otherwise, here are build instructions:
 "make clean"
 	should remove all the cruft from either/both builds
 
-
+lastly - the program executable can be run with a command line argument
+specifying an Ab matrix data file. It will automatically spit out the 
+results of the solver and the relative error (right now it's just Jacobi).

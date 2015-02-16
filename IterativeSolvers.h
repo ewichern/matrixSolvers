@@ -22,7 +22,8 @@ public:
 //	IterativeSolvers();
 //	virtual ~IterativeSolvers();
 
-	static int jacobiSolver(const matrix&, matrix&, const matrix&);
+	static int jacobi(const matrix&, matrix&, const matrix&);
+	static int gaussSeidel(const matrix&, matrix&, const matrix&);
 
 };
 

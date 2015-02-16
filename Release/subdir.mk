@@ -9,14 +9,9 @@ CPP_SRCS += \
 ../solversDriver.cpp 
 
 O_SRCS += \
-../IterativeSolvers.o \
 ../googleTestsMain.o \
-../matrixGenerator.o \
-../solversDriver.o \
 ../test_iterativeSolvers.o \
-../test_matrixGenerator.o \
-../test_matrixSolver.o \
-../test_sparseMatrix.o 
+../test_matrixGenerator.o 
 
 OBJS += \
 ./IterativeSolvers.o \
@@ -33,7 +28,7 @@ CPP_DEPS += \
 %.o: ../%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	g++ -std=c++0x -I/home/erik/libraries -O3 -Wall -Wextra -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	g++ -std=c++0x -O3 -Wall -Wextra -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

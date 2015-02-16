@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 		MatrixGenerator::readMatrixFromFile(matricesIn, A, b);
 
 		matrix x(A.numcols(), 1, 0.1);
-		int numIterations = IterativeSolvers::jacobiSolver(A, x, b);
+		int numIterations = IterativeSolvers::jacobi(A, x, b);
 		cout << "Jacobi solution: " << endl;
 		cout << x;
 

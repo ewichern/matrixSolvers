@@ -59,10 +59,10 @@ public:
 
 };
 
-TEST_F (iterativeSolverTests, jacobiSolver1)
+TEST_F (iterativeSolverTests, jacobi1)
 {
 	matrix x1test(A1.numcols(), 1, 0.1);
-	IterativeSolvers::jacobiSolver(A1, x1test, b1);
+	IterativeSolvers::jacobi(A1, x1test, b1);
 
 	double errLimit = 0.000001;
 	double err1 = relError(x1test, x1);
@@ -72,10 +72,36 @@ TEST_F (iterativeSolverTests, jacobiSolver1)
 
 }
 
-TEST_F (iterativeSolverTests, jacobiSolver2)
+TEST_F (iterativeSolverTests, jacobi2)
 {
 	matrix x2test(A2.numcols(), 1, 0.1);
-	IterativeSolvers::jacobiSolver(A2, x2test, b2);
+	IterativeSolvers::jacobi(A2, x2test, b2);
+
+	double errLimit = 0.000001;
+	double err2 = relError(x2test, x2);
+	cerr << "Calculated relative error: " << endl << err2 << endl;
+
+	EXPECT_LT(err2, errLimit);
+
+}
+
+TEST_F (iterativeSolverTests, gaussSeidel1)
+{
+	matrix x1test(A1.numcols(), 1, 0.1);
+	IterativeSolvers::gaussSeidel(A1, x1test, b1);
+
+	double errLimit = 0.000001;
+	double err1 = relError(x1test, x1);
+	cerr << "Calculated relative error: " << endl << err1 << endl;
+
+	EXPECT_LT(err1, errLimit);
+
+}
+
+TEST_F (iterativeSolverTests, gaussSeidel2)
+{
+	matrix x2test(A2.numcols(), 1, 0.1);
+	IterativeSolvers::gaussSeidel(A2, x2test, b2);
 
 	double errLimit = 0.000001;
 	double err2 = relError(x2test, x2);

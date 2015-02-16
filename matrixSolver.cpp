@@ -16,6 +16,10 @@
 using namespace std;
 
 typedef sparseMatrix<double> matrix;
+enum solvers
+{
+	cancel = -1, jacobi = 1, gaussSeidel = 2, SOR = 3
+};
 
 int printMenuOptions(istream& input)
 {
@@ -25,11 +29,33 @@ int printMenuOptions(istream& input)
 	cout << "3 - Use a solver to solve for x. (default is Jacobi method. "
 			<< "matrices A and b must be loaded prior to executing solver)"
 			<< endl;
-	cout << "4 - Exit." << endl;
+	cout << "4 - Print most recent solution -- a solver should be run first "
+			<< "using option 3." << endl;
+	cout << "5 - Exit." << endl;
 
 	int selection;
 
-	while (!(input >> selection) || ((selection < 1) || (selection > 4)))
+	while (!(input >> selection) || ((selection < 1) || (selection > 5)))
+	{
+		input.clear();
+		input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cout << "Invalid input, try again: \n";
+	}
+	input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	return selection;
+}
+
+int printSolverOptions(istream& input)
+{
+	//TODO unit test
+	cout << "1 - Jacobi Method" << endl;
+	cout << "2 - Gauss-Seidel Method" << endl;
+	cout << "3 - Cancel" << endl;
+
+	int selection;
+
+	while (!(input >> selection) || ((selection < 1) || (selection > 3)))
 	{
 		input.clear();
 		input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -130,17 +156,24 @@ string inputFromFile(istream& input, matrix& A, matrix& b)
 
 string getSolverName(int enumValue)
 {
+	//TODO unit test
 	switch (enumValue)
 	{
-	case 0:
+	case jacobi:
 		return "Jacobi method";
-	case 1:
+	case gaussSeidel:
 		return "Gauss-Seidel method";
-	case 2:
+	case SOR:
 		return "Successive Over-Relaxing";
 	default:
 		return "invalid value";
 	}
+}
+
+void printSolution(const matrix& x)
+{
+	cout << "Solution x is: " << endl;
+	cout << x << endl;
 }
 
 int executeSolver(int selection, const matrix& A, matrix& x, const matrix& b)
@@ -150,38 +183,60 @@ int executeSolver(int selection, const matrix& A, matrix& x, const matrix& b)
 
 	switch (selection)
 	{
-	case 0:
-		numIterations = IterativeSolvers::jacobiSolver(A, x, b);
+	case gaussSeidel:
+		numIterations = IterativeSolvers::gaussSeidel(A, x, b);
 		break;
+	case jacobi:
 	default:
+		numIterations = IterativeSolvers::jacobi(A, x, b);
 		break;
 	}
-	cout << "Solved in " << numIterations << " iterations using "
+	cout << endl << "Solved in " << numIterations << " iterations using "
 			<< getSolverName(selection) << "." << endl;
-	cout << "Solution x is: " << endl;
-	cout << x << endl;
 	// matrix bTest = A * x;
 	// double err = relError(b, bTest);
 	std::cerr << "Relative error of solver solution: " << relError(b, (A * x))
-			<< endl;
+			<< endl << endl;
 	return numIterations;
+}
+
+solvers solverMenu(istream& input)
+{
+	//TODO unit test
+	int menuSelection = 0;
+	solvers solverSelection = jacobi;
+
+	menuSelection = printSolverOptions(input);
+
+	switch (menuSelection)
+	{
+	case 3:
+		solverSelection = cancel;
+		break;
+	case gaussSeidel:
+		solverSelection = gaussSeidel;
+		break;
+	case jacobi:
+	default:
+		solverSelection = jacobi;
+		break;
+	}
+
+	return solverSelection;
 }
 
 string mainMenu(istream& input)
 {
+	//TODO unit test
 	int menuSelection = 0;
 	stringstream menuHistory;
-	enum solvers
-	{
-		jacobi = 0, gaussSeidel = 1, SOR = 2
-	};
 
 	solvers solverSelection = jacobi;
 	//int numIterations = -1;
 
 	matrix A, x, b;
 
-	while (menuSelection != 4)
+	while (menuSelection != 5)
 	{
 		menuSelection = printMenuOptions(input);
 		menuHistory << menuSelection;
@@ -195,8 +250,12 @@ string mainMenu(istream& input)
 			generateMatrixDataFiles(input);
 			break;
 		case 3:
-			//numIterations =
-			executeSolver(solverSelection, A, x, b);
+			solverSelection = solverMenu(input);
+			if (!(solverSelection == cancel))
+				executeSolver(solverSelection, A, x, b);
+			break;
+		case 4:
+			printSolution(x);
 			break;
 		default:
 			break;
