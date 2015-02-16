@@ -32,8 +32,9 @@ int main(int argc, char **argv)
 		cout << "Jacobi solution: " << endl;
 		cout << x;
 
-		cout << "Jacobi completed in " << numIterations << " iterations."
+		cout << "Jacobi method completed in " << numIterations << " iterations."
 				<< endl;
+		cout << "Relative error of solution is: " << relError(b, (A*x)) << endl;
 	}
 
 	else

@@ -33,7 +33,7 @@ int IterativeSolvers::jacobiSolver(const matrix& A, matrix& x_k, const matrix& b
 	}
 
 	int iterationCount = 0;
-	double errLimit = 0.00001;
+	double errLimit = 0.000001;
 	double err = 1.0;
 
 	matrix x_kPlus1(x_k);
@@ -62,6 +62,7 @@ int IterativeSolvers::jacobiSolver(const matrix& A, matrix& x_k, const matrix& b
 
 	}
 
+	//std::cerr << "Relative error of Jacobi solution: " << err << endl;
 	return iterationCount;
 
 }

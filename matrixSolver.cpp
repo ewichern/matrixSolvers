@@ -22,9 +22,9 @@ int printMenuOptions(istream& input)
 	cout << "1 - Input A and b matrices from a file." << endl;
 	cout << "2 - Generate matrices filled with random "
 			<< "doubles (user will be prompted for size)." << endl;
-	cout << "3 - Use an iterative solver to solve for x. (matrices A and b "
-			<< "must be loaded prior to executing solver)" << endl;
-	cout << "Not Yet Implemented - Use a direct solver to solve for x." << endl;
+	cout << "3 - Use a solver to solve for x. (default is Jacobi method. "
+			<< "matrices A and b must be loaded prior to executing solver)"
+			<< endl;
 	cout << "4 - Exit." << endl;
 
 	int selection;
@@ -114,13 +114,36 @@ string inputFromFile(istream& input, matrix& A, matrix& b)
 	string inputFilename = getInputFilename(input);
 	ifstream inFile(inputFilename);
 
-	MatrixGenerator::readMatrixFromFile(inFile, A, b);
+	if (inFile)
+	{
+		MatrixGenerator::readMatrixFromFile(inFile, A, b);
+		cout << "Matrices loaded from \"" << inputFilename << "\"" << endl;
+		inFile.close();
+	}
+	else
+	{
+		cout << "\"" << inputFilename << "\" is not a valid filename." << endl;
+		inputFilename = "fail";
+	}
 	return inputFilename;
-	//TODO give user feedback about whether file loaded properly
 }
 
-int executeIterativeSolver(int selection, const matrix& A, matrix& x,
-		const matrix& b)
+string getSolverName(int enumValue)
+{
+	switch (enumValue)
+	{
+	case 0:
+		return "Jacobi method";
+	case 1:
+		return "Gauss-Seidel method";
+	case 2:
+		return "Successive Over-Relaxing";
+	default:
+		return "invalid value";
+	}
+}
+
+int executeSolver(int selection, const matrix& A, matrix& x, const matrix& b)
 {
 	int numIterations = -1;
 	x = matrix(A.numcols(), 1, 0.1);
@@ -133,6 +156,14 @@ int executeIterativeSolver(int selection, const matrix& A, matrix& x,
 	default:
 		break;
 	}
+	cout << "Solved in " << numIterations << " iterations using "
+			<< getSolverName(selection) << "." << endl;
+	cout << "Solution x is: " << endl;
+	cout << x << endl;
+	// matrix bTest = A * x;
+	// double err = relError(b, bTest);
+	std::cerr << "Relative error of solver solution: " << relError(b, (A * x))
+			<< endl;
 	return numIterations;
 }
 
@@ -140,13 +171,13 @@ string mainMenu(istream& input)
 {
 	int menuSelection = 0;
 	stringstream menuHistory;
-	enum iterative
+	enum solvers
 	{
-		jacobi, gaussSeidel, SOR
+		jacobi = 0, gaussSeidel = 1, SOR = 2
 	};
 
-	iterative solverSelection = jacobi;
-	int numIterations = -1;
+	solvers solverSelection = jacobi;
+	//int numIterations = -1;
 
 	matrix A, x, b;
 
@@ -164,13 +195,8 @@ string mainMenu(istream& input)
 			generateMatrixDataFiles(input);
 			break;
 		case 3:
-
-			numIterations = executeIterativeSolver(solverSelection, A, x, b);
-
-			//TODO switch for printing out correct text based on enum
-			cout << "Solved in " << numIterations << " iterations using "
-					<< solverSelection << " iteration." << endl;
-
+			//numIterations =
+			executeSolver(solverSelection, A, x, b);
 			break;
 		default:
 			break;
