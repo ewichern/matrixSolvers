@@ -1,0 +1,22 @@
+
+#####################################################################
+There are pre-compiled Linux executables in the bin/ directory for both my
+Google Test suite and the regular (menu-based) solver driver.
+####################################################################
+
+
+Otherwise, here are build instructions:
+
+"make" or "make all"
+	will construct both Google Test and regular executables
+
+"make debug"
+	will construct only Google Test runner
+
+"make release"
+	will construct only the normal program executable
+
+"make clean"
+	should remove all the cruft from either/both builds
+
+
