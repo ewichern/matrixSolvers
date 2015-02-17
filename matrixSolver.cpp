@@ -5,7 +5,7 @@
  *      Author: erik
  */
 
-#include "sparseMatrix.h"
+#include "denseMatrix.h"
 #include "matrixGenerator.h"
 #include "IterativeSolvers.h"
 #include <iostream>
@@ -16,7 +16,7 @@
 
 using namespace std;
 
-typedef sparseMatrix<double> matrix;
+typedef denseMatrix<double> matrix;
 enum solvers
 {
 	cancel = -1, jacobi = 1, gaussSeidel = 2, SOR = 3

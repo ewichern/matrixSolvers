@@ -1,14 +1,14 @@
 #ifndef MATRIXGENERATOR_H
 #define MATRIXGENERATOR_H
 
-#include "sparseMatrix.h"
+#include "denseMatrix.h"
 #include <fstream>
 #include <random>
 #include <string>
 
 using namespace std;
 
-typedef sparseMatrix<double> matrix;
+typedef denseMatrix<double> matrix;
 
 class MatrixGenerator
 {

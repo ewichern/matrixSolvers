@@ -5,35 +5,40 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CC_SRCS += \
 ../googleTestsMain.cc \
+../test_denseMatrix.cc \
 ../test_iterativeSolvers.cc \
 ../test_matrixGenerator.cc \
-../test_matrixSolver.cc \
-../test_sparseMatrix.cc 
+../test_matrixSolver.cc 
 
 CPP_SRCS += \
 ../IterativeSolvers.cpp \
 ../matrixGenerator.cpp 
 
 O_SRCS += \
+../IterativeSolvers.o \
 ../googleTestsMain.o \
+../matrixGenerator.o \
+../solversDriver.o \
+../test_denseMatrix.o \
 ../test_iterativeSolvers.o \
-../test_matrixGenerator.o 
+../test_matrixGenerator.o \
+../test_matrixSolver.o 
 
 CC_DEPS += \
 ./googleTestsMain.d \
+./test_denseMatrix.d \
 ./test_iterativeSolvers.d \
 ./test_matrixGenerator.d \
-./test_matrixSolver.d \
-./test_sparseMatrix.d 
+./test_matrixSolver.d 
 
 OBJS += \
 ./IterativeSolvers.o \
 ./googleTestsMain.o \
 ./matrixGenerator.o \
+./test_denseMatrix.o \
 ./test_iterativeSolvers.o \
 ./test_matrixGenerator.o \
-./test_matrixSolver.o \
-./test_sparseMatrix.o 
+./test_matrixSolver.o 
 
 CPP_DEPS += \
 ./IterativeSolvers.d \

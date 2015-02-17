@@ -7,7 +7,7 @@
 using namespace std;
 
 template<typename Object>
-class sparseMatrix {
+class denseMatrix {
 
 	struct Tuple {
 		int i;
@@ -39,10 +39,10 @@ class sparseMatrix {
 
 public:
 	class Row {
-		sparseMatrix<Object>* m;
+		denseMatrix<Object>* m;
 		int rowNum;
 	public:
-		Row(sparseMatrix<Object>* matrix, int row) :
+		Row(denseMatrix<Object>* matrix, int row) :
 				m(matrix), rowNum(row) {
 		}
 
@@ -59,10 +59,10 @@ public:
 	};
 
 	class ConstRow {
-		const sparseMatrix<Object>* m;
+		const denseMatrix<Object>* m;
 		int rowNum;
 	public:
-		ConstRow(const sparseMatrix<Object>* matrix, int row) :
+		ConstRow(const denseMatrix<Object>* matrix, int row) :
 				m(matrix), rowNum(row) {
 		}
 
@@ -77,12 +77,12 @@ public:
 
 	};
 
-	sparseMatrix(int rows, int cols, const Object& defaultv = Object()) :
+	denseMatrix(int rows, int cols, const Object& defaultv = Object()) :
 			nRows(rows), nCols(cols), defaultValue(defaultv) {
 	}
 
 	/* not yet supported
-	 sparseMatrix( initializer_list<vector<Object>> lst ) : array( lst.size( ) )
+	 denseMatrix( initializer_list<vector<Object>> lst ) : array( lst.size( ) )
 	 {
 	 int i = 0;
 	 for( auto & v : lst )
@@ -90,7 +90,7 @@ public:
 	 }
 	 */
 
-	sparseMatrix(const vector<vector<Object>> & v, const Object& defaultv =
+	denseMatrix(const vector<vector<Object>> & v, const Object& defaultv =
 			Object()) :
 			nRows(v.size()), nCols(v[0].size()), defaultValue(defaultv) {
 		for (int i = 0; i < nRows; ++i)
@@ -100,7 +100,7 @@ public:
 			}
 	}
 	/* not yet supported
-	 sparseMatrix( vector<vector<Object>> && v ) : array{ std::move( v ) }
+	 denseMatrix( vector<vector<Object>> && v ) : array{ std::move( v ) }
 	 { }
 	 */
 
@@ -119,11 +119,11 @@ public:
 		return nCols;
 	}
 
-	bool operator==(const sparseMatrix<Object>& m) const {
+	bool operator==(const denseMatrix<Object>& m) const {
 		if (numcols() != m.numcols() || numrows() != m.numrows())
 			return false;
 
-		const sparseMatrix<Object>& self = *this;
+		const denseMatrix<Object>& self = *this;
 
 		for (int j = 0; j < m.numrows(); ++j)
 			for (int i = 0; i < m.numcols(); ++i) {
@@ -141,7 +141,7 @@ private:
 };
 
 template<typename Object>
-std::ostream& operator<<(std::ostream& out, const sparseMatrix<Object>& m) {
+std::ostream& operator<<(std::ostream& out, const denseMatrix<Object>& m) {
 	for (int j = 0; j < m.numrows(); ++j) {
 		for (int i = 0; i < m.numcols(); ++i) {
 			if (i > 0)

@@ -1,8 +1,10 @@
 OUTPUTNAME=matrixSolver
 CPPS=IterativeSolvers.cpp matrixGenerator.cpp
 TESTS=googleTestsMain.cc test_iterativeSolvers.cc test_matrixGenerator.cc \
-	test_matrixSolver.cc test_sparseMatrix.cc \
-	./gtest/gtest-all.cc
+	test_matrixSolver.cc \
+	./gtest/gtest-all.cc \
+	test_denseMatrix.cc \
+	# test_sparseMatrix.cc
 #DIR=$(PWD)
 DISTR=Unix
 #INCLUDES=/home/erik/libraries/

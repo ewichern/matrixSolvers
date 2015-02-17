@@ -5,7 +5,7 @@
  *      Author: erik
  */
 
-#include "sparseMatrix.h"
+#include "denseMatrix.h"
 #include "matrixGenerator.h"
 #include "IterativeSolvers.h"
 #include <streambuf>

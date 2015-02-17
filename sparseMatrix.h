@@ -463,18 +463,17 @@ std::ostream& operator<<(std::ostream& out, const sparseMatrix<Object>& m)
 	return out;
 }
 
-template <typename Object>
-double relError (const sparseMatrix<Object>& left, const sparseMatrix<Object>& right)
+template<typename Object>
+double relError(const sparseMatrix<Object>& left,
+		const sparseMatrix<Object>& right)
 {
-	typedef sparseMatrix<Object> matrix;
-
 	if (!(left.numrows() == right.numrows())
 			|| !(left.numcols() == right.numcols()))
 	{
 		throw std::logic_error("Matrix size mismatch");
 	}
 
-	matrix diff = left - right;
+	sparseMatrix<Object> diff = left - right;
 	double diffSumOfSquares = 0.0;
 
 	for (int i = 0; i < diff.numrows(); ++i)
@@ -485,11 +484,11 @@ double relError (const sparseMatrix<Object>& left, const sparseMatrix<Object>& r
 			diffSumOfSquares += diffSquared;
 
 			/*
-			std::cerr << "diff[" << i << "][" << j << "]:" << std::endl;
-			std::cerr << diff[i][j] << std::endl;
-			std::cerr << "diffSquared: " << diffSquared << std::endl;
-			std::cerr << "diffSumOfSquares: " << diffSumOfSquares << std::endl;
-			*/
+			 std::cerr << "diff[" << i << "][" << j << "]:" << std::endl;
+			 std::cerr << diff[i][j] << std::endl;
+			 std::cerr << "diffSquared: " << diffSquared << std::endl;
+			 std::cerr << "diffSumOfSquares: " << diffSumOfSquares << std::endl;
+			 */
 		}
 	}
 

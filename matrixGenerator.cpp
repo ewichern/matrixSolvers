@@ -6,12 +6,12 @@
 #include <exception>
 #include <string>
 
-#include "sparseMatrix.h"
+#include "denseMatrix.h"
 #include "matrixGenerator.h"
 
 using namespace std;
 
-typedef sparseMatrix<double> matrix;
+typedef denseMatrix<double> matrix;
 
 void MatrixGenerator::askForMatrixSize(std::istream& input, int& m, int& n)
 {

@@ -5,7 +5,7 @@
  *      Author: erik
  */
 
-#include "sparseMatrix.h"
+#include "denseMatrix.h"
 
 using namespace std;
 

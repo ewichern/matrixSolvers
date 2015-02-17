@@ -1,4 +1,4 @@
-#include "sparseMatrix.h"
+#include "denseMatrix.h"
 #include "matrixGenerator.h"
 #include "IterativeSolvers.h"
 #include <iostream>
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-typedef sparseMatrix<double> matrix;
+typedef denseMatrix<double> matrix;
 
 int main(int argc, char **argv)
 {
