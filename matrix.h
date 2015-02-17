@@ -42,28 +42,28 @@ public:
 	int numcols( ) const
 	{ return numrows( ) ? array[ 0 ].size( ) : 0; }
 
-
-	bool operator== (const matrix<Object>& m) const
-	{
-		if (numcols() != m.numcols() || numrows() != m.numrows())
-			return false;
-
-		const matrix<Object>& self = *this;
-
-		for (int j = 0; j < m.numrows(); ++j)
-			for (int i = 0; i < m.numcols(); ++i)
-			{
-				if (self[j][i] != m[j][i])
-					return false;
-			}
-		return true;
-	}
+	bool operator== (const matrix<Object>&) const;
 
 private:
 vector<vector<Object>> array;
 };
 
+template <typename Object>
+bool matrix<Object>::operator== (const matrix<Object>& m) const
+{
+	if (numcols() != m.numcols() || numrows() != m.numrows())
+		return false;
 
+	const matrix<Object>& self = *this;
+
+	for (int j = 0; j < m.numrows(); ++j)
+		for (int i = 0; i < m.numcols(); ++i)
+		{
+			if (self[j][i] != m[j][i])
+				return false;
+		}
+	return true;
+}
 
 template <typename Object>
 std::ostream& operator<< (std::ostream& out, const matrix<Object>& m)

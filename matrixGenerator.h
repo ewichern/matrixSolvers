@@ -13,7 +13,7 @@ typedef sparseMatrix<double> matrix;
 class MatrixGenerator
 {
 private:
-	static const int numDigits = 17;
+	static const int numDigits = 2;
 
 public:
 

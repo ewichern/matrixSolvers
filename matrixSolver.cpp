@@ -12,6 +12,7 @@
 #include <random>
 #include <string>
 #include <sstream>
+#include <time.h>
 
 using namespace std;
 
@@ -178,31 +179,39 @@ void printSolution(const matrix& x)
 
 int executeSolver(int selection, const matrix& A, matrix& x, const matrix& b)
 {
+	clock_t t_0, t_end;
 	int numIterations = -1;
 	x = matrix(A.numcols(), 1, 0.1);
 
 	switch (selection)
 	{
 	case gaussSeidel:
+		t_0 = clock();
 		numIterations = IterativeSolvers::gaussSeidel(A, x, b);
+		t_end = clock();
 		break;
 	case jacobi:
 	default:
+		t_0 = clock();
 		numIterations = IterativeSolvers::jacobi(A, x, b);
+		t_end = clock();
 		break;
 	}
 	cout << endl << "Solved in " << numIterations << " iterations using "
 			<< getSolverName(selection) << "." << endl;
-	// matrix bTest = A * x;
-	// double err = relError(b, bTest);
+// matrix bTest = A * x;
+// double err = relError(b, bTest);
 	std::cerr << "Relative error of solver solution: " << relError(b, (A * x))
-			<< endl << endl;
+			<< endl;
+	std::cerr << "Calculations took "
+			<< ((float) (t_end - t_0)) / CLOCKS_PER_SEC << " seconds." << endl
+			<< endl;
 	return numIterations;
 }
 
 solvers solverMenu(istream& input)
 {
-	//TODO unit test
+//TODO unit test
 	int menuSelection = 0;
 	solvers solverSelection = jacobi;
 
@@ -227,12 +236,12 @@ solvers solverMenu(istream& input)
 
 string mainMenu(istream& input)
 {
-	//TODO unit test
+//TODO unit test
 	int menuSelection = 0;
 	stringstream menuHistory;
 
 	solvers solverSelection = jacobi;
-	//int numIterations = -1;
+//int numIterations = -1;
 
 	matrix A, x, b;
 
@@ -250,6 +259,12 @@ string mainMenu(istream& input)
 			generateMatrixDataFiles(input);
 			break;
 		case 3:
+			if (A.numrows() == 0 || b.numrows() == 0)
+			{
+				cout << "Load A and b matrices from file before "
+						<< "running solvers!" << endl << endl;
+				break;
+			}
 			solverSelection = solverMenu(input);
 			if (!(solverSelection == cancel))
 				executeSolver(solverSelection, A, x, b);

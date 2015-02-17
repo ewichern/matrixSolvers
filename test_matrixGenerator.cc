@@ -86,7 +86,7 @@ TEST_F (matrixGeneratorTests, generateSamples)
 	distribType dist(min, max);
 	//distribType dist((int) min, (int) max);
 
-	MatrixGenerator::generateSamples<distribType>(3, 3, filenameRoot, generator,
+	MatrixGenerator::generateSamples<distribType>(6, 6, filenameRoot, generator,
 			dist);
 
 	matrix A1test, x1test, b1test, b1calc;
@@ -100,6 +100,9 @@ TEST_F (matrixGeneratorTests, generateSamples)
 	input2.close();
 
 	b1calc = A1test * x1test;
+
+	// std::cerr << "b1test: " << endl << b1test;
+	// std::cerr << "b1calc: " << endl	<< b1calc;
 
 	double errLimit = 0.000001;
 	double err = relError(b1test, b1calc);

@@ -65,9 +65,11 @@ release: $(TARGET)
 	
 debug: $(DEBUGTARGET) 
 
-#solversDriver.o:
-#	$(CPP) $(CPPFLAGS) -MMD -o $@ -c solversDriver.cpp
+solversDriver.o: matrixSolver.cpp
+	$(CPP) $(CPPFLAGS) -MMD -o $@ -c solversDriver.cpp
 
+matrixSolver.cpp:
+	echo "Do nothing directly to matrixSolver.cpp"
 
 clean:
 	-rm -f $(TARGET) $(OBJS) $(DEPENDENCIES) make.dep 

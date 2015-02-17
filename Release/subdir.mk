@@ -8,11 +8,6 @@ CPP_SRCS += \
 ../matrixGenerator.cpp \
 ../solversDriver.cpp 
 
-O_SRCS += \
-../googleTestsMain.o \
-../test_iterativeSolvers.o \
-../test_matrixGenerator.o 
-
 OBJS += \
 ./IterativeSolvers.o \
 ./matrixGenerator.o \

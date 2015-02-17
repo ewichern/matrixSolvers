@@ -95,7 +95,7 @@ void MatrixGenerator::writeMatrixToFile(std::ofstream& output, const matrix& A)
 	{
 		for (int j = 0; j < A.numcols(); ++j)
 		{
-			output << setprecision(numDigits) << A[i][j] << " ";
+			output << fixed << setprecision(numDigits) << A[i][j] << " ";
 		}
 		output << "\n";
 	}
@@ -121,13 +121,13 @@ void MatrixGenerator::writeMatrixToFile(std::ofstream& output, const matrix& A,
 		{
 			for (int j = 0; j < A.numcols(); ++j)
 			{
-				output << setprecision(numDigits) << A[i][j] << " ";
+				output << fixed << setprecision(numDigits) << A[i][j] << " ";
 			}
 			output << "\n";
 		}
 		for (int i = 0; i < b.numrows(); ++i)
 		{
-			output << setprecision(17) << b[i][0] << " ";
+			output << fixed << setprecision(numDigits*numDigits) << b[i][0] << " ";
 		}
 	}
 }
@@ -147,6 +147,7 @@ void MatrixGenerator::randomFillMatrix(matrix& mat, std::mt19937& generator,
 		for (int n = 0; n < mat.numcols(); ++n)
 		{
 			double newValue = (double) dist(generator);
+			newValue = round(newValue * 100) / 100.0;
 			rowTotal += std::abs(newValue);
 			mat[m][n] = newValue;
 		}
@@ -171,6 +172,8 @@ void MatrixGenerator::generateSamples(int rows, int cols, string filenameRoot,
 
 	matrix bRand;
 	bRand = aRand * xRand;
+
+	//std::cerr << "bRand: " << endl << bRand;
 
 	ofstream output1(filenameRoot + "_Ab.dat");
 	writeMatrixToFile(output1, aRand, bRand);
