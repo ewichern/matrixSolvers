@@ -53,6 +53,10 @@ TEST_F (denseMatrixTests, constructors)
 {
 	matrix* ptr = new matrix();
 	matrix* ptr2 = new matrix(6, 6);
+	matrix* ptr3 = new matrix(3, 3, 0.1);
+	delete ptr;
+	delete ptr2;
+	delete ptr3;
 }
 
 TEST_F (denseMatrixTests, equals)

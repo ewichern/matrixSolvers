@@ -331,7 +331,7 @@ sparseMatrix<Object> operator*(const sparseMatrix<Object>& left,
 	else
 	{
 		sparseMatrix<Object>* solution = new sparseMatrix<Object>(
-				left.numrows(), right.numcols());
+				left.numcols(), right.numcols());
 
 		for (int i = 0; i < solution->numrows(); ++i)
 		{
@@ -339,7 +339,7 @@ sparseMatrix<Object> operator*(const sparseMatrix<Object>& left,
 			{
 
 				Object tempValue;
-				for (int k = 0; k < left.numrows(); ++k)
+				for (int k = 0; k < left.numcols(); ++k)
 				{
 					if (k == 0)
 					{

@@ -1,8 +1,7 @@
 OUTPUTNAME=matrixSolver
 CPPS=IterativeSolvers.cpp matrixGenerator.cpp
-TESTS=googleTestsMain.cc test_denseMatrix.cc \
-	test_matrixGenerator.cc \
-      	test_iterativeSolvers.cc \
+TESTS=googleTestsMain.cc test_denseMatrix.cc test_matrixGenerator.cc \
+	 test_iterativeSolvers.cc \
 	test_matrixSolver.cc \
 	./gtest/gtest-all.cc \
 	# test_sparseMatrix.cc

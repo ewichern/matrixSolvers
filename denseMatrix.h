@@ -37,6 +37,8 @@ public:
 	void eye(int, int);
 
 	typedef typename std::vector<std::vector<Object>>::iterator arrayIterator;
+	typedef typename std::vector<std::vector<Object>>::const_iterator const_arrayIterator;
+
 
 	const vector<Object> & operator[](int row) const
 	{
@@ -49,11 +51,25 @@ public:
 
 	int numrows() const
 	{
+		// std::cerr << array.size() << endl;
 		return array.size();
 	}
+
 	int numcols() const
 	{
-		return numrows() ? array.at(0).size() : 0;
+		int nCols = 0;
+		// std::cerr << (numrows() ? array.at(0).size() : 0) << endl;
+		// return (numrows() ? array.at(0).size() : 0);
+		if (numrows() == 0)
+		{
+			nCols = 0;
+		}
+		else
+		{
+			const_arrayIterator row = array.begin();
+			nCols = row->size();
+		}
+		return nCols;
 	}
 
 private:
@@ -179,8 +195,7 @@ bool denseMatrix<Object>::operator!=(const denseMatrix<Object>& m) const
 }
 
 template<typename Object>
-denseMatrix<Object>& denseMatrix<Object>::operator=(
-		const denseMatrix<Object>& right)
+denseMatrix<Object>& denseMatrix<Object>::operator=(const denseMatrix<Object>& right)
 {
 	if (!(*this == right))
 	{
@@ -235,8 +250,8 @@ denseMatrix<Object> operator*(const denseMatrix<Object>& left,
 	}
 	else
 	{
-		denseMatrix<Object>* solution = new denseMatrix<Object>(right.numrows(),
-				right.numcols());
+		denseMatrix<Object>* solution;
+		solution = new denseMatrix<Object>(left.numcols(), right.numcols());
 
 		for (int i = 0; i < left.numrows(); ++i)
 		{
