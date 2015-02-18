@@ -36,13 +36,15 @@ public:
 	void eye();
 	void eye(int, int);
 
+	typedef typename std::vector<std::vector<Object>>::iterator arrayIterator;
+
 	const vector<Object> & operator[](int row) const
 	{
-		return array[row];
+		return array.at(row);
 	}
 	vector<Object> & operator[](int row)
 	{
-		return array[row];
+		return array.at(row);
 	}
 
 	int numrows() const
@@ -51,12 +53,14 @@ public:
 	}
 	int numcols() const
 	{
-		return numrows() ? array[0].size() : 0;
+		return numrows() ? array.at(0).size() : 0;
 	}
 
 private:
 	vector<vector<Object>> array;
 };
+
+
 
 struct MatrixSizeException: public exception
 {
@@ -67,25 +71,38 @@ struct MatrixSizeException: public exception
 };
 
 template<typename Object>
-denseMatrix<Object>::denseMatrix()
+denseMatrix<Object>::denseMatrix() 
 {
-
 }
 
 template<typename Object>
 denseMatrix<Object>::denseMatrix(int rows, int cols) :
 		array(rows)
 {
-	for (auto & thisRow : array)
-		thisRow.resize(cols);
+//	for (auto & thisRow : array)
+//		thisRow.resize(cols);
+
+//	typedef denseMatrix<Object>::iterator arrayIterator;
+	
+	for (arrayIterator row = array.begin(); row != array.end(); ++row)
+	{
+		row->resize(cols);
+	}
 }
 
 template<typename Object>
 denseMatrix<Object>::denseMatrix(int rows, int cols, const Object& defaultValue) :
 		array(rows)
 {
-	for (auto & thisRow : array)
-		thisRow.assign(cols, defaultValue);
+//	typedef denseMatrix<Object>::iterator arrayIterator;
+	
+	for (arrayIterator row = array.begin(); row != array.end(); ++row)
+	{
+		//*row = vector<Object>(cols, defaultValue);
+		row->assign(cols, defaultValue);
+	}
+	//for (auto & thisRow : array)
+	//	thisRow.assign(cols, defaultValue);
 }
 
 template<typename Object>
@@ -105,10 +122,13 @@ denseMatrix<Object>::denseMatrix(const vector<vector<Object>> & v,
 
 template<typename Object>
 denseMatrix<Object>::denseMatrix(const vector<Object> & v,
-		const Object& defaultValue) :
-		array(1)
+		const Object& defaultValue)
 {
-	array[0] = v;
+	if (array.size() != 0)
+	{
+		array.clear();
+	}
+	array.push_back(v);
 }
 
 template<typename Object>
@@ -175,7 +195,7 @@ void denseMatrix<Object>::eye()
 {
 
 	denseMatrix<Object>& self = *this;
-	if (array.size() != array[0].size())
+	if (array.size() != array.at(0).size())
 	{
 		throw std::logic_error("Matrix size mismatch");
 	}
@@ -199,7 +219,7 @@ void denseMatrix<Object>::eye(int rows, int cols)
 
 	for (int i = 0; i < array.size(); ++i)
 	{
-		array[i].assign(cols, 0.0);
+		array.at(i).assign(cols, 0.0);
 		self[i][i] = 1.0;
 	}
 }
@@ -215,16 +235,16 @@ denseMatrix<Object> operator*(const denseMatrix<Object>& left,
 	}
 	else
 	{
-		denseMatrix<Object>* solution = new denseMatrix<Object>(left.numrows(),
+		denseMatrix<Object>* solution = new denseMatrix<Object>(right.numrows(),
 				right.numcols());
 
-		for (int i = 0; i < solution->numrows(); ++i)
+		for (int i = 0; i < left.numrows(); ++i)
 		{
-			for (int j = 0; j < solution->numcols(); ++j)
+			for (int j = 0; j < right.numcols(); ++j)
 			{
 
 				Object tempValue;
-				for (int k = 0; k < left.numrows(); ++k)
+				for (int k = 0; k < right.numrows(); ++k)
 				{
 					if (k == 0)
 					{

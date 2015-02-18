@@ -49,6 +49,12 @@ public:
 
 };
 
+TEST_F (denseMatrixTests, constructors)
+{
+	matrix* ptr = new matrix();
+	matrix* ptr2 = new matrix(6, 6);
+}
+
 TEST_F (denseMatrixTests, equals)
 {
 	matrix test1(1, 1, 0.0);

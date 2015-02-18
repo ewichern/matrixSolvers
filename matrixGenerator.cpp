@@ -173,7 +173,7 @@ void MatrixGenerator::generateSamples(int rows, int cols, string filenameRoot,
 	matrix bRand;
 	bRand = aRand * xRand;
 
-	//std::cerr << "bRand: " << endl << bRand;
+	std::cerr << "bRand: " << endl << bRand;
 
 	ofstream output1(filenameRoot + "_Ab.dat");
 	writeMatrixToFile(output1, aRand, bRand);
