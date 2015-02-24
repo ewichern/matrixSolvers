@@ -79,17 +79,17 @@ TEST_F (matrixSolverTests, getFilenameRoot)
 	EXPECT_EQ("googleTestGetFilename", output);
 }
 
-TEST_F (matrixSolverTests, getInputFilename)
+TEST_F (matrixSolverTests, getABinputFilename)
 {
 	string output = "";
 
 	stringstream input("googleTestGetFilename");
-	output = getInputFilename(input);
+	output = getABinputFilename(input);
 
 	EXPECT_EQ("googleTestGetFilename", output);
 }
 
-TEST_F (matrixSolverTests, inputFromFile)
+TEST_F (matrixSolverTests, inputABfromFile)
 {
 	string failureOutput = "fail";
 	string successOutput = "SAMPLEdata.txt";
@@ -105,11 +105,11 @@ TEST_F (matrixSolverTests, inputFromFile)
 	EXPECT_EQ(b.numrows(), 0);
 
 	std::cerr << input1.str() << endl;
-	inputFileName = inputFromFile(input1, A, b);
+	inputFileName = inputABfromFile(input1, A, b);
 	EXPECT_EQ(failureOutput, inputFileName);
 
 	std::cerr << input2.str() << endl;
-	inputFileName = inputFromFile(input2, A, b);
+	inputFileName = inputABfromFile(input2, A, b);
 	EXPECT_EQ(successOutput, inputFileName);
 
 	EXPECT_GT(A.numrows(), 0);
@@ -118,6 +118,33 @@ TEST_F (matrixSolverTests, inputFromFile)
 	EXPECT_GT(b.numrows(), 0);
 
 }
+
+TEST_F (matrixSolverTests, inputXfromFile)
+{
+	string failureOutput = "fail";
+	string successOutput = "SAMPLEsol.txt";
+
+	string inputFileName = "";
+	stringstream input1("notAfilename");
+	stringstream input2(successOutput);
+	matrix x;
+
+	EXPECT_EQ(x.numrows(), 0);
+	EXPECT_EQ(x.numcols(), 0);
+
+	std::cerr << input1.str() << endl;
+	inputFileName = inputXfromFile(input1, x);
+	EXPECT_EQ(failureOutput, inputFileName);
+
+	std::cerr << input2.str() << endl;
+	inputFileName = inputXfromFile(input2, x);
+	EXPECT_EQ(successOutput, inputFileName);
+
+	EXPECT_GT(x.numrows(), 0);
+	EXPECT_GT(x.numcols(), 0);
+
+}
+
 
 TEST_F (matrixSolverTests, generateMatrixDataFiles)
 {
@@ -128,16 +155,14 @@ TEST_F (matrixSolverTests, generateMatrixDataFiles)
 	stringstream input;
 
 	input << m << " " << n << " \n " << filenameInput;
-	filenameOutput = generateMatrixDataFiles(input);
+
+	matrix A, b;
+	filenameOutput = generateMatrixDataFiles(input, A, b);
 
 	ifstream fileTest(filenameOutput + "_Ab.dat");
 
 	EXPECT_TRUE(fileTest.is_open());
 	EXPECT_EQ(filenameInput, filenameOutput);
-
-	matrix A, b;
-
-	MatrixGenerator::readMatrixFromFile(fileTest, A, b);
 
 	tuple<int, int> aSize(A.numrows(), A.numcols());
 	tuple<int, int> bSize(b.numrows(), b.numcols());
@@ -157,8 +182,10 @@ TEST_F (matrixSolverTests, executeSolver)
 	string filenameOutput = "";
 	stringstream input;
 
+	matrix A, x, xTest, b;
+
 	input << m << " " << n << " \n " << filenameInput;
-	filenameOutput = generateMatrixDataFiles(input);
+	filenameOutput = generateMatrixDataFiles(input, A, b);
 	ASSERT_EQ(filenameInput, filenameOutput);
 
 	ifstream fileTestAb(filenameOutput + "_Ab.dat");
@@ -167,9 +194,6 @@ TEST_F (matrixSolverTests, executeSolver)
 	ASSERT_TRUE(fileTestAb.is_open());
 	ASSERT_TRUE(fileTestX.is_open());
 
-	matrix A, x, xTest, b;
-
-	MatrixGenerator::readMatrixFromFile(fileTestAb, A, b);
 	MatrixGenerator::readMatrixFromFile(fileTestX, x);
 
 	tuple<int, int> aSize(A.numrows(), A.numcols());
@@ -182,7 +206,7 @@ TEST_F (matrixSolverTests, executeSolver)
 
 	int numIterations = -1;
 
-	numIterations = executeSolver(0, A, xTest, b);
+	numIterations = executeSolver(1, A, xTest, b);
 
 	EXPECT_NE(-1, numIterations);
 

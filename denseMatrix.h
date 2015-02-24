@@ -7,6 +7,7 @@
 #include <initializer_list>
 #include <stdexcept>
 #include <cmath>
+#include <memory>
 
 using namespace std;
 
@@ -38,7 +39,6 @@ public:
 
 	typedef typename std::vector<std::vector<Object>>::iterator arrayIterator;
 	typedef typename std::vector<std::vector<Object>>::const_iterator const_arrayIterator;
-
 
 	const vector<Object> & operator[](int row) const
 	{
@@ -76,8 +76,6 @@ private:
 	vector<vector<Object>> array;
 };
 
-
-
 struct MatrixSizeException: public exception
 {
 	const char * what() const throw ()
@@ -87,7 +85,7 @@ struct MatrixSizeException: public exception
 };
 
 template<typename Object>
-denseMatrix<Object>::denseMatrix() 
+denseMatrix<Object>::denseMatrix()
 {
 }
 
@@ -99,7 +97,7 @@ denseMatrix<Object>::denseMatrix(int rows, int cols) :
 //		thisRow.resize(cols);
 
 //	typedef denseMatrix<Object>::iterator arrayIterator;
-	
+
 	for (arrayIterator row = array.begin(); row != array.end(); ++row)
 	{
 		row->resize(cols);
@@ -111,7 +109,7 @@ denseMatrix<Object>::denseMatrix(int rows, int cols, const Object& defaultValue)
 		array(rows)
 {
 //	typedef denseMatrix<Object>::iterator arrayIterator;
-	
+
 	for (arrayIterator row = array.begin(); row != array.end(); ++row)
 	{
 		//*row = vector<Object>(cols, defaultValue);
@@ -195,7 +193,8 @@ bool denseMatrix<Object>::operator!=(const denseMatrix<Object>& m) const
 }
 
 template<typename Object>
-denseMatrix<Object>& denseMatrix<Object>::operator=(const denseMatrix<Object>& right)
+denseMatrix<Object>& denseMatrix<Object>::operator=(
+		const denseMatrix<Object>& right)
 {
 	if (!(*this == right))
 	{
@@ -250,8 +249,8 @@ denseMatrix<Object> operator*(const denseMatrix<Object>& left,
 	}
 	else
 	{
-		denseMatrix<Object>* solution;
-		solution = new denseMatrix<Object>(left.numcols(), right.numcols());
+		std::unique_ptr<denseMatrix<Object> > solution(
+				new denseMatrix<Object>(left.numcols(), right.numcols()));
 
 		for (int i = 0; i < left.numrows(); ++i)
 		{
@@ -279,8 +278,8 @@ template<typename Object>
 denseMatrix<Object> operator*(double scaler, const denseMatrix<Object>& m)
 {
 
-	denseMatrix<Object>* solution = new denseMatrix<Object>(m.numrows(),
-			m.numcols());
+	std::unique_ptr<denseMatrix<Object> > solution(
+			new denseMatrix<Object>(m.numcols(), m.numcols()));
 	for (int i = 0; i < solution->numrows(); ++i)
 	{
 		for (int j = 0; j < solution->numcols(); ++j)
@@ -296,8 +295,8 @@ template<typename Object>
 denseMatrix<Object> operator*(const denseMatrix<Object>& m, double scaler)
 {
 
-	denseMatrix<Object>* solution = new denseMatrix<Object>(m.numrows(),
-			m.numcols());
+	std::unique_ptr<denseMatrix<Object> > solution(
+			new denseMatrix<Object>(m.numcols(), m.numcols()));
 	for (int i = 0; i < solution->numrows(); ++i)
 	{
 		for (int j = 0; j < solution->numcols(); ++j)
@@ -322,8 +321,8 @@ denseMatrix<Object> operator+(const denseMatrix<Object>& left,
 	else
 	{
 
-		denseMatrix<Object>* solution = new denseMatrix<Object>(left.numrows(),
-				right.numcols());
+		std::unique_ptr<denseMatrix<Object> > solution(
+				new denseMatrix<Object>(left.numcols(), right.numcols()));
 
 		for (int i = 0; i < solution->numrows(); ++i)
 		{
@@ -351,8 +350,8 @@ denseMatrix<Object> operator-(const denseMatrix<Object>& left,
 	else
 	{
 
-		denseMatrix<Object>* solution = new denseMatrix<Object>(left.numrows(),
-				right.numcols());
+		std::unique_ptr<denseMatrix<Object> > solution(
+				new denseMatrix<Object>(left.numcols(), right.numcols()));
 
 		for (int i = 0; i < solution->numrows(); ++i)
 		{
@@ -376,6 +375,7 @@ std::ostream& operator<<(std::ostream& out, const denseMatrix<Object>& m)
 		{
 			if (i > 0)
 				out << ' ';
+			out << setprecision(17) << setw(20);
 			out << m[j][i];
 		}
 		out << "\n";

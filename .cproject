@@ -52,7 +52,7 @@
 					</folderInfo>
 					<fileInfo id="cdt.managedbuild.config.gnu.exe.debug.789180600.617444086" name="sparseMatrix.h" rcbsApplicability="disable" resourcePath="sparseMatrix.h" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="test_matrixGenerator.cc|sparseMatrix.h|test_sparseMatrix.cc|matrixSolver.cpp|solversDriver.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="sparseMatrix.h|test_sparseMatrix.cc|matrixSolver.cpp|solversDriver.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -143,6 +143,15 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
-		<buildTargets/>
+		<buildTargets>
+			<target name="Debug" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildArguments/>
+				<buildTarget>Debug</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+		</buildTargets>
 	</storageModule>
 </cproject>

@@ -127,7 +127,8 @@ void MatrixGenerator::writeMatrixToFile(std::ofstream& output, const matrix& A,
 		}
 		for (int i = 0; i < b.numrows(); ++i)
 		{
-			output << fixed << setprecision(numDigits*numDigits) << b[i][0] << " ";
+			output << fixed << setprecision(numDigits * numDigits) << b[i][0]
+					<< " ";
 		}
 	}
 }
@@ -148,13 +149,10 @@ void MatrixGenerator::randomFillMatrix(matrix& mat, std::mt19937& generator,
 		{
 			double newValue = (double) dist(generator);
 			newValue = round(newValue * 100) / 100.0;
-			if (mat.numcols() != 1) 
-			{
-				rowTotal += std::abs(newValue);
-				mat[m][n] = newValue;
-			}
+			rowTotal += std::abs(newValue);
+			mat[m][n] = newValue;
 		}
-		
+
 		if (m < mat.numcols())
 		{
 			mat[m][m] = rowTotal;

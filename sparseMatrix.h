@@ -455,7 +455,7 @@ std::ostream& operator<<(std::ostream& out, const sparseMatrix<Object>& m)
 		for (int i = 0; i < m.numcols(); ++i)
 		{
 			// if (i > 0) out << ' ';
-			out << setprecision(17) << setw(20);
+			out << setprecision(5) << setw(8);
 			out << m[j][i];
 		}
 		out << "\n";
