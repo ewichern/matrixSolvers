@@ -13,10 +13,10 @@
 #include <random>
 #include <string>
 
-#include "sparseMatrix.h"
+#include "denseMatrix.h"
 #include "matrixGenerator.h"
 
-typedef sparseMatrix<double> matrix;
+typedef denseMatrix<double> matrix;
 
 using namespace std;
 

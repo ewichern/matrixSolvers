@@ -1,8 +1,10 @@
 OUTPUTNAME=matrixSolver
 CPPS=IterativeSolvers.cpp matrixGenerator.cpp
-TESTS=googleTestsMain.cc test_iterativeSolvers.cc test_matrixGenerator.cc \
-	test_matrixSolver.cc test_sparseMatrix.cc \
-	./gtest/gtest-all.cc
+TESTS=googleTestsMain.cc test_denseMatrix.cc test_matrixGenerator.cc \
+	 test_iterativeSolvers.cc \
+	test_matrixSolver.cc \
+	./gtest/gtest-all.cc \
+	# test_sparseMatrix.cc
 #DIR=$(PWD)
 DISTR=Unix
 #INCLUDES=/home/erik/libraries/
@@ -65,9 +67,11 @@ release: $(TARGET)
 	
 debug: $(DEBUGTARGET) 
 
-#solversDriver.o:
-#	$(CPP) $(CPPFLAGS) -MMD -o $@ -c solversDriver.cpp
+solversDriver.o: matrixSolver.cpp
+	$(CPP) $(CPPFLAGS) -MMD -o $@ -c solversDriver.cpp
 
+matrixSolver.cpp:
+	echo "Do nothing directly to matrixSolver.cpp"
 
 clean:
 	-rm -f $(TARGET) $(OBJS) $(DEPENDENCIES) make.dep 

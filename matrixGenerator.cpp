@@ -6,12 +6,12 @@
 #include <exception>
 #include <string>
 
-#include "sparseMatrix.h"
+#include "denseMatrix.h"
 #include "matrixGenerator.h"
 
 using namespace std;
 
-typedef sparseMatrix<double> matrix;
+typedef denseMatrix<double> matrix;
 
 void MatrixGenerator::askForMatrixSize(std::istream& input, int& m, int& n)
 {
@@ -95,7 +95,7 @@ void MatrixGenerator::writeMatrixToFile(std::ofstream& output, const matrix& A)
 	{
 		for (int j = 0; j < A.numcols(); ++j)
 		{
-			output << setprecision(numDigits) << A[i][j] << " ";
+			output << fixed << setprecision(numDigits) << A[i][j] << " ";
 		}
 		output << "\n";
 	}
@@ -121,13 +121,14 @@ void MatrixGenerator::writeMatrixToFile(std::ofstream& output, const matrix& A,
 		{
 			for (int j = 0; j < A.numcols(); ++j)
 			{
-				output << setprecision(numDigits) << A[i][j] << " ";
+				output << fixed << setprecision(numDigits) << A[i][j] << " ";
 			}
 			output << "\n";
 		}
 		for (int i = 0; i < b.numrows(); ++i)
 		{
-			output << setprecision(17) << b[i][0] << " ";
+			output << fixed << setprecision(numDigits * numDigits) << b[i][0]
+					<< " ";
 		}
 	}
 }
@@ -147,11 +148,15 @@ void MatrixGenerator::randomFillMatrix(matrix& mat, std::mt19937& generator,
 		for (int n = 0; n < mat.numcols(); ++n)
 		{
 			double newValue = (double) dist(generator);
+			newValue = round(newValue * 100) / 100.0;
 			rowTotal += std::abs(newValue);
 			mat[m][n] = newValue;
 		}
 
-		mat[m][m] = rowTotal;
+		if (m < mat.numcols())
+		{
+			mat[m][m] = rowTotal;
+		}
 	}
 
 }
@@ -169,8 +174,10 @@ void MatrixGenerator::generateSamples(int rows, int cols, string filenameRoot,
 	randomFillMatrix(aRand, generator, dist);
 	randomFillMatrix(xRand, generator, dist);
 
-	matrix bRand;
+	matrix bRand(cols, 1, 0.0);
 	bRand = aRand * xRand;
+
+//	std::cerr << "bRand: " << endl << bRand;
 
 	ofstream output1(filenameRoot + "_Ab.dat");
 	writeMatrixToFile(output1, aRand, bRand);

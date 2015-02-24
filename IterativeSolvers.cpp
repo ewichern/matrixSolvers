@@ -42,7 +42,7 @@ int IterativeSolvers::jacobi(const matrix& A, matrix& x_k, const matrix& b)
 	{
 		for (int i = 0; i < A.numrows(); ++i)
 		{
-			std::cerr << " " << i;
+//			std::cerr << " " << i;
 			double rowSum = 0.0;
 			for (int j = 0; j < A.numcols(); ++j)
 			{
@@ -56,8 +56,8 @@ int IterativeSolvers::jacobi(const matrix& A, matrix& x_k, const matrix& b)
 		++iterationCount;
 		x_k = x_kPlus1;
 
-		//std::cerr << "iterationCount: " << iterationCount << std::endl;
-		//std::cerr << "x_k: " << endl << x_k << std::endl;
+//		std::cerr << "iterationCount: " << iterationCount << std::endl;
+//		std::cerr << "x_k: " << endl << x_k << std::endl;
 		matrix bTest = A * x_k;
 		err = relError(bTest, b);
 
@@ -87,7 +87,7 @@ int IterativeSolvers::gaussSeidel(const matrix& A, matrix& x_k, const matrix& b)
 	{
 		for (int i = 0; i < A.numrows(); ++i)
 		{
-			std::cerr << " " << i;
+//			std::cerr << " " << i;
 			double rowSum = 0.0;
 			for (int j = 0; j < A.numcols(); ++j)
 			{

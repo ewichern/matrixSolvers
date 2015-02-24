@@ -8,13 +8,14 @@
 #ifndef ITERATIVESOLVERS_H_
 #define ITERATIVESOLVERS_H_
 
-#include "sparseMatrix.h"
+#include "denseMatrix.h"
 
 /*
  *
  */
 
-typedef sparseMatrix<double> matrix;
+typedef denseMatrix<double> matrix;
+
 
 class IterativeSolvers
 {
