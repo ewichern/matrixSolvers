@@ -33,7 +33,7 @@ int printMenuOptions(istream& input)
 			<< "matrices A and b must be loaded prior to executing solver)"
 			<< endl;
 	cout << "6 - Print most recent solution -- a solver should be run first "
-			<< "using option 3." << endl;
+			<< "using option 5." << endl;
 	cout << "7 - Exit." << endl;
 	cout << "Enter selection : " << endl;
 
