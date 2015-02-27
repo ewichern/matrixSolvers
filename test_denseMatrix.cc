@@ -19,7 +19,7 @@ using namespace std;
 class denseMatrixTests: public ::testing::Test
 {
 public:
-	matrix A1, A1again, A2, x1, x2, b1, b1again, b2;
+	matrix A1, A1again, A2, A2again, x1, x2, b1, b1again, b2, b2again;
 
 	denseMatrixTests()
 	{
@@ -40,6 +40,11 @@ public:
 
 		MatrixGenerator::readMatrixFromFile(a2b2input, A2, b2);
 		MatrixGenerator::readMatrixFromFile(x2input, x2);
+
+		a2b2input.close();
+		a2b2input.open("sampleData2Ab.dat");
+
+		MatrixGenerator::readMatrixFromFile(a2b2input, A2again, b2again);
 	}
 
 	virtual ~denseMatrixTests()
@@ -188,7 +193,6 @@ TEST_F (denseMatrixTests, subtract)
 	EXPECT_EQ(id1, idtest);
 }
 
-//TODO test augment
 TEST_F (denseMatrixTests, augment)
 {
 	matrix b1test(b1.numrows(), b1.numcols());
@@ -216,5 +220,18 @@ TEST_F (denseMatrixTests, augment)
 	}
 
 	EXPECT_TRUE(b1 == b1test);
+}
+
+TEST_F (denseMatrixTests, swapRows)
+{
+	A1.swapRows(0, 1);
+
+	EXPECT_TRUE(A1[0] == A1again[1]);
+	EXPECT_TRUE(A1[1] == A1again[0]);
+
+	A2.swapRows(2, 3);
+
+	EXPECT_TRUE(A2[2] == A2again[3]);
+	EXPECT_TRUE(A2[3] == A2again[2]);
 
 }

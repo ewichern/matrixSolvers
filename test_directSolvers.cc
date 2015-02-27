@@ -1,11 +1,11 @@
 /*
- * test_iterativeSolvers.cpp
+ * test_directSolvers.cpp
  *
  *  Created on: Feb 6, 2015
  *      Author: erik
  */
 
-#include "IterativeSolvers.h"
+#include "directSolvers.h"
 
 #include "gtest/gtest.h"
 #include <fstream>
@@ -20,12 +20,12 @@ typedef denseMatrix<double> matrix;
 
 using namespace std;
 
-class iterativeSolverTests: public ::testing::Test
+class directSolverTests: public ::testing::Test
 {
 public:
 	matrix A1, b1, x1, A2, b2, x2;
 
-	iterativeSolverTests()
+	directSolverTests()
 	{
 
 		string testFile1 = "sampleData1";
@@ -52,13 +52,31 @@ public:
 
 	}
 
-	virtual ~iterativeSolverTests()
+	virtual ~directSolverTests()
 	{
 
 	}
 
 };
 
+TEST_F (directSolverTests, findPivot)
+{
+	int pivot = -1;
+
+	pivot = directSolvers::findPivot(A2, 0);
+	EXPECT_EQ(0, pivot);
+
+	pivot = directSolvers::findPivot(A2, 1);
+	EXPECT_EQ(1, pivot);
+
+	pivot = directSolvers::findPivot(A2, 2);
+	EXPECT_EQ(2, pivot);
+
+	pivot = directSolvers::findPivot(A2, 3);
+	EXPECT_EQ(3, pivot);
+}
+
+/**
 TEST_F (iterativeSolverTests, jacobi1)
 {
 	matrix x1test(A1.numcols(), 1, 1.0);
@@ -72,81 +90,5 @@ TEST_F (iterativeSolverTests, jacobi1)
 	EXPECT_LT(err1, errLimit);
 
 }
-
-TEST_F (iterativeSolverTests, jacobi2)
-{
-	matrix x2test(A2.numcols(), 1, 1.0);
-	int numIterations = IterativeSolvers::jacobi(A2, x2test, b2);
-
-	double errLimit = 0.00005;
-	double err2 = relError(x2test, x2);
-	cerr << "numIterations: " << numIterations << endl;
-	cerr << "Calculated relative error: " << endl << err2 << endl;
-
-	EXPECT_LT(err2, errLimit);
-
-}
-
-TEST_F (iterativeSolverTests, gaussSeidel1)
-{
-	matrix x1test(A1.numcols(), 1, 1.0);
-	int numIterations = IterativeSolvers::gaussSeidel(A1, x1test, b1);
-
-	double errLimit = 0.00005;
-	double err1 = relError(x1test, x1);
-	cerr << "numIterations: " << numIterations << endl;
-	cerr << "Calculated relative error: " << endl << err1 << endl;
-
-	EXPECT_LT(err1, errLimit);
-
-}
-
-TEST_F (iterativeSolverTests, gaussSeidel2)
-{
-	matrix x2test(A2.numcols(), 1, 1.0);
-	int numIterations = IterativeSolvers::gaussSeidel(A2, x2test, b2);
-
-	double errLimit = 0.00005;
-	double err2 = relError(x2test, x2);
-	cerr << "numIterations: " << numIterations << endl;
-	cerr << "Calculated relative error: " << endl << err2 << endl;
-
-	EXPECT_LT(err2, errLimit);
-
-}
-
-TEST_F (iterativeSolverTests, successiveOverRelaxing)
-{
-	matrix x1test(A1.numcols(), 1, 1.0);
-
-	double omega = 1.05;
-
-	int numIterations = IterativeSolvers::successiveOverRelaxing(omega, A1, x1test, b1);
-
-	double errLimit = 0.00005;
-	double err1 = relError(x1test, x1);
-	cerr << "numIterations: " << numIterations << endl;
-	cerr << "Calculated relative error: " << endl << err1 << endl;
-
-	EXPECT_LT(err1, errLimit);
-
-}
-
-TEST_F (iterativeSolverTests, successiveOverRelaxing2)
-{
-	matrix x2test(A2.numcols(), 1, 1.0);
-
-	double omega = 0.9;
-
-
-	int numIterations = IterativeSolvers::successiveOverRelaxing(omega, A2, x2test, b2);
-
-	double errLimit = 0.00005;
-	double err2 = relError(x2test, x2);
-	cerr << "numIterations: " << numIterations << endl;
-	cerr << "Calculated relative error: " << endl << err2 << endl;
-
-	EXPECT_LT(err2, errLimit);
-
-}
+*/
 

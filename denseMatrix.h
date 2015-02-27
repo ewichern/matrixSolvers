@@ -37,6 +37,7 @@ public:
 	void eye();
 	void eye(int, int);
 	denseMatrix<Object>& augment(const denseMatrix<Object>&);
+	denseMatrix<Object>& swapRows(int, int);
 
 	typedef typename std::vector<std::vector<Object>>::iterator arrayIterator;
 	typedef typename std::vector<std::vector<Object>>::const_iterator const_arrayIterator;
@@ -258,6 +259,15 @@ denseMatrix<Object>& denseMatrix<Object>::augment(const denseMatrix<Object>& rig
 
 	return *this;
 
+}
+
+template<typename Object>
+denseMatrix<Object>& denseMatrix<Object>::swapRows(int rowOne, int rowTwo)
+{
+	vector <Object> temp = array.at(rowOne);
+	array.at(rowOne) = array.at(rowTwo);
+	array.at(rowTwo) = temp;
+	return *this;
 }
 
 template<typename Object>
