@@ -36,6 +36,7 @@ public:
 
 	void eye();
 	void eye(int, int);
+	denseMatrix<Object>& augment(const denseMatrix<Object>&);
 
 	typedef typename std::vector<std::vector<Object>>::iterator arrayIterator;
 	typedef typename std::vector<std::vector<Object>>::const_iterator const_arrayIterator;
@@ -236,6 +237,27 @@ void denseMatrix<Object>::eye(int rows, int cols)
 		array.at(i).assign(cols, 0.0);
 		self[i][i] = 1.0;
 	}
+}
+
+/*
+ * Creates an augmented matrix with matrix parameter as input. numRows must
+ * be equal in both matrices and right.numcols() must == 1.
+ */
+template<typename Object>
+denseMatrix<Object>& denseMatrix<Object>::augment(const denseMatrix<Object>& right)
+{
+	if (!(array.size() == right.numrows()) || !(right.numcols() == 1))
+	{
+		throw std::logic_error("Matrix size mismatch");
+	}
+
+	for (int i = 0; i < array.size(); ++i)
+	{
+		array.at(i).push_back(right[i][0]);
+	}
+
+	return *this;
+
 }
 
 template<typename Object>

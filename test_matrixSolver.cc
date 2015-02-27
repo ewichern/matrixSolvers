@@ -206,11 +206,11 @@ TEST_F (matrixSolverTests, executeSolver)
 
 	int numIterations = -1;
 
-	numIterations = executeSolver(1, A, xTest, b);
+	numIterations = executeSolver(input, 1, A, xTest, b);
 
 	EXPECT_NE(-1, numIterations);
 
-	double errLimit = 0.000001;
+	double errLimit = 0.00001;
 	double err = relError(xTest, x);
 	EXPECT_LT(err, errLimit);
 

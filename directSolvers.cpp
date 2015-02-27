@@ -1,14 +1,43 @@
 /*
- * IterativeSolvers.cpp
+ * directSolvers.cpp
  *
  *  Created on: Feb 6, 2015
  *      Author: erik
  */
 
-#include "IterativeSolvers.h"
+#include "directSolvers.h"
 #include <exception>
 
 
+int directSolvers::findPivot (const matrix& A, int column)
+{
+	// assumes that previous columns are all 1s or 0s and that previous rows
+	// have been processed
+	// set pivotRow to column and start searching at pivotRow+1;
+
+	int pivotRow = column;
+	double largest = A[column][column];
+	for (int i = column+1; i < A.numrows(); ++i)
+	{
+		if (A[i][column] > largest)
+			pivotRow = i;
+	}
+
+	return pivotRow;
+}
+
+void directSolvers::gaussianElimination(const matrix& A, matrix& x_k, const matrix& b)
+{
+	matrix augmented = A;
+	augmented.augment(b);
+
+
+
+// TODO
+}
+
+
+/*
 int IterativeSolvers::jacobi(const matrix& A, matrix& x_k, const matrix& b)
 {
 	if (!(A.numcols() == A.numrows()) || !(A.numcols() == b.numrows()))
@@ -152,3 +181,4 @@ int IterativeSolvers::successiveOverRelaxing(const double omega, const matrix& A
 	return iterationCount;
 
 }
+*/

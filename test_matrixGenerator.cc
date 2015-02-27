@@ -104,7 +104,7 @@ TEST_F (matrixGeneratorTests, generateSamples)
 	std::cerr << "b1test: " << endl << b1test;
 	std::cerr << "b1calc: " << endl	<< b1calc;
 
-	double errLimit = 0.000001;
+	double errLimit = 0.00001;
 	double err = relError(b1test, b1calc);
 	cerr << "Calculated relative error: " << err << endl;
 

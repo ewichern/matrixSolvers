@@ -187,3 +187,34 @@ TEST_F (denseMatrixTests, subtract)
 
 	EXPECT_EQ(id1, idtest);
 }
+
+//TODO test augment
+TEST_F (denseMatrixTests, augment)
+{
+	matrix b1test(b1.numrows(), b1.numcols());
+
+	std::cerr << "A1: " << endl << A1 << endl << endl << "b1: " << endl << b1
+			<< endl << endl;
+	try
+	{
+		A1.augment(b1);
+	} catch (exception& e)
+	{
+		e.what();
+	}
+
+	std::cerr << "A1 augmented with b1: " << endl << A1 << endl << endl;
+
+	EXPECT_EQ((A1again.numcols() + 1), A1.numcols());
+	EXPECT_EQ(A1again.numrows(), A1.numrows());
+
+	int lastCol = A1.numcols() - 1;
+
+	for (int i = 0; i < b1test.numrows(); ++i)
+	{
+		b1test[i][0] = A1[i][lastCol];
+	}
+
+	EXPECT_TRUE(b1 == b1test);
+
+}

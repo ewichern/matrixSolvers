@@ -25,6 +25,7 @@ public:
 
 	static int jacobi(const matrix&, matrix&, const matrix&);
 	static int gaussSeidel(const matrix&, matrix&, const matrix&);
+	static int successiveOverRelaxing(const double, const matrix&, matrix&, const matrix&);
 
 };
 
