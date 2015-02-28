@@ -6,9 +6,6 @@
 CC_SRCS += \
 ../gtest/gtest-all.cc 
 
-O_SRCS += \
-../gtest/gtest-all.o 
-
 CC_DEPS += \
 ./gtest/gtest-all.d 
 

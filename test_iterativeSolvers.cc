@@ -61,11 +61,12 @@ public:
 
 TEST_F (iterativeSolverTests, jacobi1)
 {
-	matrix x1test(A1.numcols(), 1, 0.1);
-	IterativeSolvers::jacobi(A1, x1test, b1);
+	matrix x1test(A1.numcols(), 1, 1.0);
+	int numIterations = IterativeSolvers::jacobi(A1, x1test, b1);
 
-	double errLimit = 0.000001;
+	double errLimit = 0.00005;
 	double err1 = relError(x1test, x1);
+	cerr << "numIterations: " << numIterations << endl;
 	cerr << "Calculated relative error: " << endl << err1 << endl;
 
 	EXPECT_LT(err1, errLimit);
@@ -74,11 +75,12 @@ TEST_F (iterativeSolverTests, jacobi1)
 
 TEST_F (iterativeSolverTests, jacobi2)
 {
-	matrix x2test(A2.numcols(), 1, 0.1);
-	IterativeSolvers::jacobi(A2, x2test, b2);
+	matrix x2test(A2.numcols(), 1, 1.0);
+	int numIterations = IterativeSolvers::jacobi(A2, x2test, b2);
 
-	double errLimit = 0.000001;
+	double errLimit = 0.00005;
 	double err2 = relError(x2test, x2);
+	cerr << "numIterations: " << numIterations << endl;
 	cerr << "Calculated relative error: " << endl << err2 << endl;
 
 	EXPECT_LT(err2, errLimit);
@@ -87,11 +89,12 @@ TEST_F (iterativeSolverTests, jacobi2)
 
 TEST_F (iterativeSolverTests, gaussSeidel1)
 {
-	matrix x1test(A1.numcols(), 1, 0.1);
-	IterativeSolvers::gaussSeidel(A1, x1test, b1);
+	matrix x1test(A1.numcols(), 1, 1.0);
+	int numIterations = IterativeSolvers::gaussSeidel(A1, x1test, b1);
 
-	double errLimit = 0.000001;
+	double errLimit = 0.00005;
 	double err1 = relError(x1test, x1);
+	cerr << "numIterations: " << numIterations << endl;
 	cerr << "Calculated relative error: " << endl << err1 << endl;
 
 	EXPECT_LT(err1, errLimit);
@@ -100,13 +103,50 @@ TEST_F (iterativeSolverTests, gaussSeidel1)
 
 TEST_F (iterativeSolverTests, gaussSeidel2)
 {
-	matrix x2test(A2.numcols(), 1, 0.1);
-	IterativeSolvers::gaussSeidel(A2, x2test, b2);
+	matrix x2test(A2.numcols(), 1, 1.0);
+	int numIterations = IterativeSolvers::gaussSeidel(A2, x2test, b2);
 
-	double errLimit = 0.000001;
+	double errLimit = 0.00005;
 	double err2 = relError(x2test, x2);
+	cerr << "numIterations: " << numIterations << endl;
 	cerr << "Calculated relative error: " << endl << err2 << endl;
 
 	EXPECT_LT(err2, errLimit);
 
 }
+
+TEST_F (iterativeSolverTests, successiveOverRelaxing)
+{
+	matrix x1test(A1.numcols(), 1, 1.0);
+
+	double omega = 1.05;
+
+	int numIterations = IterativeSolvers::successiveOverRelaxing(omega, A1, x1test, b1);
+
+	double errLimit = 0.00005;
+	double err1 = relError(x1test, x1);
+	cerr << "numIterations: " << numIterations << endl;
+	cerr << "Calculated relative error: " << endl << err1 << endl;
+
+	EXPECT_LT(err1, errLimit);
+
+}
+
+TEST_F (iterativeSolverTests, successiveOverRelaxing2)
+{
+	matrix x2test(A2.numcols(), 1, 1.0);
+
+	double omega = 0.9;
+
+
+	int numIterations = IterativeSolvers::successiveOverRelaxing(omega, A2, x2test, b2);
+
+	double errLimit = 0.00005;
+	double err2 = relError(x2test, x2);
+	cerr << "numIterations: " << numIterations << endl;
+	cerr << "Calculated relative error: " << endl << err2 << endl;
+
+	EXPECT_LT(err2, errLimit);
+
+}
+

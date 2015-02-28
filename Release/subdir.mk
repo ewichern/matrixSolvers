@@ -8,30 +8,23 @@ CC_SRCS += \
 
 CPP_SRCS += \
 ../IterativeSolvers.cpp \
+../directSolvers.cpp \
 ../matrixGenerator.cpp \
 ../solversDriver.cpp 
-
-O_SRCS += \
-../IterativeSolvers.o \
-../googleTestsMain.o \
-../matrixGenerator.o \
-../solversDriver.o \
-../test_denseMatrix.o \
-../test_iterativeSolvers.o \
-../test_matrixGenerator.o \
-../test_matrixSolver.o 
 
 CC_DEPS += \
 ./test_denseMatrix.d 
 
 OBJS += \
 ./IterativeSolvers.o \
+./directSolvers.o \
 ./matrixGenerator.o \
 ./solversDriver.o \
 ./test_denseMatrix.o 
 
 CPP_DEPS += \
 ./IterativeSolvers.d \
+./directSolvers.d \
 ./matrixGenerator.d \
 ./solversDriver.d 
 

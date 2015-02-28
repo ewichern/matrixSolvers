@@ -8,6 +8,7 @@
 #include "denseMatrix.h"
 #include "matrixGenerator.h"
 #include "IterativeSolvers.h"
+#include "directSolvers.h"
 #include <iostream>
 #include <random>
 #include <string>
@@ -19,7 +20,7 @@ using namespace std;
 typedef denseMatrix<double> matrix;
 enum solvers
 {
-	cancel = -1, jacobi = 1, gaussSeidel = 2, SOR = 3
+	cancel = -1, jacobi = 1, gaussSeidel = 2, SOR = 3, GE = 4
 };
 
 int printMenuOptions(istream& input)
@@ -55,12 +56,16 @@ int printSolverOptions(istream& input)
 	//TODO unit test
 	std::cout << "1 - Jacobi Method" << std::endl;
 	std::cout << "2 - Gauss-Seidel Method" << std::endl;
-	std::cout << "3 - Cancel" << std::endl;
+	std::cout << "3 - Successive Over Relaxation Method" << std::endl;
+	std::cout
+			<< "4 - Gaussian Elimination (warning: rounding errors increase with matrix size)"
+			<< std::endl;
+	std::cout << "5 - Cancel" << std::endl;
 	std::cout << "Enter selection : " << std::endl;
 
 	int selection;
 
-	while (!(input >> selection) || ((selection < 1) || (selection > 3)))
+	while (!(input >> selection) || ((selection < 1) || (selection > 5)))
 	{
 		input.clear();
 		input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -69,6 +74,21 @@ int printSolverOptions(istream& input)
 	input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 	return selection;
+}
+
+void getRelaxationConstant(double& omega, istream& input)
+{
+	//TODO unit test
+	std::cout << "Enter relaxation constant : " << std::endl;
+
+	while (!(input >> omega))
+	{
+		input.clear();
+		input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		std::cout << "Invalid input, try again: \n";
+	}
+	input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
 }
 
 string getFilename(istream& input)
@@ -153,7 +173,7 @@ string generateMatrixDataFiles(istream& input, matrix& A, matrix& b)
 	MatrixGenerator::generateSamples<distribType>(m, n, filenameRoot, generator,
 			dist);
 
-	std::ifstream readIn(filenameRoot+"_Ab.dat");
+	std::ifstream readIn(filenameRoot + "_Ab.dat");
 	MatrixGenerator::readMatrixFromFile(readIn, A, b);
 
 	return filenameRoot;
@@ -208,6 +228,8 @@ string getSolverName(int enumValue)
 		return "Gauss-Seidel method";
 	case SOR:
 		return "Successive Over-Relaxing";
+	case GE:
+		return "Gaussian Elimination";
 	default:
 		return "invalid value";
 	}
@@ -222,36 +244,53 @@ void printSolution(const matrix& x)
 void multiplyAx(const matrix& A, const matrix& x, matrix& b)
 {
 	b = A * x;
-	cout << "A * x = " << endl
-			<< b << endl;
+	cout << "A * x = " << endl << b << endl;
 }
 
-int executeSolver(int selection, const matrix& A, matrix& x, const matrix& b)
+int executeSolver(istream& input, int selection, const matrix& A, matrix& x,
+		const matrix& b)
 {
 	clock_t t_0, t_end;
 	int numIterations = -1;
-	x = matrix(A.numcols(), 1, 0.1);
+	x = matrix(A.numcols(), 1, 1.0);
+	double omega = 1.4;
 
 	switch (selection)
 	{
+	case GE:
+		t_0 = clock();
+		directSolvers::gaussianElimination(A, x, b);
+		t_end = clock();
+		break;
+	case SOR:
+		t_0 = clock();
+		getRelaxationConstant(omega, input);
+		numIterations = IterativeSolvers::successiveOverRelaxing(omega, A, x,
+				b);
+		cout << endl << "Solved in " << numIterations << " iterations using "
+				<< getSolverName(selection) << "." << endl;
+		t_end = clock();
+		break;
 	case gaussSeidel:
 		t_0 = clock();
 		numIterations = IterativeSolvers::gaussSeidel(A, x, b);
+		cout << endl << "Solved in " << numIterations << " iterations using "
+				<< getSolverName(selection) << "." << endl;
 		t_end = clock();
 		break;
 	case jacobi:
 	default:
 		t_0 = clock();
 		numIterations = IterativeSolvers::jacobi(A, x, b);
+		cout << endl << "Solved in " << numIterations << " iterations using "
+				<< getSolverName(selection) << "." << endl;
 		t_end = clock();
 		break;
 	}
-	cout << endl << "Solved in " << numIterations << " iterations using "
-			<< getSolverName(selection) << "." << endl;
 // matrix bTest = A * x;
 // double err = relError(b, bTest);
-	std::cout << "Relative error of solver solution: " << relError(b, (A * x))
-			<< endl;
+	std::cout << "Relative error of " << getSolverName(selection)
+			<< " solution: " << relError(b, (A * x)) << endl;
 	std::cout << "Calculations took "
 			<< ((float) (t_end - t_0)) / CLOCKS_PER_SEC << " seconds." << endl
 			<< endl;
@@ -268,8 +307,14 @@ solvers solverMenu(istream& input)
 
 	switch (menuSelection)
 	{
-	case 3:
+	case 5:
 		solverSelection = cancel;
+		break;
+	case GE:
+		solverSelection = GE;
+		break;
+	case SOR:
+		solverSelection = SOR;
 		break;
 	case gaussSeidel:
 		solverSelection = gaussSeidel;
@@ -322,7 +367,7 @@ string mainMenu(istream& input)
 			}
 			solverSelection = solverMenu(input);
 			if (!(solverSelection == cancel))
-				executeSolver(solverSelection, A, x, b);
+				executeSolver(input, solverSelection, A, x, b);
 			break;
 		case 6:
 			printSolution(x);

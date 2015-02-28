@@ -107,7 +107,7 @@
 					</folderInfo>
 					<fileInfo id="cdt.managedbuild.config.gnu.exe.release.402568683.1910743945" name="sparseMatrix.h" rcbsApplicability="disable" resourcePath="sparseMatrix.h" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="sparseMatrix.h|matrixSolver.cpp|test_matrixSolver.cc|test_sparseMatrix.cc|test_matrixGenerator.cc|test_iterativeSolvers.cc|googleTestsMain.cc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="test_directSolvers.cc|sparseMatrix.h|matrixSolver.cpp|test_matrixSolver.cc|test_sparseMatrix.cc|test_matrixGenerator.cc|test_iterativeSolvers.cc|googleTestsMain.cc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
