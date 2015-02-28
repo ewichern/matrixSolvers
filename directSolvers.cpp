@@ -33,6 +33,36 @@ int directSolvers::findPivot(const matrix& A, int column)
 	return pivotRow;
 }
 
+/*
+ * Backsolve for matrix in Upper Echelon form
+ */
+void directSolvers::backsolve(matrix& A, matrix& x)
+{
+	int bCol = A.numcols() - 1;
+	int n = A.numrows() - 1;
+
+//	std::cerr << "Walking through the backsolve -- " << std::endl;
+	/*
+	 * Solve for x_n
+	 */
+	x[n][0] = (A[n][bCol] / A[n][n]);
+//	std::cerr << "x[" << n << "]: " << x[n][0] << std::endl;
+
+	/*
+	 * Backsolve from n-1 to 0
+	 */
+	for (int i = n - 1; i >= 0; --i)
+	{
+		double sum = 0.0;
+		for (int j = i + 1; j <= n; ++j)
+		{
+			sum += (A[i][j] * x[j][0]);
+		}
+		x[i][0] = ((A[i][bCol] - sum) / A[i][i]);
+//		std::cerr << "x[" << i << "]: " << x[i][0] << std::endl;
+	}
+}
+
 /**
  * Gaussian Elimination direct solver.
  *
@@ -42,23 +72,72 @@ int directSolvers::findPivot(const matrix& A, int column)
  * @param b		const reference - RHS, size A.numrows() x 1
  * @return	void
  */
-void directSolvers::gaussianElimination(const matrix& A, matrix& x_k,
+void directSolvers::gaussianElimination(const matrix& A, matrix& x,
 		const matrix& b)
 {
+	if (!(A.numcols() == A.numrows()) || !(A.numcols() == b.numrows()))
+	{
+		cerr << "A nRows: " << A.numrows() << endl;
+		cerr << "A nCols: " << A.numcols() << endl;
+		cerr << "b nRows: " << b.numrows() << endl;
+		cerr << "b nCols: " << b.numcols() << endl;
+		throw std::logic_error("Matrix size mismatch");
+	}
+
 	matrix augmented = A;
 	augmented.augment(b);
 
+	/*
+	 * Doing the forward solve here.
+	 * Backsolve is in its own method so that I can reuse it.
+	 */
 	for (int i = 0; i < augmented.numrows(); ++i)
 	{
+		// find the row with the largest element in column i
 		int pivot = findPivot(augmented, i);
+
+		// row i becomes the pivot row (after swap)
 		if (pivot != i)
 		{
 			augmented.swapRows(pivot, i);
+			// pivot location is now A[i][i]
+		}
+
+		/*
+		 * we want 1 in our pivot location, so if loc_value != 1
+		 * loc_value *= (1 / loc_value)
+		 * obviously we have to apply this transformation to the whole row
+		 */
+		if (augmented[i][i] != 1.0)
+		{
+			double inverseA_ii = (1.0 / augmented[i][i]);
+			augmented.multiplyRow(i, inverseA_ii);
+		}
+
+		/*
+		 * for row j, where i+1 < j < size(),
+		 * multiply the element in location A[j][i] by the pivot row.
+		 * then subtract that result from row j.
+		 */
+		for (int j = i + 1; j < augmented.numrows(); ++j)
+		{
+			std::vector<double> savedPivotRow = augmented[i];
+
+			// change sign so that I can add rows instead of subtract.
+			double scaler = (-1.0 * (augmented[j][i] / augmented[i][i]));
+			augmented.multiplyRow(i, scaler);
+			augmented.addRows(i, j, j); // pivot, row j, destination (row j);
+
+			// restore pivot row to previous state;
+			augmented.swapRows(savedPivotRow, i);
 
 		}
 	}
 
-// TODO
+//	std::cerr << "augmented after forward solve: " << std::endl << augmented
+//			<< std::endl << std::endl;
+
+	backsolve(augmented, x);
 }
 
 /*

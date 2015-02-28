@@ -197,8 +197,8 @@ TEST_F (denseMatrixTests, augment)
 {
 	matrix b1test(b1.numrows(), b1.numcols());
 
-	std::cerr << "A1: " << endl << A1 << endl << endl << "b1: " << endl << b1
-			<< endl << endl;
+//	std::cerr << "A1: " << endl << A1 << endl << endl << "b1: " << endl << b1
+//			<< endl << endl;
 	try
 	{
 		A1.augment(b1);
@@ -207,7 +207,7 @@ TEST_F (denseMatrixTests, augment)
 		e.what();
 	}
 
-	std::cerr << "A1 augmented with b1: " << endl << A1 << endl << endl;
+//	std::cerr << "A1 augmented with b1: " << endl << A1 << endl << endl;
 
 	EXPECT_EQ((A1again.numcols() + 1), A1.numcols());
 	EXPECT_EQ(A1again.numrows(), A1.numrows());
@@ -234,4 +234,60 @@ TEST_F (denseMatrixTests, swapRows)
 	EXPECT_TRUE(A2[2] == A2again[3]);
 	EXPECT_TRUE(A2[3] == A2again[2]);
 
+}
+
+TEST_F (denseMatrixTests, multiplyRow)
+{
+	A1.multiplyRow(0, 3.0);
+	EXPECT_FALSE(A1[0] == A1again[0]);
+
+	matrix times3 = A1again * 3.0;
+	EXPECT_TRUE(A1[0] == times3[0]);
+	EXPECT_FALSE(A1 == times3);
+
+	A1.multiplyRow(1, 3.0);
+	A1.multiplyRow(2, 3.0);
+
+	EXPECT_TRUE(A1 == times3);
+}
+
+TEST_F (denseMatrixTests, addRows)
+{
+	double col0, col1, col2;
+	col0 = A1[0][0] + A1[1][0];
+	col1 = A1[0][1] + A1[1][1];
+	col2 = A1[0][2] + A1[1][2];
+
+	A1.addRows(0, 1, 0);
+
+	EXPECT_FALSE(A1 == A1again);
+	EXPECT_EQ(col0, A1[0][0]);
+	EXPECT_EQ(col1, A1[0][1]);
+	EXPECT_EQ(col2, A1[0][2]);
+
+	col0 = A1[2][0] + A1[1][0];
+	col1 = A1[2][1] + A1[1][1];
+	col2 = A1[2][2] + A1[1][2];
+
+	A1.addRows(1, 2, 2);
+	EXPECT_EQ(col0, A1[2][0]);
+	EXPECT_EQ(col1, A1[2][1]);
+	EXPECT_EQ(col2, A1[2][2]);
+
+	std::vector<double> rowOne = A1again[0];
+//	std::cerr << "rowOne * 2: " << endl;
+	for (std::vector<double>::iterator loc = rowOne.begin();
+			loc != rowOne.end(); ++loc)
+	{
+		*loc *= 2;
+//		std::cerr << *loc << endl;
+	}
+
+	matrix times3 = A1again * 3.0;
+	A1again.addRows(rowOne, 0, 0);
+
+//	std::cerr << "A1again + rowOne: " << endl << A1again << std::endl << std::endl
+//			<< "times3 : " << endl << times3 << std::endl << std::endl;
+
+	EXPECT_TRUE(times3[0] == A1again[0]);
 }

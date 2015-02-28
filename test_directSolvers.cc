@@ -76,19 +76,36 @@ TEST_F (directSolverTests, findPivot)
 	EXPECT_EQ(3, pivot);
 }
 
-/**
-TEST_F (iterativeSolverTests, jacobi1)
+TEST_F (directSolverTests, gaussianElimination)
 {
-	matrix x1test(A1.numcols(), 1, 1.0);
-	int numIterations = IterativeSolvers::jacobi(A1, x1test, b1);
+	matrix x2test(A2.numrows(), 1, 1.0);
+	directSolvers::gaussianElimination(A2, x2test, b2);
 
-	double errLimit = 0.00005;
-	double err1 = relError(x1test, x1);
-	cerr << "numIterations: " << numIterations << endl;
+//	EXPECT_TRUE(x2 == x2test);
+	double errLimit = 0.000001;
+	double err1 = relError(x2test, x2);
 	cerr << "Calculated relative error: " << endl << err1 << endl;
-
 	EXPECT_LT(err1, errLimit);
-
 }
-*/
+
+TEST_F (directSolverTests, gaussianElimination2)
+{
+	matrix morrisA, morrisX, morrisB;
+
+	ifstream morrisSample("SAMPLEdata.txt");
+	ifstream morrisSol("SAMPLEsol.txt");
+
+	MatrixGenerator::readMatrixFromFile(morrisSample, morrisA, morrisB);
+	MatrixGenerator::readMatrixFromFile(morrisSol, morrisX);
+
+	matrix morrisXtest(morrisA.numrows(), 1);
+
+	directSolvers::gaussianElimination(morrisA, morrisXtest, morrisB);
+
+//	EXPECT_TRUE(x2 == x2test);
+	double errLimit = 0.00001;
+	double err1 = relError(morrisX, morrisXtest);
+	cerr << "Calculated relative error: " << endl << err1 << endl;
+	EXPECT_LT(err1, errLimit);
+}
 

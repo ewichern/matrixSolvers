@@ -8,6 +8,7 @@
 #include "denseMatrix.h"
 #include "matrixGenerator.h"
 #include "IterativeSolvers.h"
+#include "directSolvers.h"
 #include <iostream>
 #include <random>
 #include <string>
@@ -19,7 +20,7 @@ using namespace std;
 typedef denseMatrix<double> matrix;
 enum solvers
 {
-	cancel = -1, jacobi = 1, gaussSeidel = 2, SOR = 3
+	cancel = -1, jacobi = 1, gaussSeidel = 2, SOR = 3, GE = 4
 };
 
 int printMenuOptions(istream& input)
@@ -56,12 +57,15 @@ int printSolverOptions(istream& input)
 	std::cout << "1 - Jacobi Method" << std::endl;
 	std::cout << "2 - Gauss-Seidel Method" << std::endl;
 	std::cout << "3 - Successive Over Relaxation Method" << std::endl;
-	std::cout << "4 - Cancel" << std::endl;
+	std::cout
+			<< "4 - Gaussian Elimination (warning: rounding errors increase with matrix size)"
+			<< std::endl;
+	std::cout << "5 - Cancel" << std::endl;
 	std::cout << "Enter selection : " << std::endl;
 
 	int selection;
 
-	while (!(input >> selection) || ((selection < 1) || (selection > 4)))
+	while (!(input >> selection) || ((selection < 1) || (selection > 5)))
 	{
 		input.clear();
 		input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -224,6 +228,8 @@ string getSolverName(int enumValue)
 		return "Gauss-Seidel method";
 	case SOR:
 		return "Successive Over-Relaxing";
+	case GE:
+		return "Gaussian Elimination";
 	default:
 		return "invalid value";
 	}
@@ -251,31 +257,40 @@ int executeSolver(istream& input, int selection, const matrix& A, matrix& x,
 
 	switch (selection)
 	{
+	case GE:
+		t_0 = clock();
+		directSolvers::gaussianElimination(A, x, b);
+		t_end = clock();
+		break;
 	case SOR:
 		t_0 = clock();
 		getRelaxationConstant(omega, input);
 		numIterations = IterativeSolvers::successiveOverRelaxing(omega, A, x,
 				b);
+		cout << endl << "Solved in " << numIterations << " iterations using "
+				<< getSolverName(selection) << "." << endl;
 		t_end = clock();
 		break;
 	case gaussSeidel:
 		t_0 = clock();
 		numIterations = IterativeSolvers::gaussSeidel(A, x, b);
+		cout << endl << "Solved in " << numIterations << " iterations using "
+				<< getSolverName(selection) << "." << endl;
 		t_end = clock();
 		break;
 	case jacobi:
 	default:
 		t_0 = clock();
 		numIterations = IterativeSolvers::jacobi(A, x, b);
+		cout << endl << "Solved in " << numIterations << " iterations using "
+				<< getSolverName(selection) << "." << endl;
 		t_end = clock();
 		break;
 	}
-	cout << endl << "Solved in " << numIterations << " iterations using "
-			<< getSolverName(selection) << "." << endl;
 // matrix bTest = A * x;
 // double err = relError(b, bTest);
-	std::cout << "Relative error of solver solution: " << relError(b, (A * x))
-			<< endl;
+	std::cout << "Relative error of " << getSolverName(selection)
+			<< " solution: " << relError(b, (A * x)) << endl;
 	std::cout << "Calculations took "
 			<< ((float) (t_end - t_0)) / CLOCKS_PER_SEC << " seconds." << endl
 			<< endl;
@@ -292,8 +307,11 @@ solvers solverMenu(istream& input)
 
 	switch (menuSelection)
 	{
-	case 4:
+	case 5:
 		solverSelection = cancel;
+		break;
+	case GE:
+		solverSelection = GE;
 		break;
 	case SOR:
 		solverSelection = SOR;

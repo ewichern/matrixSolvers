@@ -8,6 +8,7 @@ CC_SRCS += \
 
 CPP_SRCS += \
 ../IterativeSolvers.cpp \
+../directSolvers.cpp \
 ../matrixGenerator.cpp \
 ../solversDriver.cpp 
 
@@ -16,12 +17,14 @@ CC_DEPS += \
 
 OBJS += \
 ./IterativeSolvers.o \
+./directSolvers.o \
 ./matrixGenerator.o \
 ./solversDriver.o \
 ./test_denseMatrix.o 
 
 CPP_DEPS += \
 ./IterativeSolvers.d \
+./directSolvers.d \
 ./matrixGenerator.d \
 ./solversDriver.d 
 
