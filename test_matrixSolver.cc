@@ -37,25 +37,25 @@ TEST_F (matrixSolverTests, printMenuOptions)
 {
 	int menuOutput = 999;
 
-	stringstream input("0 \n 4");
+	stringstream input("7 \n 4");
 	menuOutput = printMenuOptions(input);
 	EXPECT_EQ(4, menuOutput);
-	std::cerr << "menuOutput: " << menuOutput << endl;
+//	std::cerr << "menuOutput: " << menuOutput << endl;
 
 	input.str("-414 \n 3");
 	menuOutput = printMenuOptions(input);
 	EXPECT_EQ(3, menuOutput);
-	std::cerr << "menuOutput: " << menuOutput << endl;
+//	std::cerr << "menuOutput: " << menuOutput << endl;
 
 	input.str("asdf;aadsf -01234=5 \n 2");
 	menuOutput = printMenuOptions(input);
 	EXPECT_EQ(2, menuOutput);
-	std::cerr << "menuOutput: " << menuOutput << endl;
+//	std::cerr << "menuOutput: " << menuOutput << endl;
 
 	input.str("9999 \n 1");
 	menuOutput = printMenuOptions(input);
 	EXPECT_EQ(1, menuOutput);
-	std::cerr << "menuOutput: " << menuOutput << endl;
+//	std::cerr << "menuOutput: " << menuOutput << endl;
 
 }
 
@@ -104,11 +104,11 @@ TEST_F (matrixSolverTests, inputABfromFile)
 	EXPECT_EQ(b.numrows(), 0);
 	EXPECT_EQ(b.numrows(), 0);
 
-	std::cerr << input1.str() << endl;
+//	std::cerr << input1.str() << endl;
 	inputFileName = inputABfromFile(input1, A, b);
 	EXPECT_EQ(failureOutput, inputFileName);
 
-	std::cerr << input2.str() << endl;
+//	std::cerr << input2.str() << endl;
 	inputFileName = inputABfromFile(input2, A, b);
 	EXPECT_EQ(successOutput, inputFileName);
 
@@ -132,11 +132,11 @@ TEST_F (matrixSolverTests, inputXfromFile)
 	EXPECT_EQ(x.numrows(), 0);
 	EXPECT_EQ(x.numcols(), 0);
 
-	std::cerr << input1.str() << endl;
+//	std::cerr << input1.str() << endl;
 	inputFileName = inputXfromFile(input1, x);
 	EXPECT_EQ(failureOutput, inputFileName);
 
-	std::cerr << input2.str() << endl;
+//	std::cerr << input2.str() << endl;
 	inputFileName = inputXfromFile(input2, x);
 	EXPECT_EQ(successOutput, inputFileName);
 

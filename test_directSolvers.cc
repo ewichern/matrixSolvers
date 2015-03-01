@@ -109,3 +109,49 @@ TEST_F (directSolverTests, gaussianElimination2)
 	EXPECT_LT(err1, errLimit);
 }
 
+TEST_F (directSolverTests, LUdecomposition)
+{
+	matrix x1test(A1.numrows(), 1, 1.0);
+	directSolvers::LUdecomposition(A1, x1test, b1);
+
+//	EXPECT_TRUE(x2 == x2test);
+	double errLimit = 0.000001;
+	double err1 = relError(x1test, x1);
+	cerr << "Calculated relative error: " << endl << err1 << endl;
+	EXPECT_LT(err1, errLimit);
+}
+
+TEST_F (directSolverTests, LUdecomposition1)
+{
+	matrix x2test(A2.numrows(), 1, 1.0);
+	directSolvers::LUdecomposition(A2, x2test, b2);
+
+//	EXPECT_TRUE(x2 == x2test);
+	double errLimit = 0.000001;
+	double err1 = relError(x2test, x2);
+	cerr << "Calculated relative error: " << endl << err1 << endl;
+	EXPECT_LT(err1, errLimit);
+}
+
+TEST_F (directSolverTests, LUdecomposition2)
+{
+	matrix morrisA, morrisX, morrisB;
+
+	ifstream morrisSample("SAMPLEdata.txt");
+	ifstream morrisSol("SAMPLEsol.txt");
+
+	MatrixGenerator::readMatrixFromFile(morrisSample, morrisA, morrisB);
+	MatrixGenerator::readMatrixFromFile(morrisSol, morrisX);
+	morrisSample.close();
+	morrisSol.close();
+
+	matrix morrisXtest(morrisA.numrows(), 1);
+
+	directSolvers::LUdecomposition(morrisA, morrisXtest, morrisB);
+
+//	EXPECT_TRUE(x2 == x2test);
+	double errLimit = 0.00001;
+	double err1 = relError(morrisX, morrisXtest);
+	cerr << "Calculated relative error: " << endl << err1 << endl;
+	EXPECT_LT(err1, errLimit);
+}

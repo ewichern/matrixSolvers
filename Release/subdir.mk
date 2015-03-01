@@ -12,6 +12,18 @@ CPP_SRCS += \
 ../matrixGenerator.cpp \
 ../solversDriver.cpp 
 
+O_SRCS += \
+../IterativeSolvers.o \
+../directSolvers.o \
+../googleTestsMain.o \
+../matrixGenerator.o \
+../solversDriver.o \
+../test_denseMatrix.o \
+../test_directSolvers.o \
+../test_iterativeSolvers.o \
+../test_matrixGenerator.o \
+../test_matrixSolver.o 
+
 CC_DEPS += \
 ./test_denseMatrix.d 
 

@@ -20,7 +20,7 @@ using namespace std;
 typedef denseMatrix<double> matrix;
 enum solvers
 {
-	cancel = -1, jacobi = 1, gaussSeidel = 2, SOR = 3, GE = 4
+	cancel = -1, jacobi = 1, gaussSeidel = 2, SOR = 3, GE = 4, LU = 5
 };
 
 int printMenuOptions(istream& input)
@@ -35,12 +35,12 @@ int printMenuOptions(istream& input)
 			<< endl;
 	cout << "6 - Print most recent solution -- a solver should be run first "
 			<< "using option 5." << endl;
-	cout << "7 - Exit." << endl;
+	cout << "0 - Exit." << endl;
 	cout << "Enter selection : " << endl;
 
 	int selection;
 
-	while (!(input >> selection) || ((selection < 1) || (selection > 7)))
+	while (!(input >> selection) || ((selection < 0) || (selection > 6)))
 	{
 		input.clear();
 		input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -60,12 +60,13 @@ int printSolverOptions(istream& input)
 	std::cout
 			<< "4 - Gaussian Elimination (warning: rounding errors increase with matrix size)"
 			<< std::endl;
-	std::cout << "5 - Cancel" << std::endl;
+	std::cout << "5 - LU decomposition" << std::endl;
+	std::cout << "0 - Cancel" << std::endl;
 	std::cout << "Enter selection : " << std::endl;
 
 	int selection;
 
-	while (!(input >> selection) || ((selection < 1) || (selection > 5)))
+	while (!(input >> selection) || ((selection < 0) || (selection > 5)))
 	{
 		input.clear();
 		input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -230,6 +231,8 @@ string getSolverName(int enumValue)
 		return "Successive Over-Relaxing";
 	case GE:
 		return "Gaussian Elimination";
+	case LU:
+		return "LU decomposition";
 	default:
 		return "invalid value";
 	}
@@ -247,7 +250,7 @@ void multiplyAx(const matrix& A, const matrix& x, matrix& b)
 	cout << "A * x = " << endl << b << endl;
 }
 
-int executeSolver(istream& input, int selection, const matrix& A, matrix& x,
+int executeSolver(istream& input, int selection, matrix& A, matrix& x,
 		const matrix& b)
 {
 	clock_t t_0, t_end;
@@ -257,6 +260,11 @@ int executeSolver(istream& input, int selection, const matrix& A, matrix& x,
 
 	switch (selection)
 	{
+	case LU:
+		t_0 = clock();
+		directSolvers::LUdecomposition(A, x, b);
+		t_end = clock();
+		break;
 	case GE:
 		t_0 = clock();
 		directSolvers::gaussianElimination(A, x, b);
@@ -287,10 +295,12 @@ int executeSolver(istream& input, int selection, const matrix& A, matrix& x,
 		t_end = clock();
 		break;
 	}
-// matrix bTest = A * x;
-// double err = relError(b, bTest);
-	std::cout << "Relative error of " << getSolverName(selection)
-			<< " solution: " << relError(b, (A * x)) << endl;
+
+	if (selection != LU)
+	{
+		std::cout << "Relative error of " << getSolverName(selection)
+				<< " solution: " << relError(b, (A * x)) << endl;
+	}
 	std::cout << "Calculations took "
 			<< ((float) (t_end - t_0)) / CLOCKS_PER_SEC << " seconds." << endl
 			<< endl;
@@ -307,8 +317,8 @@ solvers solverMenu(istream& input)
 
 	switch (menuSelection)
 	{
-	case 5:
-		solverSelection = cancel;
+	case LU:
+		solverSelection = LU;
 		break;
 	case GE:
 		solverSelection = GE;
@@ -320,8 +330,11 @@ solvers solverMenu(istream& input)
 		solverSelection = gaussSeidel;
 		break;
 	case jacobi:
-	default:
 		solverSelection = jacobi;
+		break;
+	case 0:
+	default:
+		solverSelection = cancel;
 		break;
 	}
 
@@ -331,7 +344,7 @@ solvers solverMenu(istream& input)
 string mainMenu(istream& input)
 {
 //TODO unit test
-	int menuSelection = 0;
+	int menuSelection = -1;
 	stringstream menuHistory;
 
 	solvers solverSelection = jacobi;
@@ -339,7 +352,7 @@ string mainMenu(istream& input)
 
 	matrix A, x, b;
 
-	while (menuSelection != 7)
+	while (menuSelection != 0)
 	{
 		menuSelection = printMenuOptions(input);
 		menuHistory << menuSelection;
@@ -372,6 +385,7 @@ string mainMenu(istream& input)
 		case 6:
 			printSolution(x);
 			break;
+		case 0:
 		default:
 			break;
 		}

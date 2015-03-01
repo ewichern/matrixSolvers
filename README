@@ -1,7 +1,7 @@
 
 #####################################################################
-# There are pre-compiled Linux executables in the bin/ directory for both my
-# Google Test suite and the regular (menu-based) solver driver.
+# There are pre-compiled Linux executables in the bin/ directory for 
+# both my Google Test suite and the regular (menu-based) solver driver.
 #####################################################################
 
 
@@ -19,8 +19,4 @@
 // "make clean"
 	should remove all the cruft from either/both builds
 
-// And finally - the program executable can be run with a command line argument
-specifying an Ab matrix data file. It will automatically spit out the 
-results of the solver and the relative error. It only runs Jacobi at the 
-moment... I should probably allow a 2nd argument so that the user can specify 
-a solver.
+// And finally - the program executable can be run with a command line argument specifying an Ab matrix data file. It will automatically spit out the results of the solver and the relative error. It only runs Jacobi at the moment... I should probably allow a 2nd argument so that the user can specify a solver.
