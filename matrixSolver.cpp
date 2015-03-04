@@ -162,6 +162,8 @@ string generateMatrixDataFiles(istream& input, matrix& A, matrix& b)
 
 	double min = -100.0;
 	double max = 100.0;
+//	double min = 90.0;
+//	double max = 100.0;
 	string filenameRoot = "";
 
 	filenameRoot = getFilenameRoot(input);

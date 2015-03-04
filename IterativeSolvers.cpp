@@ -54,10 +54,9 @@ int IterativeSolvers::jacobi(const matrix& A, matrix& x_old, const matrix& b)
 
 	//std::cerr << "Relative error of Jacobi solution: " << err << endl;
 	return iterationCount;
-
 }
 
-int IterativeSolvers::gaussSeidel(const matrix& A, matrix& x_k, const matrix& b)
+int IterativeSolvers::gaussSeidel(const matrix& A, matrix& x_old, const matrix& b)
 {
 	if (!(A.numcols() == A.numrows()) || !(A.numcols() == b.numrows()))
 	{
@@ -71,6 +70,8 @@ int IterativeSolvers::gaussSeidel(const matrix& A, matrix& x_k, const matrix& b)
 	int iterationCount = 0;
 	double errLimit = 0.00001;
 	double err = 1.0;
+
+	matrix x_new(x_old);
 
 	while (err > errLimit)
 	{
@@ -80,28 +81,37 @@ int IterativeSolvers::gaussSeidel(const matrix& A, matrix& x_k, const matrix& b)
 			double rowSum = b[i][0];
 			for (int j = 0; j < A.numcols(); ++j)
 			{
-				if (j != i)
+				if (j < i)
 				{
-					rowSum -= (A[i][j] * x_k[j][0]);
+					rowSum -= (A[i][j] * x_new[j][0]);
 				}
+				else if (j > i)
+				{
+					rowSum -= (A[i][j] * x_old[j][0]);
+				}
+
+//				if (j != i)
+//				{
+//					rowSum -= (A[i][j] * x_old[j][0]);
+//				}
 			}
-			x_k[i][0] = (rowSum / A[i][i]);
+			x_new[i][0] = (rowSum / A[i][i]);
 		}
 		++iterationCount;
+		err = relError(x_old, x_new);
+		
+		x_old = x_new;
 
-		//std::cerr << "iterationCount: " << iterationCount << std::endl;
-		//std::cerr << "x_k: " << endl << x_k << std::endl;
-		matrix bTest = A * x_k;
-		err = relError(bTest, b);
-
+//		std::cerr << "iterationCount: " << iterationCount << std::endl;
+//		std::cerr << "x_old: " << endl << x_old << std::endl;
+//		matrix bTest = A * x_old;
 	}
 
 	//std::cerr << "Relative error of Jacobi solution: " << err << endl;
 	return iterationCount;
-
 }
 
-int IterativeSolvers::successiveOverRelaxing(const double omega, const matrix& A, matrix& x_k, const matrix& b)
+int IterativeSolvers::successiveOverRelaxing(const double omega, const matrix& A, matrix& x_old, const matrix& b)
 {
 	if (!(A.numcols() == A.numrows()) || !(A.numcols() == b.numrows()))
 	{
@@ -116,39 +126,54 @@ int IterativeSolvers::successiveOverRelaxing(const double omega, const matrix& A
 	double errLimit = 0.00001;
 	double err = 1.0;
 
-	while (err > errLimit)
+	matrix x_new(x_old);
+
+	while ((err > errLimit) && (err < 10))
 	{
 		for (int i = 0; i < A.numrows(); ++i)
 		{
 //			std::cerr << " " << i;
 			double sigma = 0;
-			double x_old = x_k[i][0];
 
 			for (int j = 0; j < A.numcols(); ++j)
 			{
-				if (j != i)
+				if (j < i)
 				{
-					sigma += (A[i][j] * x_k[j][0]);
+					sigma += (A[i][j] * x_new[j][0]);
 				}
+				else if (j > i)
+				{
+					sigma += (A[i][j] * x_old[j][0]);
+				}
+
+//				if (j != i)
+//				{
+//					sigma += (A[i][j] * x_old[j][0]);
+//				}
 			}
 
 			double bMinusSigma = b[i][0] - sigma;
 
-			double new_xValue = x_old + (omega * ((bMinusSigma / A[i][i]) - x_old));
+//			x_new[i][0] = x_old[i][0] + (omega * ((bMinusSigma / A[i][i]) - x_old[i][0]));
 
-//			double new_xValue = ((1.0 - omega) * x_old) + ((omega / A[i][i]) * bMinusSigma);
+			x_new[i][0] = ((1.0 - omega) * x_old[i][0]) + ((omega / A[i][i]) * bMinusSigma);
 
-			x_k[i][0] = new_xValue;
 		}
 		++iterationCount;
+		err = relError(x_old, x_new);
+		
+		x_old = x_new;
 
 //		std::cerr << "iterationCount: " << iterationCount << std::endl;
-//		std::cerr << "x_k: " << endl << x_k << std::endl;
-		matrix bTest = A * x_k;
-		err = relError(bTest, b);
-//		std::cerr << "Relative error of SOR solution: " << err << endl;
+//		std::cerr << "x_old: " << endl << x_old << std::endl;
+//		matrix bTest = A * x_old;
 	}
 
+	if (err >=10)
+	{
+		std::cout << "ALERT: SOR diverges using " << omega << " as a relaxation constant."
+			<< " Perhaps choose another and try again?" << std::endl;
+		std::cout << "Relative error of SOR solution: " << err << std::endl;
+	}
 	return iterationCount;
-
 }
