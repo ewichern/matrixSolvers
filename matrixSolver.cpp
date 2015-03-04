@@ -255,7 +255,7 @@ int executeSolver(istream& input, int selection, matrix& A, matrix& x,
 {
 	clock_t t_0, t_end;
 	int numIterations = -1;
-	x = matrix(A.numcols(), 1, 1.0);
+	x = matrix(A.numcols(), 1, 0.1);
 	double omega = 1.4;
 
 	switch (selection)
@@ -296,7 +296,7 @@ int executeSolver(istream& input, int selection, matrix& A, matrix& x,
 		break;
 	}
 
-	if (selection != LU)
+	if (selection == jacobi || selection == gaussSeidel || selection == SOR)
 	{
 		std::cout << "Relative error of " << getSolverName(selection)
 				<< " solution: " << relError(b, (A * x)) << endl;

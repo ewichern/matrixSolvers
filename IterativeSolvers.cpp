@@ -9,7 +9,7 @@
 #include <exception>
 
 
-int IterativeSolvers::jacobi(const matrix& A, matrix& x_k, const matrix& b)
+int IterativeSolvers::jacobi(const matrix& A, matrix& x_old, const matrix& b)
 {
 	if (!(A.numcols() == A.numrows()) || !(A.numcols() == b.numrows()))
 	{
@@ -24,7 +24,7 @@ int IterativeSolvers::jacobi(const matrix& A, matrix& x_k, const matrix& b)
 	double errLimit = 0.00001;
 	double err = 1.0;
 
-	matrix x_kPlus1(x_k);
+	matrix x_new(x_old);
 
 	while (err > errLimit)
 	{
@@ -36,18 +36,19 @@ int IterativeSolvers::jacobi(const matrix& A, matrix& x_k, const matrix& b)
 			{
 				if (j != i)
 				{
-					rowSum += (A[i][j] * x_k[j][0]);
+					rowSum += (A[i][j] * x_old[j][0]);
 				}
 			}
-			x_kPlus1[i][0] = ((b[i][0] - rowSum) / A[i][i]);
+			x_new[i][0] = ((b[i][0] - rowSum) / A[i][i]);
 		}
 		++iterationCount;
-		x_k = x_kPlus1;
+		err = relError(x_old, x_new);
+		
+		x_old = x_new;
 
 //		std::cerr << "iterationCount: " << iterationCount << std::endl;
-//		std::cerr << "x_k: " << endl << x_k << std::endl;
-		matrix bTest = A * x_k;
-		err = relError(bTest, b);
+//		std::cerr << "x_old: " << endl << x_old << std::endl;
+//		matrix bTest = A * x_old;
 
 	}
 
@@ -120,23 +121,22 @@ int IterativeSolvers::successiveOverRelaxing(const double omega, const matrix& A
 		for (int i = 0; i < A.numrows(); ++i)
 		{
 //			std::cerr << " " << i;
-			double rowSum = b[i][0];
+			double sigma = 0;
 			double x_old = x_k[i][0];
 
 			for (int j = 0; j < A.numcols(); ++j)
 			{
 				if (j != i)
 				{
-					rowSum -= (A[i][j] * x_k[j][0]);
+					sigma += (A[i][j] * x_k[j][0]);
 				}
 			}
 
-//			rowSum = (rowSum / A[i][i]);
-//			double new_xValue = x_old + (omega * (rowSum - x_old));
+			double bMinusSigma = b[i][0] - sigma;
 
-			double new_xValue = x_old + (omega * ((rowSum / A[i][i]) - x_old));
+			double new_xValue = x_old + (omega * ((bMinusSigma / A[i][i]) - x_old));
 
-//			double new_xValue = ((1.0 - omega) * x_old) + (omega  * (rowSum / A[i][i]));
+//			double new_xValue = ((1.0 - omega) * x_old) + ((omega / A[i][i]) * bMinusSigma);
 
 			x_k[i][0] = new_xValue;
 		}

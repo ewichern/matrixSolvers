@@ -65,15 +65,16 @@ public:
 	{
 		int nCols = 0;
 		// std::cerr << (numrows() ? array.at(0).size() : 0) << endl;
-		// return (numrows() ? array.at(0).size() : 0);
 		if (numrows() == 0)
 		{
 			nCols = 0;
 		}
 		else
 		{
-			const_arrayIterator row = array.begin();
-			nCols = row->size();
+			//const_arrayIterator row = array.begin();
+			//nCols = row->size();
+
+			nCols = array.at(0).size();
 		}
 		return nCols;
 	}
@@ -496,25 +497,34 @@ std::ostream& operator<<(std::ostream& out, const denseMatrix<Object>& m)
 }
 
 template<typename Object>
-double relError(const denseMatrix<Object>& left,
-		const denseMatrix<Object>& right)
+double relError(const denseMatrix<Object>& est,
+		const denseMatrix<Object>& actual)
 {
 
-	if (!(left.numrows() == right.numrows())
-			|| !(left.numcols() == right.numcols()))
+	if (!(est.numrows() == actual.numrows())
+			|| !(est.numcols() == actual.numcols()))
 	{
 		throw std::logic_error("Matrix size mismatch");
 	}
 
-	denseMatrix<Object> diff = left - right;
+	//denseMatrix<Object> diff = est - actual;
+	//
+	// Removing the matrix subraction here for efficiency
+	// Can do the diff calculations in the same loops as the ^2 below
+	
 	double diffSumOfSquares = 0.0;
+	double actualSumOfSquares = 0.0;
 
-	for (int i = 0; i < diff.numrows(); ++i)
+	for (int i = 0; i < est.numrows(); ++i)
 	{
-		for (int j = 0; j < diff.numcols(); ++j)
+		for (int j = 0; j < est.numcols(); ++j)
 		{
-			double diffSquared = pow((diff[i][j]), 2.0);
+			//double diffSquared = pow((diff[i][j]), 2.0);
+			double diffSquared = pow((est[i][j] - actual[i][j]), 2.0);
+			double actualSquared = pow(actual[i][j], 2.0);
+
 			diffSumOfSquares += diffSquared;
+			actualSumOfSquares += actualSquared;
 
 			/*
 			 std::cerr << "diff[" << i << "][" << j << "]:" << std::endl;
@@ -525,7 +535,7 @@ double relError(const denseMatrix<Object>& left,
 		}
 	}
 
-	double err = sqrt(diffSumOfSquares);
+	double err = (sqrt(diffSumOfSquares) / sqrt(actualSumOfSquares));
 	//std::cerr << "relError: " << err << endl;
 	return err;
 
