@@ -35,6 +35,8 @@ int directSolvers::findPivot(const matrix& A, int column)
 
 /*
  * Backsolve for matrix in Upper Echelon form
+ * @param A		reference to *augmented* matrix A, has already been converted to REF or RREF
+ * @param x		reference to vector solution variables
  */
 void directSolvers::backsolve(matrix& A, matrix& x)
 {
@@ -74,6 +76,11 @@ void directSolvers::backsolve(matrix& A, matrix& x)
  * This is primarily for my LU implementation. It operates differently
  * due to assumptions we must make when we change the A matrix to
  * use it for storage of both L and U.
+ *
+ * @param U		reference to Upper triangular matrix U where where A = LDU
+ * @param x		reference to the original x vector which will be solved in this sweep
+ * @param y		const reference to intermediate vector y, where if LUx=b, then Ux=y and Ly=b
+ * @return void
  */
 void directSolvers::LUbacksolve(matrix& U, matrix& x, const matrix& y)
 {
@@ -107,13 +114,18 @@ void directSolvers::LUbacksolve(matrix& U, matrix& x, const matrix& y)
 }
 
 /*
- * Backsolve for matrix in Upper Echelon form
+ * Forward sweep for LU solver
+ *
+ * @param L		reference to Lower triangular matrix + Diagonal for LU solver, where A = LDU
+ * @param y		reference to y (y is an intermedia vector where if LUx = b -> Ux = y and Ly = b)
+ * @param b		const reference to the vector b
+ * @return void
  */
 void directSolvers::forwardSolve(matrix& L, matrix& y, const matrix& b)
 {
 	int n = L.numrows() - 1;
 
-//	std::cerr << "Walking through the backsolve -- " << std::endl;
+//	std::cerr << "Walking through the forward sweep -- " << std::endl;
 	/*
 	 * Solve for y_n
 	 */
@@ -121,7 +133,7 @@ void directSolvers::forwardSolve(matrix& L, matrix& y, const matrix& b)
 //	std::cerr << "y[" << n << "]: " << y[n][0] << std::endl;
 
 	/*
-	 * Backsolve from row 1 to row n;
+	 * Sweep from row 1 to row n;
 	 */
 	for (int i = 1; i <= n; ++i)
 	{

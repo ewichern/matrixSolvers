@@ -25,4 +25,5 @@ C_DEPS :=
 SUBDIRS := \
 . \
 gtest \
+.metadata/.plugins/org.eclipse.cdt.make.core \
 
