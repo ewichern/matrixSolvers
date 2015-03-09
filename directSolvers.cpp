@@ -16,7 +16,7 @@
  *
  * @param column 	column in which we are going to find the pivot row. all previous columns have been processed.
  * @param A		const reference to a diagonally dominant matrix.
- * @return 		the row with the largest value to be used as the pivot column.
+ * @return int 		the row with the largest value to be used as the pivot column.
  */
 int directSolvers::findPivot(const matrix& A, int column)
 {
@@ -37,6 +37,7 @@ int directSolvers::findPivot(const matrix& A, int column)
  * Backsolve for matrix in Upper Echelon form
  * @param A		reference to *augmented* matrix A, has already been converted to REF or RREF
  * @param x		reference to vector solution variables
+ * @return void
  */
 void directSolvers::backsolve(matrix& A, matrix& x)
 {
@@ -228,7 +229,13 @@ void directSolvers::gaussianElimination(matrix& A, matrix& x, const matrix& b)
 	backsolve(A, x);
 }
 
-
+/*
+ * Performs Crout decomposition on a square matrix.
+ * Used in LU solver. Overwrites A with LU - U assumes 1s on the diagonal.
+ *
+ * @param A 	reference to square matrix A to be decomposed into Upper and Lower matrices *** A is overwritten
+ * @return void
+ */
 void directSolvers::decomp(matrix& A)
 {
 	int n = A.numrows() - 1;
