@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CC_SRCS += \
 ../googleTestsMain.cc \
+../test_bracketSolvers.cc \
 ../test_denseMatrix.cc \
 ../test_directSolvers.cc \
 ../test_iterativeSolvers.cc \
@@ -13,11 +14,13 @@ CC_SRCS += \
 
 CPP_SRCS += \
 ../IterativeSolvers.cpp \
+../bracketSolvers.cpp \
 ../directSolvers.cpp \
 ../matrixGenerator.cpp 
 
 CC_DEPS += \
 ./googleTestsMain.d \
+./test_bracketSolvers.d \
 ./test_denseMatrix.d \
 ./test_directSolvers.d \
 ./test_iterativeSolvers.d \
@@ -26,9 +29,11 @@ CC_DEPS += \
 
 OBJS += \
 ./IterativeSolvers.o \
+./bracketSolvers.o \
 ./directSolvers.o \
 ./googleTestsMain.o \
 ./matrixGenerator.o \
+./test_bracketSolvers.o \
 ./test_denseMatrix.o \
 ./test_directSolvers.o \
 ./test_iterativeSolvers.o \
@@ -37,6 +42,7 @@ OBJS += \
 
 CPP_DEPS += \
 ./IterativeSolvers.d \
+./bracketSolvers.d \
 ./directSolvers.d \
 ./matrixGenerator.d 
 

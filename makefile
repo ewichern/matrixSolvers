@@ -3,6 +3,7 @@ CPPS=IterativeSolvers.cpp directSolvers.cpp matrixGenerator.cpp
 TESTS=googleTestsMain.cc test_denseMatrix.cc test_matrixGenerator.cc \
 	 test_iterativeSolvers.cc \
 	 test_directSolvers.cc \
+	 test_bracketSolvers.cc \
 	test_matrixSolver.cc \
 	./gtest/gtest-all.cc \
 	# test_sparseMatrix.cc
@@ -78,6 +79,7 @@ clean:
 	-rm -f $(TARGET) $(OBJS) $(DEPENDENCIES) make.dep 
 	-rm -f $(DEBUGTARGET) $(TESTOBJS) $(TESTDEPENDENCIES) tests.dep
 	-rm -f solversDriver.o solversDriver.d
+	-rm -f unitTest*
 
 make.dep: $(DEPENDENCIES)
 	-cat $(DEPENDENCIES) > $@
