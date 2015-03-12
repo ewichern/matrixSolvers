@@ -15,9 +15,9 @@ class bracketSolvers
 {
 public:
 
-	static double bisection(double (*functionPtr)(double), double, double, int&,
-			double&, double);
-	static double relErr (double, double);
+	static double bisection(double (*functionPtr)(double), double, double, int&, double);
+	static double falsePosition(double (*functionPtr)(double), double, double, int&, double);
+	static double relErr(double, double);
 };
 
 #endif /* BRACKETSOLVERS_H_ */
