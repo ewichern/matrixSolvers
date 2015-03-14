@@ -291,3 +291,9 @@ TEST_F (denseMatrixTests, addRows)
 
 	EXPECT_TRUE(times3[0] == A1again[0]);
 }
+
+TEST_F (denseMatrixTests, transpose)
+{
+
+}
+
