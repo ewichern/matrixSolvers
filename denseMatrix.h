@@ -42,6 +42,7 @@ public:
 	denseMatrix<Object>& multiplyRow(int, double);
 	denseMatrix<Object>& addRows(int, int, int);
 	denseMatrix<Object>& addRows(vector<Object>&, int, int);
+//	denseMatrix<Object>& transpose();
 
 	typedef typename std::vector<std::vector<Object>>::iterator arrayIterator;
 	typedef typename std::vector<std::vector<Object>>::const_iterator const_arrayIterator;
@@ -250,7 +251,8 @@ void denseMatrix<Object>::eye(int rows, int cols)
  * be equal in both matrices and right.numcols() must == 1.
  */
 template<typename Object>
-denseMatrix<Object>& denseMatrix<Object>::augment(const denseMatrix<Object>& right)
+denseMatrix<Object>& denseMatrix<Object>::augment(
+		const denseMatrix<Object>& right)
 {
 	if (!(array.size() == right.numrows()) || !(right.numcols() == 1))
 	{
@@ -269,10 +271,11 @@ denseMatrix<Object>& denseMatrix<Object>::augment(const denseMatrix<Object>& rig
 template<typename Object>
 denseMatrix<Object>& denseMatrix<Object>::swapRows(int rowOne, int rowTwo)
 {
-	if ((rowOne < 0) || (rowOne > array.size()) ||
-	(rowTwo < 0) || (rowTwo > array.size()))
+	if ((rowOne < 0) || (rowOne > array.size()) || (rowTwo < 0)
+			|| (rowTwo > array.size()))
 	{
-		throw std::out_of_range("parameters given are outside of matrix boundaries");
+		throw std::out_of_range(
+				"parameters given are outside of matrix boundaries");
 	}
 
 	array.at(rowOne).swap(array.at(rowTwo));
@@ -280,11 +283,13 @@ denseMatrix<Object>& denseMatrix<Object>::swapRows(int rowOne, int rowTwo)
 }
 
 template<typename Object>
-denseMatrix<Object>& denseMatrix<Object>::swapRows(std::vector<Object>& swapRow, int rowOne)
+denseMatrix<Object>& denseMatrix<Object>::swapRows(std::vector<Object>& swapRow,
+		int rowOne)
 {
 	if ((rowOne < 0) || (rowOne > array.size()))
 	{
-		throw std::out_of_range("parameters given are outside of matrix boundaries");
+		throw std::out_of_range(
+				"parameters given are outside of matrix boundaries");
 	}
 
 	std::vector<Object>& row1 = array.at(rowOne);
@@ -298,10 +303,11 @@ denseMatrix<Object>& denseMatrix<Object>::multiplyRow(int rowNum, double scaler)
 {
 	if ((rowNum < 0) || (rowNum > array.size()))
 	{
-		throw std::out_of_range("parameters given are outside of matrix boundaries");
+		throw std::out_of_range(
+				"parameters given are outside of matrix boundaries");
 	}
 
-	vector <Object>& row = array.at(rowNum);
+	vector<Object>& row = array.at(rowNum);
 	for (int i = 0; i < row.size(); ++i)
 	{
 		row[i] = scaler * row[i];
@@ -310,18 +316,20 @@ denseMatrix<Object>& denseMatrix<Object>::multiplyRow(int rowNum, double scaler)
 }
 
 template<typename Object>
-denseMatrix<Object>& denseMatrix<Object>::addRows(int rowOne, int rowTwo, int destinationRow)
+denseMatrix<Object>& denseMatrix<Object>::addRows(int rowOne, int rowTwo,
+		int destinationRow)
 {
-	if ((rowOne < 0) || (rowOne > array.size()) ||
-	(rowTwo < 0) || (rowTwo > array.size()) ||
-	(destinationRow < 0) || (destinationRow > array.size()))
+	if ((rowOne < 0) || (rowOne > array.size()) || (rowTwo < 0)
+			|| (rowTwo > array.size()) || (destinationRow < 0)
+			|| (destinationRow > array.size()))
 	{
-		throw std::out_of_range("parameters given are outside of matrix boundaries");
+		throw std::out_of_range(
+				"parameters given are outside of matrix boundaries");
 	}
 
-	vector <Object>& row1 = array.at(rowOne);
-	vector <Object>& row2 = array.at(rowTwo);
-	vector <Object>& writeRow = array.at(destinationRow);
+	vector<Object>& row1 = array.at(rowOne);
+	vector<Object>& row2 = array.at(rowTwo);
+	vector<Object>& writeRow = array.at(destinationRow);
 
 	for (int i = 0; i < row1.size(); ++i)
 	{
@@ -332,16 +340,18 @@ denseMatrix<Object>& denseMatrix<Object>::addRows(int rowOne, int rowTwo, int de
 }
 
 template<typename Object>
-denseMatrix<Object>& denseMatrix<Object>::addRows(vector<Object>& rowOne, int rowTwo, int destinationRow)
+denseMatrix<Object>& denseMatrix<Object>::addRows(vector<Object>& rowOne,
+		int rowTwo, int destinationRow)
 {
-	if ((rowTwo < 0) || (rowTwo > array.size()) ||
-	(destinationRow < 0) || (destinationRow > array.size()))
+	if ((rowTwo < 0) || (rowTwo > array.size()) || (destinationRow < 0)
+			|| (destinationRow > array.size()))
 	{
-		throw std::out_of_range("parameters given are outside of matrix boundaries");
+		throw std::out_of_range(
+				"parameters given are outside of matrix boundaries");
 	}
 
-	vector <Object>& row2 = array.at(rowTwo);
-	vector <Object>& writeRow = array.at(destinationRow);
+	vector<Object>& row2 = array.at(rowTwo);
+	vector<Object>& writeRow = array.at(destinationRow);
 
 	for (int i = 0; i < row2.size(); ++i)
 	{
@@ -349,6 +359,32 @@ denseMatrix<Object>& denseMatrix<Object>::addRows(vector<Object>& rowOne, int ro
 		writeRow[i] = temp;
 	}
 	return *this;
+}
+
+template<typename Object>
+denseMatrix<Object> transpose(const denseMatrix<Object>& m)
+{
+	std::cerr << "Transpose input matrix rows: " << m.numrows() << std::endl;
+	std::cerr << "Transpose input matrix cols: " << m.numcols() << std::endl
+			<< std::endl;
+
+	std::unique_ptr<denseMatrix<Object> > solution(
+			new denseMatrix<Object>(m.numcols(), m.numrows()));
+
+	for (int i = 0; i < m.numrows(); ++i)
+	{
+		for (int j = 0; j < m.numcols(); ++j)
+		{
+			std::cerr << "i,j: " << i << "," << j << std::endl;
+			std::cerr << "m[i][j]: " << m[i][j] << std::endl;
+
+			solution->operator[](j)[i] = m[i][j];
+
+			std::cerr << "solution[j][i]: " << solution->operator[](j)[i] << std::endl;
+		}
+	}
+
+	return *solution;
 }
 
 template<typename Object>
@@ -511,7 +547,7 @@ double relError(const denseMatrix<Object>& est,
 	//
 	// Removing the matrix subraction here for efficiency
 	// Can do the diff calculations in the same loops as the ^2 below
-	
+
 	double diffSumOfSquares = 0.0;
 	double actualSumOfSquares = 0.0;
 

@@ -5,46 +5,46 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CC_SRCS += \
 ../googleTestsMain.cc \
-../test_bracketSolvers.cc \
 ../test_denseMatrix.cc \
 ../test_directSolvers.cc \
 ../test_iterativeSolvers.cc \
 ../test_matrixGenerator.cc \
-../test_matrixSolver.cc 
+../test_matrixSolver.cc \
+../test_rootSolvers.cc 
 
 CPP_SRCS += \
 ../IterativeSolvers.cpp \
-../bracketSolvers.cpp \
 ../directSolvers.cpp \
-../matrixGenerator.cpp 
+../matrixGenerator.cpp \
+../rootSolvers.cpp 
 
 CC_DEPS += \
 ./googleTestsMain.d \
-./test_bracketSolvers.d \
 ./test_denseMatrix.d \
 ./test_directSolvers.d \
 ./test_iterativeSolvers.d \
 ./test_matrixGenerator.d \
-./test_matrixSolver.d 
+./test_matrixSolver.d \
+./test_rootSolvers.d 
 
 OBJS += \
 ./IterativeSolvers.o \
-./bracketSolvers.o \
 ./directSolvers.o \
 ./googleTestsMain.o \
 ./matrixGenerator.o \
-./test_bracketSolvers.o \
+./rootSolvers.o \
 ./test_denseMatrix.o \
 ./test_directSolvers.o \
 ./test_iterativeSolvers.o \
 ./test_matrixGenerator.o \
-./test_matrixSolver.o 
+./test_matrixSolver.o \
+./test_rootSolvers.o 
 
 CPP_DEPS += \
 ./IterativeSolvers.d \
-./bracketSolvers.d \
 ./directSolvers.d \
-./matrixGenerator.d 
+./matrixGenerator.d \
+./rootSolvers.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

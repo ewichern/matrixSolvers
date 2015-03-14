@@ -1,19 +1,20 @@
 /*
- * bracketSolvers.cpp
+ * rootSolvers.cpp
  *
  *  Created on: Mar 11, 2015
  *      Author: erik
  */
 
-#include "bracketSolvers.h"
+#include "rootSolvers.h"
 #include <cmath>
+#include <stdexcept>
 
 /*
  * Bracketing root solver using bisection method
  *
  * Takes a function pointer (*f) for the function to be solved, expects
  * inital guesses for upper and lower bounds, and the error tolerance.
- * Returns the number of iterations required to find a solution.
+ * Returns the solution as a double.
  *
  * @param *f	double(*_)(double) function pointer to the function for which we want to find a root
  * @param lower		double with the initial lower bracket
@@ -22,8 +23,8 @@
  * @param errLimit	double providing the error tolerance
  * @return double	return the root solution within the bracket
  */
-double bracketSolvers::bisection(double (*f)(double), double lower,
-		double upper, int& numIterations, double errLimit)
+double rootSolvers::bisection(double (*f)(double), double lower, double upper,
+		int& numIterations, double errLimit)
 {
 	double root = upper;
 	numIterations = 0;
@@ -57,7 +58,7 @@ double bracketSolvers::bisection(double (*f)(double), double lower,
  *
  * Takes a function pointer (*f) for the function to be solved, expects
  * inital guesses for upper and lower bounds, and the error tolerance.
- * Returns the number of iterations required to find a solution.
+ * Returns the solution as a double.
  *
  * @param *f	double(*_)(double) function pointer to the function for which we want to find a root
  * @param lower		double with the initial lower bracket
@@ -66,7 +67,7 @@ double bracketSolvers::bisection(double (*f)(double), double lower,
  * @param errLimit	double providing the error tolerance
  * @return double	return the root solution within the bracket
  */
-double bracketSolvers::falsePosition(double (*f)(double), double lower,
+double rootSolvers::falsePosition(double (*f)(double), double lower,
 		double upper, int& numIterations, double errLimit)
 {
 	double root = upper;
@@ -122,8 +123,52 @@ double bracketSolvers::falsePosition(double (*f)(double), double lower,
 	return root;
 }
 
+/*
+ * Open Newton-Raphson method root solver
+ *
+ * Takes a function pointer (*f) for the function to be solved, expects
+ * an inital guess for the root x_0, and the error tolerance.
+ * Returns the solution.
+ *
+ * @param *f	double(*_)(double) function pointer to the function for which we want to find a root
+ * @param root		double with initial guess for the root location
+ * @param numIterations		int reference to count and pass back the number of iterations required to solve this problem
+ * @param errLimit	double providing the error tolerance
+ * @return double	return the root solution within the bracket
+ */
+double rootSolvers::newton(double (*f)(double), double (*f_prime)(double),
+		double root, int& numIterations, double errLimit)
+{
+	numIterations = 0;
+	double err = 1.0;
 
-double bracketSolvers::relErr(double value1, double value2)
+	while ((err > errLimit) && (numIterations < 100000))
+	{
+		double r_old = root;
+		double slope_tangent = f_prime(r_old);
+		if (slope_tangent == 0.0)
+		{
+			throw std::runtime_error(
+					"slope_tangent == 0, cannot use Newton method.");
+		}
+		root = (r_old - (f(r_old) / f_prime(r_old)));
+		numIterations++;
+		if (root != 0.0)
+		{
+			err = relErr(root, r_old);
+		}
+	}
+	double solution_check = f(root);
+
+	if ((relErr(0.0, solution_check) > 0.01) || (numIterations == 100000))
+	{
+		throw std::runtime_error("No convergence with Newton method.");
+	}
+
+	return root;
+}
+
+double rootSolvers::relErr(double value1, double value2)
 {
 	value1 = fabs(value1);
 	value2 = fabs(value2);
