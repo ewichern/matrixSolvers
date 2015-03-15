@@ -10,12 +10,14 @@ CC_SRCS += \
 ../test_iterativeSolvers.cc \
 ../test_matrixGenerator.cc \
 ../test_matrixSolver.cc \
+../test_monomial.cc \
 ../test_rootSolvers.cc 
 
 CPP_SRCS += \
 ../IterativeSolvers.cpp \
 ../directSolvers.cpp \
 ../matrixGenerator.cpp \
+../monomial.cpp \
 ../rootSolvers.cpp 
 
 CC_DEPS += \
@@ -25,6 +27,7 @@ CC_DEPS += \
 ./test_iterativeSolvers.d \
 ./test_matrixGenerator.d \
 ./test_matrixSolver.d \
+./test_monomial.d \
 ./test_rootSolvers.d 
 
 OBJS += \
@@ -32,18 +35,21 @@ OBJS += \
 ./directSolvers.o \
 ./googleTestsMain.o \
 ./matrixGenerator.o \
+./monomial.o \
 ./rootSolvers.o \
 ./test_denseMatrix.o \
 ./test_directSolvers.o \
 ./test_iterativeSolvers.o \
 ./test_matrixGenerator.o \
 ./test_matrixSolver.o \
+./test_monomial.o \
 ./test_rootSolvers.o 
 
 CPP_DEPS += \
 ./IterativeSolvers.d \
 ./directSolvers.d \
 ./matrixGenerator.d \
+./monomial.d \
 ./rootSolvers.d 
 
 

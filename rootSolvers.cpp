@@ -9,6 +9,37 @@
 #include <cmath>
 #include <stdexcept>
 
+rootSolvers::rootSolvers()
+{
+}
+
+// Assuming that polynomial degree = coeffs.size() - 1
+// and that there will be 0s in coeffs vector if a particular term has a power
+// or coefficient of 0.
+
+rootSolvers::rootSolvers(std::vector<double> coeffs)
+{
+	polynomial.resize(coeffs.size());
+	for (int i = 0; i < polynomial.size(); ++i)
+	{
+		monomial element(coeffs.at(i), i);
+		polynomial.push_back(element);
+	}
+}
+
+rootSolvers::~rootSolvers()
+{
+}
+
+void rootSolvers::print(std::ostream& output) const
+{
+	for (int i = 0; i < polynomial.size(); ++i)
+	{
+		output << polynomial.at(i) << std::endl;
+	}
+}
+
+
 /*
  * Bracketing root solver using bisection method
  *
@@ -146,10 +177,10 @@ double rootSolvers::newton(double (*f)(double), double (*f_prime)(double),
 	{
 		double r_old = root;
 		double slope_tangent = f_prime(r_old);
-		if (slope_tangent == 0.0)
+		if (relErr(0.0, slope_tangent) < 0.000001)
 		{
 			throw std::runtime_error(
-					"slope_tangent == 0, cannot use Newton method.");
+					"slope_tangent == 0, Newton method failed.");
 		}
 		root = (r_old - (f(r_old) / f_prime(r_old)));
 		numIterations++;
@@ -162,11 +193,12 @@ double rootSolvers::newton(double (*f)(double), double (*f_prime)(double),
 
 	if ((relErr(0.0, solution_check) > 0.01) || (numIterations == 100000))
 	{
-		throw std::runtime_error("No convergence with Newton method.");
+		throw std::runtime_error("No convergence, Newton method failed.");
 	}
 
 	return root;
 }
+
 
 double rootSolvers::relErr(double value1, double value2)
 {

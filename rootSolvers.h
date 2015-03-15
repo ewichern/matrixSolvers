@@ -8,12 +8,24 @@
 #ifndef ROOTSOLVERS_H_
 #define ROOTSOLVERS_H_
 
+#include "monomial.h"
+#include <vector>
+#include <iostream>
+
+typedef monomial monomial;
+
 /*
  *
  */
 class rootSolvers
 {
 public:
+
+	rootSolvers();
+	rootSolvers(std::vector<double>);
+	virtual ~rootSolvers();
+
+	void print(std::ostream&) const;
 
 	static double bisection(double (*functionPtr)(double), double, double, int&,
 			double);
@@ -22,6 +34,10 @@ public:
 	static double newton(double (*functionPtr)(double),
 			double (*functionPtr2)(double), double, int&, double);
 	static double relErr(double, double);
+
+private:
+	std::vector<monomial> polynomial;
+
 };
 
 #endif /* ROOTSOLVERS_H_ */

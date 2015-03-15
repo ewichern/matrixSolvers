@@ -6,9 +6,12 @@
  */
 
 #include "gtest/gtest.h"
+#include "gtest/gtest-spi.h"
 #include "rootSolvers.h"
 #include <cmath>
 #include <iomanip>
+#include <stdexcept>
+#include <vector>
 
 class rootSolverTests: public ::testing::Test
 {
@@ -66,6 +69,37 @@ public:
 	static double f3(double x)
 	{
 		return x;
+	}
+
+	/*
+	 * x(x+1)(x-1)
+	 * roots at 1, -1.
+	 * f'(x) = 0 at x = -3^(-1/2) and x = 3^(-1/2)
+	 */
+	const double f4solutionA = 1.0;
+	const double f4solutionB = -1.0;
+	static double f4(double x)
+	{
+		return (powf(x, 3.0) - x);
+	}
+
+	static double f4_prime(double x)
+	{
+		return ((3.0 * powf(x, 2.0)) - 1);
+	}
+
+	/*
+	 * f(x) = x^2 + 2
+	 * No real roots
+	 * f'(x) = 2x
+	 */
+	static double f5(double x)
+	{
+		return (powf(x, 2.0) + 2.0);
+	}
+	static double f5_prime(double x)
+	{
+		return (2.0 * x);
 	}
 };
 
@@ -226,7 +260,8 @@ TEST_F (rootSolverTests, newton1)
 	root_guess = -5.0;
 	numIterations = 0;
 
-	root = rootSolvers::newton(&f2, &f2_prime, root_guess, numIterations, errLim);
+	root = rootSolvers::newton(&f2, &f2_prime, root_guess, numIterations,
+			errLim);
 	err = rootSolvers::relErr(f2solutionB, root);
 
 	std::cerr << "Root 2 for f2: " << std::fixed << std::setprecision(17)
@@ -238,24 +273,42 @@ TEST_F (rootSolverTests, newton1)
 	EXPECT_LE(err, errLim);
 }
 
-/*
-TEST_F (rootSolverTests, newton2)
+TEST_F (rootSolverTests, newtonExceptionTest)
 {
-	double lower = 0.0;
-	double upper = 9.0;
+	double root_guess = 0.0;
 
 	double errLim = 0.00001;
 	int numIterations = 0;
 
-	double root = rootSolvers::newton(&f1, lower, upper, numIterations, errLim);
-	double err = rootSolvers::relErr(f1solution, root);
-
-	std::cerr << "Root for f1: " << std::fixed << std::setprecision(17) << root
-			<< std::endl;
+	/*
+	 * First one should throw on "zero" iterations because f5'(0) = 0
+	 */
+	EXPECT_THROW(
+	{
+		rootSolvers::newton(&f5, &f5_prime, root_guess, numIterations, errLim)
+		;
+	}, std::runtime_error);
 	std::cerr << "Solved in " << numIterations
 			<< " iterations with Newton method." << std::endl;
-	std::cerr << "Relative error is " << err << "." << std::endl << std::endl;
 
-	EXPECT_LE(err, errLim);
+	/*
+	 * This one oscilates and hits the iteration limit,
+	 * so throws the "does not converge" exception
+	 */
+	root_guess = 3.0;
+	EXPECT_THROW(
+	{
+		rootSolvers::newton(&f5, &f5_prime, root_guess, numIterations, errLim)
+		;
+	}, std::runtime_error);
+	std::cerr << "Solved in " << numIterations
+			<< " iterations with Newton method." << std::endl;
 }
-*/
+
+TEST_F (rootSolverTests, polynomialPrint)
+{
+	std::vector<double> numbers {3, 0, 2, 1};
+	rootSolvers poly(numbers);
+	poly.print(std::cout);
+
+}
