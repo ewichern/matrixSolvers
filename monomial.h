@@ -30,6 +30,9 @@ public:
 		return exponent;
 	};
 
+	void setMonomial(const double coeff, const int exp);
+
+	/*
 	void setCoefficient(const double coeff)
 	{
 		coefficient = coeff;
@@ -38,12 +41,13 @@ public:
 	{
 		exponent = exp;
 	};
+	*/
 
 	bool operator==(const monomial& right) const;
 	monomial& operator=(const monomial& right);
 
-	void derivative();
-	friend std::ostream& operator<< (std::ostream& output, const monomial& m);
+	void monoDerivative();
+	friend std::ostream& operator<<(std::ostream& output, const monomial& m);
 
 //	std::ostream& print(std::ostream&) const;
 

@@ -364,9 +364,9 @@ denseMatrix<Object>& denseMatrix<Object>::addRows(vector<Object>& rowOne,
 template<typename Object>
 denseMatrix<Object> transpose(const denseMatrix<Object>& m)
 {
-	std::cerr << "Transpose input matrix rows: " << m.numrows() << std::endl;
-	std::cerr << "Transpose input matrix cols: " << m.numcols() << std::endl
-			<< std::endl;
+//	std::cerr << "Transpose input matrix rows: " << m.numrows() << std::endl;
+//	std::cerr << "Transpose input matrix cols: " << m.numcols() << std::endl
+//			<< std::endl;
 
 	std::unique_ptr<denseMatrix<Object> > solution(
 			new denseMatrix<Object>(m.numcols(), m.numrows()));
@@ -375,12 +375,12 @@ denseMatrix<Object> transpose(const denseMatrix<Object>& m)
 	{
 		for (int j = 0; j < m.numcols(); ++j)
 		{
-			std::cerr << "i,j: " << i << "," << j << std::endl;
-			std::cerr << "m[i][j]: " << m[i][j] << std::endl;
+//			std::cerr << "i,j: " << i << "," << j << std::endl;
+//			std::cerr << "m[i][j]: " << m[i][j] << std::endl;
 
 			solution->operator[](j)[i] = m[i][j];
 
-			std::cerr << "solution[j][i]: " << solution->operator[](j)[i] << std::endl;
+//			std::cerr << "solution[j][i]: " << solution->operator[](j)[i] << std::endl;
 		}
 	}
 

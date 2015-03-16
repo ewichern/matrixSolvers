@@ -8,6 +8,9 @@
 #include "rootSolvers.h"
 #include <cmath>
 #include <stdexcept>
+#include <iostream>
+#include <vector>
+#include <sstream>
 
 rootSolvers::rootSolvers()
 {
@@ -19,26 +22,142 @@ rootSolvers::rootSolvers()
 
 rootSolvers::rootSolvers(std::vector<double> coeffs)
 {
-	polynomial.resize(coeffs.size());
-	for (int i = 0; i < polynomial.size(); ++i)
+//	std::cerr << "Coeffs.size(): " << coeffs.size() << std::endl;
+
+	int degree = 0;
+//	for (int i = 0; i < polynomial.size(); ++i)
+	for (std::vector<double>::iterator loc = coeffs.begin();
+			loc != coeffs.end(); ++loc)
 	{
-		monomial element(coeffs.at(i), i);
+		monomial element(*loc, degree);
 		polynomial.push_back(element);
+		degree++;
 	}
+//	std::cerr << "polynomial.size() (inside constructor): " << polynomial.size()
+//			<< std::endl;
+}
+
+rootSolvers::rootSolvers(const rootSolvers& right) :
+		polynomial(right.polynomial)
+{
 }
 
 rootSolvers::~rootSolvers()
 {
 }
 
-void rootSolvers::print(std::ostream& output) const
+rootSolvers& rootSolvers::operator=(const rootSolvers& right)
 {
-	for (int i = 0; i < polynomial.size(); ++i)
+	if (!(*this == right))
 	{
-		output << polynomial.at(i) << std::endl;
+		polynomial = right.polynomial;
+	}
+	return *this;
+}
+
+bool rootSolvers::operator==(const rootSolvers& right)
+{
+	std::ostringstream leftSS, rightSS;
+	print(leftSS);
+	rightSS << right;
+
+	return (leftSS.str() == rightSS.str());
+}
+
+int rootSolvers::size() const
+{
+	return polynomial.size();
+}
+
+double rootSolvers::evaluatePolynomialAt(double x) const
+{
+	double f_x = 0;
+	std::vector<monomial>::const_reverse_iterator loc;
+	for (loc = polynomial.rbegin(); loc != polynomial.rend(); ++loc)
+	{
+		f_x += (loc->getCoefficient() * powf(x, (double)(loc->getExponent())));
+	}
+	return f_x;
+}
+
+void rootSolvers::derivative()
+{
+	std::vector<monomial>::reverse_iterator loc;
+	for (loc = polynomial.rbegin(); loc != polynomial.rend(); ++loc)
+	{
+		loc->monoDerivative();
 	}
 }
 
+std::ostream& rootSolvers::print(std::ostream& output) const
+{
+	if (polynomial.size() != 0)
+	{
+		output << *(polynomial.rbegin());
+		std::vector<monomial>::const_reverse_iterator loc;
+		for (loc = polynomial.rbegin() + 1; loc != polynomial.rend(); ++loc)
+		{
+			std::ostringstream testStream;
+			testStream << *loc;
+			if (testStream.str() != "")
+			{
+				output << " + " << *loc;
+			}
+		}
+		output << std::endl;
+	}
+	return output;
+}
+
+std::ostream& operator<<(std::ostream& output, rootSolvers poly)
+{
+	poly.print(output);
+	return output;
+}
+
+/*
+ * Bracketing root solver using bisection method
+ *
+ * Takes a function pointer (*f) for the function to be solved, expects
+ * inital guesses for upper and lower bounds, and the error tolerance.
+ * Returns the solution as a double.
+ *
+ * @param *f	double(*_)(double) function pointer to the function for which we want to find a root
+ * @param lower		double with the initial lower bracket
+ * @param upper		double with the initial upper bracket
+ * @param numIterations		int reference to count and pass back the number of iterations required to solve this problem
+ * @param errLimit	double providing the error tolerance
+ * @return double	return the root solution within the bracket
+ */
+double rootSolvers::solveBisect(double lower, double upper, int& numIterations,
+		double errLimit)
+{
+	double root = upper;
+	numIterations = 0;
+
+	double f_l = evaluatePolynomialAt(lower);
+	double f_r = evaluatePolynomialAt(root);
+
+	while ((fabs(f_r)) > errLimit)
+	{
+//		double root_old = root;
+		root = (lower + upper) / 2.0;
+		f_r = evaluatePolynomialAt(root);
+		++numIterations;
+
+		double test = f_l * f_r;
+		if (test < 0.0)
+		{
+			upper = root;
+		}
+		else if (test > 0.0)
+		{
+			lower = root;
+			f_l = f_r;
+		}
+	}
+	return root;
+}
 
 /*
  * Bracketing root solver using bisection method
@@ -173,7 +292,7 @@ double rootSolvers::newton(double (*f)(double), double (*f_prime)(double),
 	numIterations = 0;
 	double err = 1.0;
 
-	while ((err > errLimit) && (numIterations < 100000))
+	while ((err > errLimit) && (numIterations < 10000))
 	{
 		double r_old = root;
 		double slope_tangent = f_prime(r_old);
@@ -198,7 +317,6 @@ double rootSolvers::newton(double (*f)(double), double (*f_prime)(double),
 
 	return root;
 }
-
 
 double rootSolvers::relErr(double value1, double value2)
 {

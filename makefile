@@ -1,10 +1,11 @@
 OUTPUTNAME=matrixSolver
 CPPS=IterativeSolvers.cpp directSolvers.cpp matrixGenerator.cpp \
-	rootSolvers.cpp
+	rootSolvers.cpp monomial.cpp
 TESTS=googleTestsMain.cc test_denseMatrix.cc test_matrixGenerator.cc \
 	 test_iterativeSolvers.cc \
 	 test_directSolvers.cc \
 	 test_rootSolvers.cc \
+	 test_monomial.cc \
 	test_matrixSolver.cc \
 	./gtest/gtest-all.cc \
 	# test_sparseMatrix.cc
