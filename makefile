@@ -1,4 +1,7 @@
 OUTPUTNAME=matrixSolver
+TARGET=$(OUTPUTNAME)
+DEBUGTARGET=testMatrixSolver
+
 CPPS=IterativeSolvers.cpp directSolvers.cpp matrixGenerator.cpp \
 	rootSolvers.cpp monomial.cpp
 TESTS=googleTestsMain.cc test_denseMatrix.cc test_matrixGenerator.cc \
@@ -12,14 +15,13 @@ TESTS=googleTestsMain.cc test_denseMatrix.cc test_matrixGenerator.cc \
 #DIR=$(PWD)
 DISTR=Unix
 #INCLUDES=/home/erik/libraries/
-TARGET=$(OUTPUTNAME)
-DEBUGTARGET=testMatrixSolver
 
 #
 #	Macro Definitions:
 #
 
-CPPFLAGS=-std=c++0x -I$(INCLUDES) -O3 -g3 -Wall -Wextra -fmessage-length=0
+CPPFLAGS=-std=c++0x -I$(INCLUDES) -Wall -Wextra -fmessage-length=0
+CCFLAGS=-std=c++0x -I$(INCLUDES) -Og -ggdb3 -Wall -Wextra -fmessage-length=0
 CFLAGS=-g
 
 LINK=g++ $(LFLAGS)
@@ -30,7 +32,7 @@ LFLAGS=-lpthread
 #
 .SUFFIXES: .d .o .h .c .cc .C .cpp
 .cc.o:
-	$(CC) $(CPPFLAGS) -MMD -o $@ -c $<
+	$(CC) $(CCFLAGS) -MMD -o $@ -c $<
 .cpp.o:
 	$(CPP) $(CPPFLAGS) -MMD -o $@ -c $<
 
@@ -53,23 +55,29 @@ TESTDEPENDENCIES=$(TESTS:%.cc=%.d)
 	touch $@
 	
 %.o: %.cc
-	$(CPP) $(CPPFLAGS) -MMD -o $@ -c $*.cc
+	$(CPP) $(CCFLAGS) -MMD -o $@ -c $*.cc
 
 
 #
 #	Targets:
 #
-all: debug release
+all: clean release
 
 $(TARGET): $(OBJS) solversDriver.o
 	$(LINK) -o $(TARGET) $(OBJS) solversDriver.o $(LFLAGS)
 
-$(DEBUGTARGET): $(TESTOBJS) $(OBJS) 
+$(DEBUGTARGET): $(TESTOBJS) $(OBJS)
 	$(LINK) -o $(DEBUGTARGET) $(TESTOBJS) $(OBJS) $(LFLAGS)
 
+release: CPPFLAGS += -O3 -g0
 release: $(TARGET)
-	
+
+debug: CPPFLAGS += -Og -ggdb3
 debug: $(DEBUGTARGET) 
+
+gcov: CPPFLAGS += -fprofile-arcs -ftest-coverage
+gcov: LFLAGS += -lgcov -coverage
+gcov: debug
 
 solversDriver.o: matrixSolver.cpp
 	$(CPP) $(CPPFLAGS) -MMD -o $@ -c solversDriver.cpp
@@ -82,6 +90,15 @@ clean:
 	-rm -f $(DEBUGTARGET) $(TESTOBJS) $(TESTDEPENDENCIES) tests.dep
 	-rm -f solversDriver.o solversDriver.d
 	-rm -f unitTest*
+	-rm -f *.gcov
+	-rm -f *.gcda
+	-rm -f *.gcno
+
+test: test.o matrixGenerator.o rootSolvers.o monomial.o
+	$(LINK) -o $@ test.o matrixGenerator.o rootSolvers.o monomial.o
+
+test.o: test.cpp
+	$(CPP) $(CPPFLAGS) -MMD -o $@ -c test.cpp
 
 make.dep: $(DEPENDENCIES)
 	-cat $(DEPENDENCIES) > $@

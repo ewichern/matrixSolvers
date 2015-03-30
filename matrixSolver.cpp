@@ -35,12 +35,14 @@ int printMenuOptions(istream& input)
 			<< endl;
 	cout << "6 - Print most recent solution -- a solver should be run first "
 			<< "using option 5." << endl;
+	cout << "7 - Write most recent solution to file-- a solver should be run first "
+			<< "using option 5." << endl;
 	cout << "0 - Exit." << endl;
 	cout << "Enter selection : " << endl;
 
 	int selection;
 
-	while (!(input >> selection) || ((selection < 0) || (selection > 6)))
+	while (!(input >> selection) || ((selection < 0) || (selection > 7)))
 	{
 		input.clear();
 		input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -242,8 +244,15 @@ string getSolverName(int enumValue)
 
 void printSolution(const matrix& x)
 {
-	cout << "Solution x is: " << endl;
-	cout << x << endl;
+	std::cout << "Solution x is: " << std::endl;
+	std::cout << x << std::endl;
+}
+
+void writeOutSolution(const matrix& x)
+{
+	std::cout << "Solution x saved to output.dat" << std::endl;
+	std::ofstream output ("output.dat");
+	MatrixGenerator::writeMatrixToFile(output, x);
 }
 
 void multiplyAx(const matrix& A, const matrix& x, matrix& b)
@@ -386,6 +395,9 @@ string mainMenu(istream& input)
 			break;
 		case 6:
 			printSolution(x);
+			break;
+		case 7:
+			writeOutSolution(x);
 			break;
 		case 0:
 		default:

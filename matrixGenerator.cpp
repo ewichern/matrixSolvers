@@ -107,9 +107,12 @@ void MatrixGenerator::writeMatrixToFile(std::ofstream& output, const matrix& A,
 		const matrix& b)
 {
 
+    std::cerr << A.numcols() << " " << b.numrows() << std::endl;
+    std::cerr << b.numcols() << std::endl;
+
 	if ((A.numcols() != b.numrows()) || (b.numcols() != 1))
 	{
-		throw std::logic_error("Matrix size mismatch");
+		throw std::logic_error("Matrix sizes wrong for file format");
 	}
 	else
 	{

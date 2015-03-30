@@ -217,15 +217,20 @@ void denseMatrix<Object>::eye()
 {
 
 	denseMatrix<Object>& self = *this;
-	if (array.size() != array.at(0).size())
+	if (!(array.size() == array.at(0).size()))
 	{
 		throw std::logic_error("Matrix size mismatch");
 	}
+
 	else
 	{
+		int tempSize = array.size();
 		array.clear();
+		array.resize(tempSize);
+
 		for (int i = 0; i < array.size(); ++i)
 		{
+			array.at(i).assign(tempSize, 0.0);
 			self[i][i] = 1.0;
 		}
 	}
@@ -524,7 +529,7 @@ std::ostream& operator<<(std::ostream& out, const denseMatrix<Object>& m)
 		{
 			if (i > 0)
 				out << ' ';
-			out << setprecision(17) << setw(20);
+			out << setprecision(18) << setw(21);
 			out << m[j][i];
 		}
 		out << "\n";
