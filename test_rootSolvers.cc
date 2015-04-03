@@ -338,6 +338,13 @@ TEST_F (rootSolverTests, constructor)
 	EXPECT_EQ(4, poly2.size());
 }
 
+TEST_F (rootSolverTests, DISABLED_stringConstructor)
+{
+	std::string expected = "4x^2 - 5x - 21\n"
+	std::istringstream expressionInput ("4.0 * powf (x, 2.0) - 5.0 * x - 21");
+	rootSolvers expression(expressionInput);
+}
+
 TEST_F (rootSolverTests, assignment)
 {
 	std::string expected = "x^3 + 2x + 3\n";
