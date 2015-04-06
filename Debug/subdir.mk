@@ -11,6 +11,8 @@ CC_SRCS += \
 ../test_matrixGenerator.cc \
 ../test_matrixSolver.cc \
 ../test_monomial.cc \
+../test_polynomial.cc \
+../test_rootDriverFunction.cc \
 ../test_rootSolvers.cc 
 
 CPP_SRCS += \
@@ -18,6 +20,7 @@ CPP_SRCS += \
 ../directSolvers.cpp \
 ../matrixGenerator.cpp \
 ../monomial.cpp \
+../polynomial.cpp \
 ../rootSolvers.cpp 
 
 CC_DEPS += \
@@ -28,6 +31,8 @@ CC_DEPS += \
 ./test_matrixGenerator.d \
 ./test_matrixSolver.d \
 ./test_monomial.d \
+./test_polynomial.d \
+./test_rootDriverFunction.d \
 ./test_rootSolvers.d 
 
 OBJS += \
@@ -36,6 +41,7 @@ OBJS += \
 ./googleTestsMain.o \
 ./matrixGenerator.o \
 ./monomial.o \
+./polynomial.o \
 ./rootSolvers.o \
 ./test_denseMatrix.o \
 ./test_directSolvers.o \
@@ -43,6 +49,8 @@ OBJS += \
 ./test_matrixGenerator.o \
 ./test_matrixSolver.o \
 ./test_monomial.o \
+./test_polynomial.o \
+./test_rootDriverFunction.o \
 ./test_rootSolvers.o 
 
 CPP_DEPS += \
@@ -50,6 +58,7 @@ CPP_DEPS += \
 ./directSolvers.d \
 ./matrixGenerator.d \
 ./monomial.d \
+./polynomial.d \
 ./rootSolvers.d 
 
 

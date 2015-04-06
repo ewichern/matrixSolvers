@@ -12,153 +12,6 @@
 #include <vector>
 #include <sstream>
 
-rootSolvers::rootSolvers()
-{
-}
-
-// Assuming that polynomial degree = coeffs.size() - 1
-// and that there will be 0s in coeffs vector if a particular term has a power
-// or coefficient of 0.
-
-rootSolvers::rootSolvers(std::vector<double> coeffs)
-{
-//	std::cerr << "Coeffs.size(): " << coeffs.size() << std::endl;
-
-	int degree = 0;
-//	for (int i = 0; i < polynomial.size(); ++i)
-	for (std::vector<double>::iterator loc = coeffs.begin();
-			loc != coeffs.end(); ++loc)
-	{
-		monomial element(*loc, degree);
-		polynomial.push_back(element);
-		degree++;
-	}
-//	std::cerr << "polynomial.size() (inside constructor): " << polynomial.size()
-//			<< std::endl;
-}
-
-rootSolvers::rootSolvers(const rootSolvers& right) :
-		polynomial(right.polynomial)
-{
-}
-
-rootSolvers::~rootSolvers()
-{
-}
-
-rootSolvers& rootSolvers::operator=(const rootSolvers& right)
-{
-	if (!(*this == right))
-	{
-		polynomial = right.polynomial;
-	}
-	return *this;
-}
-
-bool rootSolvers::operator==(const rootSolvers& right)
-{
-	std::ostringstream leftSS, rightSS;
-	print(leftSS);
-	rightSS << right;
-
-	return (leftSS.str() == rightSS.str());
-}
-
-int rootSolvers::size() const
-{
-	return polynomial.size();
-}
-
-double rootSolvers::evaluatePolynomialAt(double x) const
-{
-	double f_x = 0;
-	std::vector<monomial>::const_reverse_iterator loc;
-	for (loc = polynomial.rbegin(); loc != polynomial.rend(); ++loc)
-	{
-		f_x += (loc->getCoefficient() * powf(x, (double)(loc->getExponent())));
-	}
-	return f_x;
-}
-
-void rootSolvers::derivative()
-{
-	std::vector<monomial>::reverse_iterator loc;
-	for (loc = polynomial.rbegin(); loc != polynomial.rend(); ++loc)
-	{
-		loc->monoDerivative();
-	}
-}
-
-std::ostream& rootSolvers::print(std::ostream& output) const
-{
-	if (polynomial.size() != 0)
-	{
-		output << *(polynomial.rbegin());
-		std::vector<monomial>::const_reverse_iterator loc;
-		for (loc = polynomial.rbegin() + 1; loc != polynomial.rend(); ++loc)
-		{
-			std::ostringstream testStream;
-			testStream << *loc;
-			if (testStream.str() != "")
-			{
-				output << " + " << *loc;
-			}
-		}
-		output << std::endl;
-	}
-	return output;
-}
-
-std::ostream& operator<<(std::ostream& output, rootSolvers poly)
-{
-	poly.print(output);
-	return output;
-}
-
-/*
- * Bracketing root solver using bisection method
- *
- * Takes a function pointer (*f) for the function to be solved, expects
- * inital guesses for upper and lower bounds, and the error tolerance.
- * Returns the solution as a double.
- *
- * @param *f	double(*_)(double) function pointer to the function for which we want to find a root
- * @param lower		double with the initial lower bracket
- * @param upper		double with the initial upper bracket
- * @param numIterations		int reference to count and pass back the number of iterations required to solve this problem
- * @param errLimit	double providing the error tolerance
- * @return double	return the root solution within the bracket
- */
-double rootSolvers::solveBisect(double lower, double upper, int& numIterations,
-		double errLimit)
-{
-	double root = upper;
-	numIterations = 0;
-
-	double f_l = evaluatePolynomialAt(lower);
-	double f_r = evaluatePolynomialAt(root);
-
-	while ((fabs(f_r)) > errLimit)
-	{
-//		double root_old = root;
-		root = (lower + upper) / 2.0;
-		f_r = evaluatePolynomialAt(root);
-		++numIterations;
-
-		double test = f_l * f_r;
-		if (test < 0.0)
-		{
-			upper = root;
-		}
-		else if (test > 0.0)
-		{
-			lower = root;
-			f_l = f_r;
-		}
-	}
-	return root;
-}
-
 /*
  * Bracketing root solver using bisection method
  *
@@ -200,6 +53,93 @@ double rootSolvers::bisection(double (*f)(double), double lower, double upper,
 			f_l = f_r;
 		}
 	}
+	return root;
+}
+
+const polynomial* polyObj;
+const polynomial* polyObj2;
+
+/*
+ * Wrapper for pointer to member function
+ *
+ * @param x		double input for function evalutation using member evaluateAt(double)
+ * @return double	returns f(x)
+ */
+double polyEval(double x)
+{
+	double f_x = polyObj->evaluateAt(x);
+	return f_x;
+}
+
+/*
+ * Wrapper for pointer to member function
+ *
+ * @param x		double input for function evalutation using member evaluateAt(double)
+ * @return double	returns f(x)
+ */
+double polyEval2(double x)
+{
+	double f_x = polyObj2->evaluateAt(x);
+	return f_x;
+}
+
+/*
+ * Bracketing root solver using bisection method
+ *
+ * Takes a polynomial expression to be solved, expects
+ * inital guesses for upper and lower bounds, and the error tolerance.
+ * Returns the solution as a double.
+ *
+ * @param poly 		const polynomial expression to be solved
+ * @param lower		double with the initial lower bracket
+ * @param upper		double with the initial upper bracket
+ * @param numIterations		int reference to count and pass back the number of iterations required to solve this problem
+ * @param errLimit	double providing the error tolerance
+ * @return double	return the root solution within the bracket
+ */
+double rootSolvers::bisection(const polynomial poly, double lower, double upper,
+		int& numIterations, double errLimit)
+{
+	// set global pointer to our polynomial object
+	polyObj = &poly;
+
+	// create a function pointer to the wrapper function
+	double (*f)(double)= polyEval;
+
+	// call the normal bisection solver with our new function pointer
+	double root = rootSolvers::bisection(f, lower, upper, numIterations,
+			errLimit);
+
+	return root;
+}
+
+/*
+ * Bracketing root solver using False-Position method
+ *
+ * Takes a polynomial expression to be solved, expects
+ * inital guesses for upper and lower bounds, and the error tolerance.
+ * Returns the solution as a double.
+ *
+ * @param poly 		const polynomial expression to be solved
+ * @param lower		double with the initial lower bracket
+ * @param upper		double with the initial upper bracket
+ * @param numIterations		int reference to count and pass back the number of iterations required to solve this problem
+ * @param errLimit	double providing the error tolerance
+ * @return double	return the root solution within the bracket
+ */
+double rootSolvers::falsePosition(const polynomial poly, double lower,
+		double upper, int& numIterations, double errLimit)
+{
+	// set global pointer to our polynomial object
+	polyObj = &poly;
+
+	// create a function pointer to the wrapper function
+	double (*f)(double)= polyEval;
+
+	// call the normal bisection solver with our new function pointer
+	double root = rootSolvers::falsePosition(f, lower, upper, numIterations,
+			errLimit);
+
 	return root;
 }
 
@@ -276,6 +216,40 @@ double rootSolvers::falsePosition(double (*f)(double), double lower,
 /*
  * Open Newton-Raphson method root solver
  *
+ * Takes a polynomial expression to be solved, expects
+ * an inital guess for the root x_0, and the error tolerance.
+ * Returns the solution.
+ *
+ * @param poly 		const polynomial expression to be solved
+ * @param root_guess 	double with an initial guess for the root as a starting condition
+ * @param numIterations		int reference to count and pass back the number of iterations required to solve this problem
+ * @param errLimit	double providing the error tolerance
+ * @return double	return the root solution within the bracket
+ */
+double rootSolvers::newton(const polynomial poly, double root_guess,
+		int& numIterations, double errLimit)
+{
+	polynomial firstDerivative = poly;
+	firstDerivative.derivative();
+
+	// set global pointer to our polynomial object
+	polyObj = &poly;
+	polyObj2 = &firstDerivative;
+
+	// create a function pointer to the wrapper function
+	double (*f)(double) = polyEval;
+	double (*f_prime)(double) = polyEval2;
+
+	// call the normal bisection solver with our new function pointer
+	double root = rootSolvers::newton(f, f_prime, root_guess, numIterations,
+			errLimit);
+
+	return root;
+}
+
+/*
+ * Open Newton-Raphson method root solver
+ *
  * Takes a function pointer (*f) for the function to be solved, expects
  * an inital guess for the root x_0, and the error tolerance.
  * Returns the solution.
@@ -318,6 +292,16 @@ double rootSolvers::newton(double (*f)(double), double (*f_prime)(double),
 	return root;
 }
 
+/*
+ * Relative error function
+ *
+ * Uses a modified relative error formula to compensate for potential zero
+ * (or very very small) values.
+ *
+ * @param value1	double - one value for relative error computation
+ * @param value2	double - second value for relative error computation
+ * @return double	Relative error between the two values
+ */
 double rootSolvers::relErr(double value1, double value2)
 {
 	value1 = fabs(value1);

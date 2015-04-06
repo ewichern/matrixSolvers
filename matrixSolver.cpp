@@ -23,7 +23,7 @@ enum solvers
 	cancel = -1, jacobi = 1, gaussSeidel = 2, SOR = 3, GE = 4, LU = 5
 };
 
-int printMenuOptions(istream& input)
+int printMenuOptions(std::istream& input)
 {
 	cout << "1 - Input A and b matrices from a file." << endl;
 	cout << "2 - Input matrix x from a file." << endl;

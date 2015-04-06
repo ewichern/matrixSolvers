@@ -1,15 +1,18 @@
 OUTPUTNAME=matrixSolver
 TARGET=$(OUTPUTNAME)
 DEBUGTARGET=testMatrixSolver
+ROOTTARGET=rootSolver
 
 CPPS=IterativeSolvers.cpp directSolvers.cpp matrixGenerator.cpp \
-	rootSolvers.cpp monomial.cpp
+	rootSolvers.cpp monomial.cpp polynomial.cpp
 TESTS=googleTestsMain.cc test_denseMatrix.cc test_matrixGenerator.cc \
 	 test_iterativeSolvers.cc \
 	 test_directSolvers.cc \
-	 test_rootSolvers.cc \
 	 test_monomial.cc \
-	test_matrixSolver.cc \
+	 test_polynomial.cc \
+	 test_rootSolvers.cc \
+	 test_matrixSolver.cc \
+	 test_rootDriverFunction.cc \
 	./gtest/gtest-all.cc \
 	# test_sparseMatrix.cc
 #DIR=$(PWD)
@@ -61,13 +64,19 @@ TESTDEPENDENCIES=$(TESTS:%.cc=%.d)
 #
 #	Targets:
 #
-all: clean release
+all: clean release root
 
-$(TARGET): $(OBJS) solversDriver.o
-	$(LINK) -o $(TARGET) $(OBJS) solversDriver.o $(LFLAGS)
+$(TARGET): $(OBJS) matrixDriver.o
+	$(LINK) -o $(TARGET) $(OBJS) matrixDriver.o $(LFLAGS)
 
 $(DEBUGTARGET): $(TESTOBJS) $(OBJS)
 	$(LINK) -o $(DEBUGTARGET) $(TESTOBJS) $(OBJS) $(LFLAGS)
+
+$(ROOTTARGET): $(OBJS) rootDriver.o
+	$(LINK) -o $(ROOTTARGET) $(OBJS) rootDriver.o $(LFLAGS)
+
+root: CPPFLAGS += -O3 -g0
+root: $(ROOTTARGET)
 
 release: CPPFLAGS += -O3 -g0
 release: $(TARGET)
@@ -79,23 +88,31 @@ gcov: CPPFLAGS += -fprofile-arcs -ftest-coverage
 gcov: LFLAGS += -lgcov -coverage
 gcov: debug
 
-solversDriver.o: matrixSolver.cpp
-	$(CPP) $(CPPFLAGS) -MMD -o $@ -c solversDriver.cpp
+matrixDriver.o: matrixSolver.cpp
+	$(CPP) $(CPPFLAGS) -MMD -o $@ -c matrixDriver.cpp
+
+rootDriver.o: rootDriverFunctions.cpp
+	$(CPP) $(CPPFLAGS) -MMD -o $@ -c rootDriver.cpp
 
 matrixSolver.cpp:
 	echo "Do nothing directly to matrixSolver.cpp"
 
+rootDriverFunctions.cpp:
+	echo "Do nothing directly to rootDriverFunctions.cpp"
+
 clean:
 	-rm -f $(TARGET) $(OBJS) $(DEPENDENCIES) make.dep 
-	-rm -f $(DEBUGTARGET) $(TESTOBJS) $(TESTDEPENDENCIES) tests.dep
-	-rm -f solversDriver.o solversDriver.d
+	-rm -f $(ROOTTARGET) $(OBJS) $(DEPENDENCIES) make.dep 
+	-rm -f $(DEBUGTARGET) $(TESTOBJS) $(OBJS) $(TESTDEPENDENCIES) tests.dep
+	-rm -f matrixDriver.o matrixDriver.d
+	-rm -f rootDriver.o rootDriver.d
 	-rm -f unitTest*
 	-rm -f *.gcov
 	-rm -f *.gcda
 	-rm -f *.gcno
 
-test: test.o matrixGenerator.o rootSolvers.o monomial.o
-	$(LINK) -o $@ test.o matrixGenerator.o rootSolvers.o monomial.o
+test: test.o matrixGenerator.o rootSolvers.o polynomial.o
+	$(LINK) -o $@ test.o matrixGenerator.o rootSolvers.o polynomial.o
 
 test.o: test.cpp
 	$(CPP) $(CPPFLAGS) -MMD -o $@ -c test.cpp
