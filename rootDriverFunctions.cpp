@@ -53,14 +53,12 @@ std::vector<double> getExpression(istream& input)
 	std::vector<double> coeffs;
 	double coeff = 0.0;
 
-	std::cout << "Enter the coefficients for a polynomial expression, beginning"
-			<< std::endl
-			<< " with C*x^0 and continuing until you've entered all"
-			<< std::endl
-			<< " desired terms. If no term with a specific power of x is"
-			<< std::endl
-			<< " required, enter a zero for that term's coefficient."
-			<< std::endl;
+	std::cout << "Enter the coefficients for a polynomial expression, beginning \n"
+			<< "with C*x^0 (i.e. 'reverse' of what most people would call the \n"
+			<< "normal order when an expression is written with descending \n"
+			<< "powers of a variable) and continuing until you've entered all \n"
+			<< "desired terms. If no term with a specific power of x is \n"
+			<< "required, enter a zero for that term's coefficient. \n\n";
 
 	while (input >> coeff)
 	{
@@ -80,10 +78,9 @@ std::vector<double> getExpression(istream& input)
 // TODO write documentation comments
 void getBrackets(double& lower, double& upper, istream& input)
 {
-	//TODO unit test
 	std::cout << "Enter lower, then upper bracketing limits: " << std::endl;
 
-	while (!(input >> lower >> upper))
+	while (!(input >> lower >> upper) || (lower > upper))
 	{
 		input.clear();
 		input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -96,7 +93,6 @@ void getBrackets(double& lower, double& upper, istream& input)
 // TODO write documentation comments
 void getRootGuess(double& guess, istream& input)
 {
-	//TODO unit test
 	std::cout << "Enter initial guess for root for Newton-Raphson solver: "
 			<< std::endl;
 
