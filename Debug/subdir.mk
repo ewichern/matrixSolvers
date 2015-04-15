@@ -23,15 +23,6 @@ CPP_SRCS += \
 ../polynomial.cpp \
 ../rootSolvers.cpp 
 
-O_SRCS += \
-../IterativeSolvers.o \
-../directSolvers.o \
-../matrixGenerator.o \
-../monomial.o \
-../polynomial.o \
-../rootDriver.o \
-../rootSolvers.o 
-
 CC_DEPS += \
 ./googleTestsMain.d \
 ./test_denseMatrix.d \
