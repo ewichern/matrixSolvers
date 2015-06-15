@@ -37,7 +37,7 @@ TEST_F (matrixSolverTests, printMenuOptions)
 {
 	int menuOutput = 999;
 
-	stringstream input("7 \n 4");
+	stringstream input("20 \n 4");
 	menuOutput = printMenuOptions(input);
 	EXPECT_EQ(4, menuOutput);
 //	std::cerr << "menuOutput: " << menuOutput << endl;

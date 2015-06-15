@@ -1,0 +1,13 @@
+Erik Wichern
+cs417 - Spring 2015
+Final Exam - Questions 3, 4, 5 (supplemental info)
+
+Question 3
+solved with Jacobi method in 5 iterations (0.015287 seconds), with rel. error 2.56795e-8
+
+Question 4
+solved with Gauss-Seidel (no relaxation) method in 4 iterations (0.008452 seconds), with rel. error 2.63733e-8
+
+Question 5
+solved with SOR in 8 iterations (0.008111 seconds), with rel. error of 3.19842e-7
+

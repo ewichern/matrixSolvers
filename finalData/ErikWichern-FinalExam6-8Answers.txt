@@ -1,0 +1,81 @@
+Erik Wichern
+cs417 - Spring 2015
+Final Exam - Questions 6, 7, 8
+
+f(x) = x + ln(x)
+Question 6 - Bisection
+It: 1
+root: 0.55
+It: 2
+root: 0.775
+It: 3
+root: 0.6625
+It: 4
+root: 0.60625
+It: 5
+root: 0.578125
+It: 6
+root: 0.564063
+It: 7
+root: 0.571094
+It: 8
+root: 0.567578
+It: 9
+root: 0.56582
+It: 10
+root: 0.566699
+It: 11
+root: 0.567139
+It: 12
+root: 0.567358
+It: 13
+root: 0.567249
+It: 14
+root: 0.567194
+It: 15
+root: 0.567166
+It: 16
+root: 0.567152
+It: 17
+root: 0.567146
+Iterations: 17
+Root: 0.567146
+
+Question 7 - Regula-falsi
+It: 1
+root: 0.718977
+It: 2
+root: 0.626057
+It: 3
+root: 0.560148
+It: 4
+root: 0.567368
+It: 5
+root: 0.567144
+It: 6
+root: 0.567142
+Iterations: 6
+Root: 0.567142
+
+Question 8 - Newton's method on a Polynomial Object
+x^4 + 2x^3 + (-9)x^2 + (-2)x + 8
+initial guess: -10
+It: 0
+root: -10
+It: 1
+root: -7.78771
+It: 2
+root: -6.19358
+It: 3
+root: -5.09405
+It: 4
+root: -4.41069
+It: 5
+root: -4.08484
+It: 6
+root: -4.00466
+It: 7
+root: -4.00002
+Iterations: 8
+Root: -4
+

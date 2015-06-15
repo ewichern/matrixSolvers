@@ -4,29 +4,70 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CC_SRCS += \
-../test_denseMatrix.cc 
+../test_denseMatrix.cc \
+../test_monomial.cc \
+../test_polynomial.cc \
+../test_rootDriver.cc \
+../test_rootSolvers.cc 
 
 CPP_SRCS += \
 ../IterativeSolvers.cpp \
 ../directSolvers.cpp \
+../matrixDriver.cpp \
 ../matrixGenerator.cpp \
-../solversDriver.cpp 
+../monomial.cpp \
+../polynomial.cpp \
+../rootDriver.cpp \
+../rootSolvers.cpp 
+
+O_SRCS += \
+../IterativeSolvers.o \
+../directSolvers.o \
+../googleTestsMain.o \
+../matrixGenerator.o \
+../monomial.o \
+../polynomial.o \
+../rootSolvers.o \
+../test_denseMatrix.o \
+../test_directSolvers.o \
+../test_iterativeSolvers.o \
+../test_matrixGenerator.o \
+../test_matrixSolver.o \
+../test_monomial.o \
+../test_polynomial.o \
+../test_rootSolvers.o 
 
 CC_DEPS += \
-./test_denseMatrix.d 
+./test_denseMatrix.d \
+./test_monomial.d \
+./test_polynomial.d \
+./test_rootDriver.d \
+./test_rootSolvers.d 
 
 OBJS += \
 ./IterativeSolvers.o \
 ./directSolvers.o \
+./matrixDriver.o \
 ./matrixGenerator.o \
-./solversDriver.o \
-./test_denseMatrix.o 
+./monomial.o \
+./polynomial.o \
+./rootDriver.o \
+./rootSolvers.o \
+./test_denseMatrix.o \
+./test_monomial.o \
+./test_polynomial.o \
+./test_rootDriver.o \
+./test_rootSolvers.o 
 
 CPP_DEPS += \
 ./IterativeSolvers.d \
 ./directSolvers.d \
+./matrixDriver.d \
 ./matrixGenerator.d \
-./solversDriver.d 
+./monomial.d \
+./polynomial.d \
+./rootDriver.d \
+./rootSolvers.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

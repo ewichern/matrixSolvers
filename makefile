@@ -1,22 +1,30 @@
 OUTPUTNAME=matrixSolver
-CPPS=IterativeSolvers.cpp directSolvers.cpp matrixGenerator.cpp
+TARGET=$(OUTPUTNAME)
+DEBUGTARGET=testMatrixSolver
+ROOTTARGET=rootSolver
+
+CPPS=IterativeSolvers.cpp directSolvers.cpp matrixGenerator.cpp \
+	rootSolvers.cpp monomial.cpp polynomial.cpp
 TESTS=googleTestsMain.cc test_denseMatrix.cc test_matrixGenerator.cc \
 	 test_iterativeSolvers.cc \
 	 test_directSolvers.cc \
-	test_matrixSolver.cc \
+	 test_monomial.cc \
+	 test_polynomial.cc \
+	 test_rootSolvers.cc \
+	 test_matrixSolver.cc \
+	 test_rootDriverFunction.cc \
 	./gtest/gtest-all.cc \
 	# test_sparseMatrix.cc
 #DIR=$(PWD)
 DISTR=Unix
 #INCLUDES=/home/erik/libraries/
-TARGET=$(OUTPUTNAME)
-DEBUGTARGET=testMatrixSolver
 
 #
 #	Macro Definitions:
 #
 
-CPPFLAGS=-std=c++0x -I$(INCLUDES) -O3 -g3 -Wall -Wextra -fmessage-length=0
+CPPFLAGS=-std=c++0x -I$(INCLUDES) -Wall -Wextra -fmessage-length=0
+CCFLAGS=-std=c++0x -I$(INCLUDES) -Og -ggdb3 -Wall -Wextra -fmessage-length=0
 CFLAGS=-g
 
 LINK=g++ $(LFLAGS)
@@ -27,7 +35,7 @@ LFLAGS=-lpthread
 #
 .SUFFIXES: .d .o .h .c .cc .C .cpp
 .cc.o:
-	$(CC) $(CPPFLAGS) -MMD -o $@ -c $<
+	$(CC) $(CCFLAGS) -MMD -o $@ -c $<
 .cpp.o:
 	$(CPP) $(CPPFLAGS) -MMD -o $@ -c $<
 
@@ -50,34 +58,64 @@ TESTDEPENDENCIES=$(TESTS:%.cc=%.d)
 	touch $@
 	
 %.o: %.cc
-	$(CPP) $(CPPFLAGS) -MMD -o $@ -c $*.cc
+	$(CPP) $(CCFLAGS) -MMD -o $@ -c $*.cc
 
 
 #
 #	Targets:
 #
-all: debug release
+all: clean release root
 
-$(TARGET): $(OBJS) solversDriver.o
-	$(LINK) -o $(TARGET) $(OBJS) solversDriver.o $(LFLAGS)
+$(TARGET): $(OBJS) matrixDriver.o
+	$(LINK) -o $(TARGET) $(OBJS) matrixDriver.o $(LFLAGS)
 
-$(DEBUGTARGET): $(TESTOBJS) $(OBJS) 
+$(DEBUGTARGET): $(TESTOBJS) $(OBJS)
 	$(LINK) -o $(DEBUGTARGET) $(TESTOBJS) $(OBJS) $(LFLAGS)
 
+$(ROOTTARGET): $(OBJS) rootDriver.o
+	$(LINK) -o $(ROOTTARGET) $(OBJS) rootDriver.o $(LFLAGS)
+
+root: CPPFLAGS += -O3 -g0
+root: $(ROOTTARGET)
+
+release: CPPFLAGS += -O3 -g0
 release: $(TARGET)
-	
+
+debug: CPPFLAGS += -Og -ggdb3
 debug: $(DEBUGTARGET) 
 
-solversDriver.o: matrixSolver.cpp
-	$(CPP) $(CPPFLAGS) -MMD -o $@ -c solversDriver.cpp
+gcov: CPPFLAGS += -fprofile-arcs -ftest-coverage
+gcov: LFLAGS += -lgcov -coverage
+gcov: debug
+
+matrixDriver.o: matrixSolver.cpp
+	$(CPP) $(CPPFLAGS) -MMD -o $@ -c matrixDriver.cpp
+
+rootDriver.o: rootDriverFunctions.cpp
+	$(CPP) $(CPPFLAGS) -MMD -o $@ -c rootDriver.cpp
 
 matrixSolver.cpp:
 	echo "Do nothing directly to matrixSolver.cpp"
 
+rootDriverFunctions.cpp:
+	echo "Do nothing directly to rootDriverFunctions.cpp"
+
 clean:
 	-rm -f $(TARGET) $(OBJS) $(DEPENDENCIES) make.dep 
-	-rm -f $(DEBUGTARGET) $(TESTOBJS) $(TESTDEPENDENCIES) tests.dep
-	-rm -f solversDriver.o solversDriver.d
+	-rm -f $(ROOTTARGET) $(OBJS) $(DEPENDENCIES) make.dep 
+	-rm -f $(DEBUGTARGET) $(TESTOBJS) $(OBJS) $(TESTDEPENDENCIES) tests.dep
+	-rm -f matrixDriver.o matrixDriver.d
+	-rm -f rootDriver.o rootDriver.d
+	-rm -f unitTest*
+	-rm -f *.gcov
+	-rm -f *.gcda
+	-rm -f *.gcno
+
+test: test.o matrixGenerator.o rootSolvers.o polynomial.o monomial.o
+	$(LINK) -o $@ test.o matrixGenerator.o rootSolvers.o polynomial.o monomial.o
+
+test.o: test.cpp
+	$(CPP) $(CPPFLAGS) -MMD -o $@ -c test.cpp
 
 make.dep: $(DEPENDENCIES)
 	-cat $(DEPENDENCIES) > $@

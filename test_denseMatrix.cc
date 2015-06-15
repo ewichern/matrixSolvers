@@ -291,3 +291,34 @@ TEST_F (denseMatrixTests, addRows)
 
 	EXPECT_TRUE(times3[0] == A1again[0]);
 }
+
+TEST_F (denseMatrixTests, transpose)
+{
+	matrix A1_T = transpose(A1);
+
+	EXPECT_EQ(A1.numrows(), A1_T.numcols());
+	EXPECT_EQ(A1.numcols(), A1_T.numrows());
+
+	for (int i = 0; i < A1.numrows(); ++i)
+	{
+		for (int j = 0; j < A1.numcols(); ++j)
+		{
+			EXPECT_EQ(A1[i][j], A1_T[j][i]);
+		}
+	}
+
+	matrix b1_T = transpose(b1);
+
+	EXPECT_EQ(b1.numrows(), b1_T.numcols());
+	EXPECT_EQ(b1.numcols(), b1_T.numrows());
+
+	for (int i = 0; i < b1.numrows(); ++i)
+	{
+		for (int j = 0; j < b1.numcols(); ++j)
+		{
+			EXPECT_EQ(b1[i][j], b1_T[j][i]);
+		}
+	}
+
+}
+
