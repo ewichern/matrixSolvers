@@ -85,6 +85,57 @@ void MatrixGenerator::readMatrixFromFile(std::ifstream& input, matrix& A)
 	}
 }
 
+/* 
+ * Write solutions out mapped to a square physical domain.
+ * Expects a N x 1 matrix, assumes physical domain is sqrt(N) x sqrt(N)
+ *
+ * @param output	fstream to write output to
+ * @param A			matrix with solution data, use A.numrows() for size
+ * @return void
+ */
+void MatrixGenerator::writeDomainToFile(std::ofstream& output, const matrix& A)
+{
+
+	int bigN = A.numrows();
+	int littleN = sqrt(bigN);
+
+	for (int i = 0; i < bigN; ++i)
+	{
+		output << fixed << setprecision(17) << A[i][0] << " ";
+		if ((i % littleN) == (littleN - 1))
+		{
+			output << "\n";
+		}
+	}
+}
+
+/* 
+ * Write solutions out mapped to a square physical domain.
+ * Expects a N x 1 matrix, assumes physical domain is sqrt(N) x sqrt(N)
+ *
+ * @param output	fstream to write output to
+ * @param A			matrix with solution data, use A.numrows() for size
+ * @return void
+ */
+void MatrixGenerator::writeGnuplotFile(std::ofstream& output, const matrix& A)
+{
+
+	int bigN = A.numrows();
+	int littleN = sqrt(bigN);
+	int k = 0;
+
+	output << fixed << setprecision(17);
+
+	for (int i = 0; i < littleN; ++i)
+	{
+		for (int j = 0; j < littleN; ++j)
+		{
+			k = j * littleN + i;
+			output << i << " " << j << " " << A[k][0] << "\n";
+		}
+	}
+}
+
 void MatrixGenerator::writeMatrixToFile(std::ofstream& output, const matrix& A)
 {
 

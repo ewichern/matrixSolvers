@@ -33,16 +33,17 @@ int printMenuOptions(std::istream& input)
 	cout << "5 - Use a solver to solve for x. (default is Jacobi method. "
 			<< "matrices A and b must be loaded prior to executing solver)"
 			<< endl;
-	cout << "6 - Print most recent solution -- a solver should be run first "
-			<< "using option 5." << endl;
-	cout << "7 - Write most recent solution to file-- a solver should be run first "
-			<< "using option 5." << endl;
+	cout << "6 - Print most recent solution -- run a solver first!\n";
+	cout << "7 - Write most recent solution to file -- run a solver first!\n";
+	cout << "8 - Write most recent solution to file (SQUARE DOMAIN FORMAT) "
+			<< "-- run a solver first!\n";
+	cout << "9 - Print the currently stored A and b matrices to file\n";
 	cout << "0 - Exit." << endl;
 	cout << "Enter selection : " << endl;
 
 	int selection;
 
-	while (!(input >> selection) || ((selection < 0) || (selection > 7)))
+	while (!(input >> selection) || ((selection < 0) || (selection > 9)))
 	{
 		input.clear();
 		input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -244,15 +245,29 @@ string getSolverName(int enumValue)
 
 void printSolution(const matrix& x)
 {
-	std::cout << "Solution x is: " << std::endl;
+	std::cout << "Solution x is: \n";
 	std::cout << x << std::endl;
 }
 
 void writeOutSolution(const matrix& x)
 {
-	std::cout << "Solution x saved to output.dat" << std::endl;
-	std::ofstream output ("output.dat");
+	std::cout << "Solution x saved to outputX.dat\n";
+	std::ofstream output ("outputX.dat");
 	MatrixGenerator::writeMatrixToFile(output, x);
+}
+
+void writeSquareDomain(const matrix& x)
+{
+	std::cout << "Solution x saved to omega.dat\n";
+	std::ofstream output ("omega.dat");
+	MatrixGenerator::writeGnuplotFile(output, x);
+}
+
+void writeOutAb(const matrix& A, const matrix& b)
+{
+	std::cout << "Currently stored matrices A and b saved to outputAb.dat\n";
+	std::ofstream output ("outputAb.dat");
+	MatrixGenerator::writeMatrixToFile(output, A, b);
 }
 
 void multiplyAx(const matrix& A, const matrix& x, matrix& b)
@@ -266,7 +281,7 @@ int executeSolver(istream& input, int selection, matrix& A, matrix& x,
 {
 	clock_t t_0, t_end;
 	int numIterations = -1;
-	x = matrix(A.numcols(), 1, 0.1);
+	x = matrix(A.numcols(), 1, 1);
 	double omega = 1.4;
 
 	switch (selection)
@@ -398,6 +413,12 @@ string mainMenu(istream& input)
 			break;
 		case 7:
 			writeOutSolution(x);
+			break;
+		case 8:
+			writeSquareDomain(x);
+			break;
+		case 9:
+			writeOutAb(A, b);
 			break;
 		case 0:
 		default:

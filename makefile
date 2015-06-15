@@ -111,8 +111,8 @@ clean:
 	-rm -f *.gcda
 	-rm -f *.gcno
 
-test: test.o matrixGenerator.o rootSolvers.o polynomial.o
-	$(LINK) -o $@ test.o matrixGenerator.o rootSolvers.o polynomial.o
+test: test.o matrixGenerator.o rootSolvers.o polynomial.o monomial.o
+	$(LINK) -o $@ test.o matrixGenerator.o rootSolvers.o polynomial.o monomial.o
 
 test.o: test.cpp
 	$(CPP) $(CPPFLAGS) -MMD -o $@ -c test.cpp

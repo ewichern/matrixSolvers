@@ -1,0 +1,5 @@
+set hidden3d
+set dgrid3d 50,50 splines
+set pm3d
+set palette rgbformulae 30,31,32
+set title "Erik Wichern - cs417 Final"

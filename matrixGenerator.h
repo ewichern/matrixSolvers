@@ -33,6 +33,9 @@ public:
 	static void readMatrixFromFile(std::ifstream& input, matrix& A);
 
 	static void writeMatrixToFile(std::ofstream& output, const matrix& A);
+	
+	static void writeDomainToFile(std::ofstream& output, const matrix& A);
+	static void writeGnuplotFile(std::ofstream& output, const matrix& A);
 
 	// For writing A and b (of Ax = b) to a sample data file for later use in solver testing
 	// A.numcols() must == b.num

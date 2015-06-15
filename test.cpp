@@ -3,66 +3,62 @@
 #include <iomanip>
 #include <fstream>
 #include <cmath>
+#include <vector>
+
 #include "matrixGenerator.h"
 #include "rootSolvers.h"
+#include "polynomial.h"
 
 typedef denseMatrix<double> matrix;
 
-double v (double t)
+double f_6 (double x)
 {
-	double u = 2000.0; // m/s
-	double m_0 = 150000.0; // kg
-	double q = 2500.0; // kg/s
-	double v_0 = 750.0; // m/s
-	double g = 9.81; // m/s^2
-
-	return (u * log (m_0 / (m_0 - (q * t))) - (g * t) - v_0);
+	return (x + log (x));
 }
-
-double v_check (double t)
-{
-	double u = 2000.0; // m/s
-	double m_0 = 150000.0; // kg
-	double q = 2500.0; // kg/s
-	double g = 9.81; // m/s^2
-
-	return (u * log (m_0 / (m_0 - (q * t))) - (g * t));
-}
-
-double f (double x)
-{
-    return (powf(x, 2.0) - ((47.0 / 36.0) * x) + (21.0 / 36.0));
-}
-
-double f_prime (double x)
-{
-	return ((2.0 * x) - (47.0 / 36.0));
-}
-
 
 int main (int argc, char **argv)
 {
-/*    
-    int size = 1000;
-    matrix test(size, size);
-    matrix testB(size, 1, 2.0);
-    //std::cerr << test.numrows() << " " << test.numcols() << std::endl;
-    //std::cerr << testB.numrows() << " " << testB.numcols() << std::endl;
-    test.eye();
-    std::ofstream output ("midterm.dat");
-    MatrixGenerator::writeMatrixToFile(output, test, testB);
-*/
-//	double x = 11.0;
 	int numIterations = 0;
 	double errLimit = 0.00001;
-	double lower = 10;
-	double upper = 50;
+	double lower = 0.1;
+	double upper = 1;
 
-	double t = rootSolvers::falsePosition(v, lower, upper, numIterations, errLimit);
+	
+	std::cout << "f(x) = x + ln(x)\n";
+	std::cout << "Question 6 - Bisection\n";
+	double solution = rootSolvers::bisection(f_6, lower, upper, numIterations, errLimit);
+	std::cout << "Iterations: " << numIterations << std::endl;
+	std::cout << "Root: " << solution << std::endl << std::endl;
 
-	double v_test = v_check(t);
+	numIterations = 0;
 
-	std::cout << t << std::endl;
-	std::cout << v_test << std::endl;
+	std::cout << "Question 7 - Regula-falsi\n";
+	solution = rootSolvers::falsePosition(f_6, lower, upper, numIterations, errLimit);
+	std::cout << "Iterations: " << numIterations << std::endl;
+	std::cout << "Root: " << solution << std::endl << std::endl;
+
+	numIterations = 0;
+
+	std::cout << "Question 8 - Newton's method on a Polynomial Object\n";
+
+//	std::vector<double> coeffs {1, 2, -9, -2, 8};
+	std::vector<double> coeffs {8, -2, -9, 2, 1};
+	polynomial poly(coeffs);
+
+	std::cout << poly << "\n";
+	double guess = -10.0;
+	std::cout << "initial guess: " << guess << "\n";
+
+	solution = rootSolvers::newton(poly, guess, numIterations, errLimit);
+	std::cout << "Iterations: " << numIterations << std::endl;
+	std::cout << "Root: " << solution << std::endl << std::endl;
+/*
+	guess = -2.0;
+	std::cout << "initial guess: " << guess << "\n";
+
+	solution = rootSolvers::newton(poly, guess, numIterations, errLimit);
+	std::cout << "Iterations: " << numIterations << std::endl;
+	std::cout << "Root: " << solution << std::endl;
+*/
     return 1;
 }
