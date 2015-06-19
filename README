@@ -1,22 +1,32 @@
+### Description:
 
-#####################################################################
-# There are pre-compiled Linux executables in the bin/ directory for 
-# both my Google Test suite and the regular (menu-based) solver driver.
-#####################################################################
+Library of matrix solvers and equation root solvers written for cs417 - Numerical Methods.
+Everything is written in C++, primarily for performance reasons, but this is *not* a sparse matrix implementation, so memory requirements have to be considered when using/testing.
 
+##### Included matrix solvers:
 
-// Otherwise, here are build instructions:
+- Jacobi iterative method
+- Gauss-Seidel method (without relaxing)
+- Gauss-Seidel with successive over-relaxation (or under-relaxation, constant is user-specified)
+- Gaussian elimination
+- LU decomposition
 
-// "make" or "make all"
-	will construct both Google Test and regular executables
+##### Root solvers:
 
-// "make debug"
-	will construct only Google Test runner
+- bisection method
+- Regula-falsi (false position) method
+- Newton-Raphson method
 
-// "make release"
-	will construct only the normal program executable
+##### Notes:
 
-// "make clean"
-	should remove all the cruft from either/both builds
+- Refactoring this code is on my to-do list. Specifically, I wrote a whole command-line interface to allow access to these methods because I thought it was a requirement for the class. In reality, the CLI was just a pain and extra work that was totally unnecessary for the assignments or the class. I want to remove the CLI, but create a good augmented matrix class/object that will allow access to all the library methods in an easy and compact way.
+- Similarly, there were some *compromises* made on the interface with the root solvers. Would be nice to get rid of that CLI as well. 
 
-// And finally - the program executable can be run with a command line argument specifying an Ab matrix data file. It will automatically spit out the results of the solver and the relative error. It only runs Jacobi at the moment... I should probably allow a 2nd argument so that the user can specify a solver.
+### Build instructions: 
+
+Currently, the following are options:
+
+- `make` or `make all` will compile both the test/debugging and regular executables
+- `make debug` will produce only the executable for the Google Test suite
+- `make release` will produce only the regular program executables
+- `make clean` should remove most added files and cruft from either build. It will likely leave behind user-created data files.
