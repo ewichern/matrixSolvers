@@ -23,28 +23,63 @@ public:
 
 	denseMatrixTests()
 	{
+		string testFile1 = "sampleData1";
+		string testFile2 = "sampleData2";
 
-		ifstream a1b1input("sampleData1Ab.dat");
-		ifstream x1input("sampleData1x.dat");
+		std::ifstream aOneInput(testFile1 + "A.dat");
+		std::ifstream xOneInput(testFile1 + "x.dat");
+		std::ifstream bOneInput(testFile1 + "B.dat");
+		std::ifstream aTwoInput(testFile2 + "A.dat");
+		std::ifstream xTwoInput(testFile2 + "x.dat");
+		std::ifstream bTwoInput(testFile2 + "B.dat");
 
-		MatrixGenerator::readMatrixFromFile(a1b1input, A1, b1);
+		A1.setDenseMatrix(aOneInput);
+		aOneInput.close();
+		aOneInput.open("sampleData1A.dat");
+		A1again.setDenseMatrix(aOneInput);
+		aOneInput.close();
+		b1.setDenseMatrix(bOneInput);
+		b1again.setDenseMatrix(bOneInput);
+		x1.setDenseMatrix(xOneInput);
 
-		a1b1input.close();
-		a1b1input.open("sampleData1Ab.dat");
+		A2.setDenseMatrix(aTwoInput);
+		aTwoInput.close();
+		aTwoInput.open("sampleData2A.dat");
+		A2again.setDenseMatrix(aTwoInput);
+		aTwoInput.close();
+		b2.setDenseMatrix(bTwoInput);
+		b2again.setDenseMatrix(bTwoInput);
+		x2.setDenseMatrix(xTwoInput);
 
-		MatrixGenerator::readMatrixFromFile(a1b1input, A1again, b1again);
-		MatrixGenerator::readMatrixFromFile(x1input, x1);
+		xOneInput.close();
+		bOneInput.close();
+		xTwoInput.close();
+		bTwoInput.close();
 
-		ifstream a2b2input("sampleData2Ab.dat");
-		ifstream x2input("sampleData2x.dat");
+		/*
+		 ifstream a1b1input("sampleData1Ab.dat");
+		 ifstream x1input("sampleData1x.dat");
 
-		MatrixGenerator::readMatrixFromFile(a2b2input, A2, b2);
-		MatrixGenerator::readMatrixFromFile(x2input, x2);
+		 //		MatrixGenerator::readMatrixFromFile(a1b1input, A1, b1);
 
-		a2b2input.close();
-		a2b2input.open("sampleData2Ab.dat");
+		 a1b1input.close();
+		 a1b1input.open("sampleData1Ab.dat");
 
-		MatrixGenerator::readMatrixFromFile(a2b2input, A2again, b2again);
+		 //		MatrixGenerator::readMatrixFromFile(a1b1input, A1again, b1again);
+		 //		MatrixGenerator::readMatrixFromFile(x1input, x1);
+
+		 ifstream a2b2input("sampleData2Ab.dat");
+		 ifstream x2input("sampleData2x.dat");
+
+		 //		MatrixGenerator::readMatrixFromFile(a2b2input, A2, b2);
+		 //		MatrixGenerator::readMatrixFromFile(x2input, x2);
+
+		 a2b2input.close();
+		 a2b2input.open("sampleData2Ab.dat");
+
+		 //		MatrixGenerator::readMatrixFromFile(a2b2input, A2again, b2again);
+		 *
+		 */
 	}
 
 	virtual ~denseMatrixTests()
@@ -62,6 +97,57 @@ TEST_F (denseMatrixTests, constructors)
 	delete ptr;
 	delete ptr2;
 	delete ptr3;
+}
+
+TEST_F (denseMatrixTests, setDenseMatrix)
+{
+	matrix test1;
+	int rows = 3, cols = 3;
+
+	ifstream input("eye.dat");
+
+	test1.setDenseMatrix(input);
+	input.close();
+
+	EXPECT_EQ(rows, test1.numrows());
+	EXPECT_EQ(cols, test1.numcols());
+
+	for (int i = 0; i < rows; ++i)
+	{
+		for (int j = 0; j < cols; ++j)
+		{
+			double testValue = test1[i][j];
+			if (i == j)
+				EXPECT_EQ(1, testValue);
+			else
+				EXPECT_EQ(0, testValue);
+		}
+	}
+}
+
+TEST_F (denseMatrixTests, filePrintDenseMatrix)
+{
+	ifstream input("sampleData1x.dat");
+	matrix test1(input);
+	input.close();
+
+	ofstream output("unitTestDenseMatrix.dat");
+	test1.writeFile(output);
+	output.close();
+
+	ifstream inputTest("sampleData1Ab.dat");
+	ifstream outputTest("unitTestAugMatrix.dat");
+
+	double inNum = -1, outNum = -2;
+
+	while ((inputTest >> inNum) && (outputTest >> outNum))
+	{
+//		std::cerr << inNum << std::endl;
+//		std::cerr << outNum << std::endl;
+
+		EXPECT_DOUBLE_EQ(inNum, outNum);
+		inNum = -1, outNum = -2;
+	}
 }
 
 TEST_F (denseMatrixTests, equals)
@@ -142,7 +228,8 @@ TEST_F (denseMatrixTests, eye)
 	id1.eye(3, 3);
 
 	ifstream input("eye.dat");
-	MatrixGenerator::readMatrixFromFile(input, id2);
+//	MatrixGenerator::readMatrixFromFile(input, id2);
+	id2.setDenseMatrix(input);
 	input.close();
 
 	EXPECT_EQ(id1, id2);
@@ -155,7 +242,8 @@ TEST_F (denseMatrixTests, multiplyScaler)
 	idtest = 2 * id1;
 
 	ifstream input("eyeTimes2.dat");
-	MatrixGenerator::readMatrixFromFile(input, id2);
+//	MatrixGenerator::readMatrixFromFile(input, id2);
+	id2.setDenseMatrix(input);
 	input.close();
 
 	EXPECT_EQ(idtest, id2);
@@ -173,7 +261,8 @@ TEST_F (denseMatrixTests, add)
 	idtest = id1 + id2;
 
 	ifstream input("eyeTimes2.dat");
-	MatrixGenerator::readMatrixFromFile(input, id2);
+//	MatrixGenerator::readMatrixFromFile(input, id2);
+	id2.setDenseMatrix(input);
 	input.close();
 
 	EXPECT_EQ(idtest, id2);
@@ -185,7 +274,8 @@ TEST_F (denseMatrixTests, subtract)
 	id1.eye(3, 3);
 
 	ifstream input("eyeTimes2.dat");
-	MatrixGenerator::readMatrixFromFile(input, id2);
+//	MatrixGenerator::readMatrixFromFile(input, id2);
+	id2.setDenseMatrix(input);
 	input.close();
 
 	idtest = id2 - id1;

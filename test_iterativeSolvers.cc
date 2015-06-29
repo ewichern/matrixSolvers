@@ -14,6 +14,7 @@
 #include <string>
 
 #include "denseMatrix.h"
+#include "augMatrix.h"
 #include "matrixGenerator.h"
 
 typedef denseMatrix<double> matrix;
@@ -27,28 +28,30 @@ public:
 
 	iterativeSolverTests()
 	{
-
 		string testFile1 = "sampleData1";
-
-		ifstream a1b1input(testFile1 + "Ab.dat");
-		ifstream x1input(testFile1 + "x.dat");
-
-		MatrixGenerator::readMatrixFromFile(a1b1input, A1, b1);
-		a1b1input.close();
-
-		MatrixGenerator::readMatrixFromFile(x1input, x1);
-		x1input.close();
-
 		string testFile2 = "sampleData2";
 
-		ifstream a2b2input(testFile2 + "Ab.dat");
-		ifstream x2input(testFile2 + "x.dat");
+		std::ifstream aOneInput(testFile1 + "A.dat");
+		std::ifstream xOneInput(testFile1 + "x.dat");
+		std::ifstream bOneInput(testFile1 + "B.dat");
+		std::ifstream aTwoInput(testFile2 + "A.dat");
+		std::ifstream xTwoInput(testFile2 + "x.dat");
+		std::ifstream bTwoInput(testFile2 + "B.dat");
 
-		MatrixGenerator::readMatrixFromFile(a2b2input, A2, b2);
-		a2b2input.close();
+		A1.setDenseMatrix(aOneInput);
+		aOneInput.close();
+		b1.setDenseMatrix(bOneInput);
+		x1.setDenseMatrix(xOneInput);
 
-		MatrixGenerator::readMatrixFromFile(x2input, x2);
-		x2input.close();
+		A2.setDenseMatrix(aTwoInput);
+		aTwoInput.close();
+		b2.setDenseMatrix(bTwoInput);
+		x2.setDenseMatrix(xTwoInput);
+
+		xOneInput.close();
+		bOneInput.close();
+		xTwoInput.close();
+		bTwoInput.close();
 
 	}
 

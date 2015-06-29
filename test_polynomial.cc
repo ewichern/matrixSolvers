@@ -208,7 +208,7 @@ TEST_F (polynomialTests, polyDerivative)
 
 	poly.derivative();
 
-	std::cout << poly;
+	std::cerr << poly << "\n";
 }
 
 TEST_F (polynomialTests, equality)
@@ -227,8 +227,8 @@ TEST_F (polynomialTests, equality)
 
 	EXPECT_EQ(expected.str(), actual.str());
 	EXPECT_TRUE(poly == poly1);
-	std::cerr << poly;
-	std::cerr << poly1;
+	std::cerr << poly << "\n";
+	std::cerr << poly1 << "\n";
 }
 
 TEST_F (polynomialTests, polynomialPrint)
@@ -243,7 +243,7 @@ TEST_F (polynomialTests, polynomialPrint)
 	std::string actual = testOutput.str();
 
 	EXPECT_EQ(expected, actual);
-	std::cout << "Polynomial print test: " << poly;
+	std::cerr << "Polynomial print test: " << poly << "\n";
 }
 
 TEST_F (polynomialTests, solveBisect)

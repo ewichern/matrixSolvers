@@ -52,7 +52,7 @@
 					</folderInfo>
 					<fileInfo id="cdt.managedbuild.config.gnu.exe.debug.789180600.617444086" name="sparseMatrix.h" rcbsApplicability="disable" resourcePath="unused/sparseMatrix.h" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="rootDriverFunctions.cpp|rootDriver.cpp|matrixDriver.cpp|test.cpp|unused|sparseMatrix.h|test_sparseMatrix.cc|matrixSolver.cpp|solversDriver.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="test_matrixSolver.cc|rootDriverFunctions.cpp|rootDriver.cpp|matrixDriver.cpp|test.cpp|unused|sparseMatrix.h|test_sparseMatrix.cc|matrixSolver.cpp|solversDriver.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

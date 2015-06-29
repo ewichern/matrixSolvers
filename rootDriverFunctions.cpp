@@ -160,7 +160,7 @@ std::string rootMainMenu(std::istream& input)
 	int menuSelection = -1;
 	std::stringstream menuHistory;
 
-	solvers solverSelection = bisection;
+//	solvers solverSelection = bisection;
 
 	polynomial expression;
 

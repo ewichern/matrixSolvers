@@ -14,6 +14,7 @@
 #include <string>
 
 #include "denseMatrix.h"
+#include "augMatrix.h"
 #include "matrixGenerator.h"
 
 typedef denseMatrix<double> matrix;
@@ -27,29 +28,30 @@ public:
 
 	directSolverTests()
 	{
-
 		string testFile1 = "sampleData1";
-
-		ifstream a1b1input(testFile1 + "Ab.dat");
-		ifstream x1input(testFile1 + "x.dat");
-
-		MatrixGenerator::readMatrixFromFile(a1b1input, A1, b1);
-		a1b1input.close();
-
-		MatrixGenerator::readMatrixFromFile(x1input, x1);
-		x1input.close();
-
 		string testFile2 = "sampleData2";
 
-		ifstream a2b2input(testFile2 + "Ab.dat");
-		ifstream x2input(testFile2 + "x.dat");
+		std::ifstream aOneInput(testFile1 + "A.dat");
+		std::ifstream xOneInput(testFile1 + "x.dat");
+		std::ifstream bOneInput(testFile1 + "B.dat");
+		std::ifstream aTwoInput(testFile2 + "A.dat");
+		std::ifstream xTwoInput(testFile2 + "x.dat");
+		std::ifstream bTwoInput(testFile2 + "B.dat");
 
-		MatrixGenerator::readMatrixFromFile(a2b2input, A2, b2);
-		a2b2input.close();
+		A1.setDenseMatrix(aOneInput);
+		aOneInput.close();
+		b1.setDenseMatrix(bOneInput);
+		x1.setDenseMatrix(xOneInput);
 
-		MatrixGenerator::readMatrixFromFile(x2input, x2);
-		x2input.close();
+		A2.setDenseMatrix(aTwoInput);
+		aTwoInput.close();
+		b2.setDenseMatrix(bTwoInput);
+		x2.setDenseMatrix(xTwoInput);
 
+		xOneInput.close();
+		bOneInput.close();
+		xTwoInput.close();
+		bTwoInput.close();
 	}
 
 	virtual ~directSolverTests()
@@ -90,15 +92,22 @@ TEST_F (directSolverTests, gaussianElimination)
 
 TEST_F (directSolverTests, gaussianElimination2)
 {
-	matrix morrisA, morrisX, morrisB;
+//	matrix morrisA, morrisX, morrisB;
+	augMatrix morris;
+	matrix morrisX;
 
 	ifstream morrisSample("SAMPLEdata.txt");
 	ifstream morrisSol("SAMPLEsol.txt");
 
-	MatrixGenerator::readMatrixFromFile(morrisSample, morrisA, morrisB);
-	MatrixGenerator::readMatrixFromFile(morrisSol, morrisX);
+//	MatrixGenerator::readMatrixFromFile(morrisSample, morrisA, morrisB);
+//	MatrixGenerator::readMatrixFromFile(morrisSol, morrisX);
+	morris.setAugMatrix(morrisSample);
+	morrisX.setDenseMatrix(morrisSol);
 
-	matrix morrisXtest(morrisA.numrows(), 1);
+	matrix morrisXtest(morris.numrows(), 1);
+
+	matrix morrisA = morris.getA();
+	matrix morrisB = morris.getB();
 
 	directSolvers::gaussianElimination(morrisA, morrisXtest, morrisB);
 
@@ -135,17 +144,22 @@ TEST_F (directSolverTests, LUdecomposition1)
 
 TEST_F (directSolverTests, LUdecomposition2)
 {
-	matrix morrisA, morrisX, morrisB;
+//	matrix morrisA, morrisX, morrisB;
+	augMatrix morris;
+	matrix morrisX;
 
 	ifstream morrisSample("SAMPLEdata.txt");
 	ifstream morrisSol("SAMPLEsol.txt");
 
-	MatrixGenerator::readMatrixFromFile(morrisSample, morrisA, morrisB);
-	MatrixGenerator::readMatrixFromFile(morrisSol, morrisX);
-	morrisSample.close();
-	morrisSol.close();
+//	MatrixGenerator::readMatrixFromFile(morrisSample, morrisA, morrisB);
+//	MatrixGenerator::readMatrixFromFile(morrisSol, morrisX);
+	morris.setAugMatrix(morrisSample);
+	morrisX.setDenseMatrix(morrisSol);
 
-	matrix morrisXtest(morrisA.numrows(), 1);
+	matrix morrisXtest(morris.numrows(), 1);
+
+	matrix morrisA = morris.getA();
+	matrix morrisB = morris.getB();
 
 	directSolvers::LUdecomposition(morrisA, morrisXtest, morrisB);
 

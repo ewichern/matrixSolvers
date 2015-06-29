@@ -26,10 +26,6 @@ public:
 	matrixGeneratorTests()
 	{
 
-		ifstream a1b1input("sampleData1Ab.dat");
-
-		MatrixGenerator::readMatrixFromFile(a1b1input, A1, b1);
-		a1b1input.close();
 	}
 
 	virtual ~matrixGeneratorTests()
@@ -39,55 +35,37 @@ public:
 
 };
 
-TEST_F (matrixGeneratorTests, writeToFile)
+TEST_F (matrixGeneratorTests, constructor)
 {
-	matrix id1, idTest;
-	id1.eye(3, 3);
 
-	ofstream output("unitTest.dat");
-	MatrixGenerator::writeMatrixToFile(output, id1);
-	output.close();
-
-	ifstream input("unitTest.dat");
-	MatrixGenerator::readMatrixFromFile(input, idTest);
-	input.close();
-
-	EXPECT_EQ(id1, idTest);
 }
 
-TEST_F (matrixGeneratorTests, writeToFile2)
+TEST_F (matrixGeneratorTests, randomFillMatrix)
 {
-	matrix A1test, b1test;
+	// TODO I'm in the middle of rewriting the matrixGenerator class
+	// should only contain randomFillMatrix and generateSamples
+	// class has a data structure now to hold all the parameters that
+	// were being passed
 
-	ofstream output("unitTest.dat");
-	MatrixGenerator::writeMatrixToFile(output, A1, b1);
-	output.close();
+	matrix mat1 = matrix(3, 3, 0.0);
+	matrix mat2 = matrix(3, 3, 0.0);
 
-	ifstream input("unitTest.dat");
-	MatrixGenerator::readMatrixFromFile(input, A1test, b1test);
-	input.close();
+	EXPECT_EQ(mat1, mat2);
 
-	EXPECT_EQ(A1, A1test);
-	EXPECT_EQ(b1, b1test);
+	MatrixGenerator matGen;
+
+
+
+
 }
-
+/*
 TEST_F (matrixGeneratorTests, generateSamples)
 {
 
-	typedef std::uniform_real_distribution<double> distribType;
-	//typedef std::uniform_int_distribution<> distribType;
-
-	double min = -100.0;
-	double max = 100.0;
 	string filenameRoot = "unitTest";
 
-	std::random_device randDevice;
-	std::mt19937 generator(randDevice());
-	distribType dist(min, max);
-	//distribType dist((int) min, (int) max);
 
-	MatrixGenerator::generateSamples<distribType>(6, 6, filenameRoot, generator,
-			dist);
+	MatrixGenerator::generateSamples<distribType>(6, 6, filenameRoot);
 
 	matrix A1test, x1test, b1test, b1calc;
 
@@ -112,4 +90,4 @@ TEST_F (matrixGeneratorTests, generateSamples)
 
 	//EXPECT_EQ(b1test, b1calc);
 }
-
+*/

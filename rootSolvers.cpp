@@ -42,8 +42,8 @@ double rootSolvers::bisection(double (*f)(double), double lower, double upper,
 		f_r = f(root);
 		++numIterations;
 
-		std::cout << "It: " << numIterations << "\n";
-		std::cout << "root: " << root << "\n";
+//		std::cout << "It: " << numIterations << "\n";
+//		std::cout << "root: " << root << "\n";
 
 		double test = f_l * f_r;
 		if (test < 0.0)
@@ -182,8 +182,8 @@ double rootSolvers::falsePosition(double (*f)(double), double lower,
 		f_r = f(root);
 		++numIterations;
 
-		std::cout << "It: " << numIterations << "\n";
-		std::cout << "root: " << root << "\n";
+//		std::cout << "It: " << numIterations << "\n";
+//		std::cout << "root: " << root << "\n";
 
 		if (root != 0.0)
 		{
@@ -277,8 +277,8 @@ double rootSolvers::newton(double (*f)(double), double (*f_prime)(double),
 		double r_old = root;
 		double slope_tangent = f_prime(r_old);
 
-		std::cout << "It: " << numIterations << "\n";
-		std::cout << "root: " << root << "\n";
+//		std::cout << "It: " << numIterations << "\n";
+//		std::cout << "root: " << root << "\n";
 //		std::cout << "Slope at r_old: " << slope_tangent << "\n";
 
 		if (relErr(0.0, slope_tangent) < 0.000001)

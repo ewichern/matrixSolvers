@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 #include <initializer_list>
 #include <stdexcept>
@@ -24,6 +25,8 @@ public:
 	denseMatrix(const vector<vector<Object>> &, const Object&);
 	denseMatrix(const vector<Object> &, const Object&);
 	denseMatrix(const denseMatrix<Object>&);
+	denseMatrix(ifstream& input);
+
 	~denseMatrix()
 	{
 		array.clear();
@@ -33,6 +36,10 @@ public:
 	bool operator!=(const denseMatrix<Object>&) const;
 
 	denseMatrix<Object>& operator=(const denseMatrix<Object>&);
+	void setDenseMatrix (std::ifstream& input);
+	void writeFile (std::ofstream& output) const;
+	void writeGnuplotFile (std::ofstream&) const;
+	void writeDomainToFile (std::ofstream&) const;
 
 	void eye();
 	void eye(int, int);
@@ -79,6 +86,8 @@ public:
 		}
 		return nCols;
 	}
+
+	static const int numDigits = 2;
 
 private:
 	vector<vector<Object>> array;
@@ -161,6 +170,12 @@ denseMatrix<Object>::denseMatrix(const denseMatrix<Object>& m) :
 
 }
 
+template<typename Object>
+denseMatrix<Object>::denseMatrix(ifstream& input)
+{
+	this->setDenseMatrix(input);
+}
+
 /*  Not yet supported
  denseMatrix( initializer_list<vector<Object>> lst ) : array( lst.size( ) )
  {
@@ -168,11 +183,6 @@ denseMatrix<Object>::denseMatrix(const denseMatrix<Object>& m) :
  for( auto & v : lst )
  array[ i++ ] = std::move( v );
  }
- */
-
-/*  Not yet supported
- denseMatrix( vector<vector<Object>> && v ) : array{ std::move( v ) }
- { }
  */
 
 //Overloaded operators
@@ -210,6 +220,30 @@ denseMatrix<Object>& denseMatrix<Object>::operator=(
 		array = right.array;
 	}
 	return *this;
+}
+
+template<typename Object>
+void denseMatrix<Object>::setDenseMatrix(std::ifstream& input)
+{
+	double tempInputValue = 0.0;
+	int rows = 0, cols = 0;
+
+	input >> rows >> cols;
+
+	array.clear();
+	array.resize(rows);
+
+	for (int i = 0; i < rows; ++i)
+	{
+		array.at(i).clear();
+		array.at(i).resize(cols);
+
+		for (int j = 0; j < cols; ++j)
+		{
+			input >> tempInputValue;
+			array.at(i).at(j) = tempInputValue;
+		}
+	}
 }
 
 template<typename Object>
@@ -529,12 +563,80 @@ std::ostream& operator<<(std::ostream& out, const denseMatrix<Object>& m)
 		{
 			if (i > 0)
 				out << ' ';
-			out << setprecision(18) << setw(21);
+			out << setprecision(m.numDigits) << setw(21);
 			out << m[j][i];
 		}
 		out << "\n";
 	}
 	return out;
+}
+
+template<typename Object>
+void denseMatrix<Object>::writeFile (std::ofstream& output) const
+{
+	int rows = this->numrows();
+	int cols = this->numcols();
+
+	output << rows << "\n";
+	output << cols << "\n";
+
+	output << this;
+}
+
+/*
+ * Assumes that the (solution) matrix being output is data that maps to
+ * a square physical domain.
+ *
+ * Expects a N x 1 matrix, assumes physical domain is sqrt(N) x sqrt(N)
+ *
+ * @param output	fstream to write output to
+ * @return void
+ */
+template<typename Object>
+void denseMatrix<Object>::writeDomainToFile (std::ofstream& output) const
+{
+	const denseMatrix<Object>& self = *this;
+	int bigN = self.numrows();
+	int littleN = sqrt(bigN);
+
+	for (int i = 0; i < bigN; ++i)
+	{
+		output << fixed << setprecision(17) << self[i][0] << " ";
+		if ((i % littleN) == (littleN - 1))
+		{
+			output << "\n";
+		}
+	}
+}
+
+/*
+ * Assumes that the (solution) matrix being output is data that maps to
+ * a square physical domain. Writes out solution to a data file that is
+ * compatible with GNUplot for visualization.
+ *
+ * Expects a N x 1 matrix, assumes physical domain is sqrt(N) x sqrt(N)
+ *
+ * @param output	fstream to write output to
+ * @return void
+ */
+template<typename Object>
+void denseMatrix<Object>::writeGnuplotFile (std::ofstream& output) const
+{
+	const denseMatrix<Object>& self = *this;
+	int bigN = self.numrows();
+	int littleN = sqrt(bigN);
+	int k = 0;
+
+	output << fixed << setprecision(17);
+
+	for (int i = 0; i < littleN; ++i)
+	{
+		for (int j = 0; j < littleN; ++j)
+		{
+			k = j * littleN + i;
+			output << i << " " << j << " " << self[k][0] << "\n";
+		}
+	}
 }
 
 template<typename Object>

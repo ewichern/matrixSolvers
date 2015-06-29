@@ -13,185 +13,28 @@ using namespace std;
 
 typedef denseMatrix<double> matrix;
 
-void MatrixGenerator::askForMatrixSize(std::istream& input, int& m, int& n)
+MatrixGenerator::MatrixGenerator()
 {
-	std::cout << "Enter desired size (m x n) for matrix A \n"
-			<< "-- in integers, separated by a space: \n";
-
-	while (!(input >> m >> n))
-	{
-		input.clear();
-		input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		std::cout << "Invalid input, try again: \n";
-	}
-	input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	augMat = new augMatrix();
+	std::random_device randDevice;
+	std::mt19937 generator(randDevice());
+	distribType dist(min, max);
 }
 
-// File format:
-// integer sizes provided for rows*cols, each followed by \n
-// then sufficient values to fill A and b,
-// each separated by whitespace or newline
-void MatrixGenerator::readMatrixFromFile(std::ifstream& input, matrix& A,
-		matrix& b)
+MatrixGenerator::MatrixGenerator(augMatrix& mat)
 {
+	augMat = mat;
+	std::random_device randDevice;
+	std::mt19937 generator(randDevice());
+	distribType dist(min, max);
+}
 
-	int m = 0, n = 0;
-	input >> m >> n;
-
-	A = matrix(m, n);
-	b = matrix(m, 1);
-
-	double tempValue = 0.0;
-
-	for (int i = 0; i < A.numrows(); ++i)
-	{
-		for (int j = 0; j < A.numcols(); ++j)
-		{
-			input >> tempValue;
-			A[i][j] = tempValue;
-		}
-	}
-
-	for (int i = 0; i < b.numrows(); ++i)
-	{
-		input >> tempValue;
-		b[i][0] = tempValue;
-	}
+MatrixGenerator::~MatrixGenerator()
+{
 
 }
 
-// Overloaded from above, only reads in one matrix
-// File format:
-// integer sizes provided for rows*cols, each followed by \n
-// then sufficient values to fill A,
-// each separated by whitespace or newline
-void MatrixGenerator::readMatrixFromFile(std::ifstream& input, matrix& A)
-{
-
-	int m = 0, n = 0;
-	input >> m >> n;
-
-	A = matrix(m, n);
-
-	double tempValue = 0.0;
-
-	for (int i = 0; i < A.numrows(); ++i)
-	{
-		for (int j = 0; j < A.numcols(); ++j)
-		{
-			input >> tempValue;
-			A[i][j] = tempValue;
-		}
-	}
-}
-
-/* 
- * Write solutions out mapped to a square physical domain.
- * Expects a N x 1 matrix, assumes physical domain is sqrt(N) x sqrt(N)
- *
- * @param output	fstream to write output to
- * @param A			matrix with solution data, use A.numrows() for size
- * @return void
- */
-void MatrixGenerator::writeDomainToFile(std::ofstream& output, const matrix& A)
-{
-
-	int bigN = A.numrows();
-	int littleN = sqrt(bigN);
-
-	for (int i = 0; i < bigN; ++i)
-	{
-		output << fixed << setprecision(17) << A[i][0] << " ";
-		if ((i % littleN) == (littleN - 1))
-		{
-			output << "\n";
-		}
-	}
-}
-
-/* 
- * Write solutions out mapped to a square physical domain.
- * Expects a N x 1 matrix, assumes physical domain is sqrt(N) x sqrt(N)
- *
- * @param output	fstream to write output to
- * @param A			matrix with solution data, use A.numrows() for size
- * @return void
- */
-void MatrixGenerator::writeGnuplotFile(std::ofstream& output, const matrix& A)
-{
-
-	int bigN = A.numrows();
-	int littleN = sqrt(bigN);
-	int k = 0;
-
-	output << fixed << setprecision(17);
-
-	for (int i = 0; i < littleN; ++i)
-	{
-		for (int j = 0; j < littleN; ++j)
-		{
-			k = j * littleN + i;
-			output << i << " " << j << " " << A[k][0] << "\n";
-		}
-	}
-}
-
-void MatrixGenerator::writeMatrixToFile(std::ofstream& output, const matrix& A)
-{
-
-	output << A.numrows() << "\n";
-	output << A.numcols() << "\n";
-
-	for (int i = 0; i < A.numrows(); ++i)
-	{
-		for (int j = 0; j < A.numcols(); ++j)
-		{
-			output << fixed << setprecision(numDigits) << A[i][j] << " ";
-		}
-		output << "\n";
-	}
-}
-
-// For writing A and b (of Ax = b) to a sample data file for later use in solver testing
-// A.numcols() must == b.num
-void MatrixGenerator::writeMatrixToFile(std::ofstream& output, const matrix& A,
-		const matrix& b)
-{
-
-    std::cerr << A.numcols() << " " << b.numrows() << std::endl;
-    std::cerr << b.numcols() << std::endl;
-
-	if ((A.numcols() != b.numrows()) || (b.numcols() != 1))
-	{
-		throw std::logic_error("Matrix sizes wrong for file format");
-	}
-	else
-	{
-
-		output << A.numrows() << "\n";
-		output << A.numcols() << "\n";
-
-		for (int i = 0; i < A.numrows(); ++i)
-		{
-			for (int j = 0; j < A.numcols(); ++j)
-			{
-				output << fixed << setprecision(numDigits) << A[i][j] << " ";
-			}
-			output << "\n";
-		}
-		for (int i = 0; i < b.numrows(); ++i)
-		{
-			output << fixed << setprecision(numDigits * numDigits) << b[i][0]
-					<< " ";
-		}
-	}
-}
-
-typedef std::uniform_real_distribution<double> distribReal;
-
-template<typename distribType>
-void MatrixGenerator::randomFillMatrix(matrix& mat, std::mt19937& generator,
-		distribType& dist)
+void MatrixGenerator::randomFillMatrix(matrix& mat)
 {
 
 	for (int m = 0; m < mat.numrows(); ++m)
@@ -214,13 +57,10 @@ void MatrixGenerator::randomFillMatrix(matrix& mat, std::mt19937& generator,
 	}
 
 }
-template void MatrixGenerator::randomFillMatrix<distribReal>(matrix& mat,
-		std::mt19937& generator, distribReal& dist);
-
-template<typename distribType>
-void MatrixGenerator::generateSamples(int rows, int cols, string filenameRoot,
-		std::mt19937& generator, distribType& dist)
+/*
+void MatrixGenerator::generateSamples(int rows, int cols, string filename)
 {
+	this->filenameRoot = filename;
 
 	matrix aRand(rows, cols, 0.0);
 	matrix xRand(cols, 1, 0.0);
@@ -241,6 +81,4 @@ void MatrixGenerator::generateSamples(int rows, int cols, string filenameRoot,
 	writeMatrixToFile(output2, xRand);
 	output2.close();
 }
-
-template void MatrixGenerator::generateSamples<distribReal>(int rows, int cols,
-		string filenameRoot, std::mt19937& generator, distribReal& dist);
+*/

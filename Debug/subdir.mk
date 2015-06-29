@@ -5,11 +5,11 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CC_SRCS += \
 ../googleTestsMain.cc \
+../test_augMatrix.cc \
 ../test_denseMatrix.cc \
 ../test_directSolvers.cc \
 ../test_iterativeSolvers.cc \
 ../test_matrixGenerator.cc \
-../test_matrixSolver.cc \
 ../test_monomial.cc \
 ../test_polynomial.cc \
 ../test_rootDriverFunction.cc \
@@ -17,6 +17,7 @@ CC_SRCS += \
 
 CPP_SRCS += \
 ../IterativeSolvers.cpp \
+../augMatrix.cpp \
 ../directSolvers.cpp \
 ../matrixGenerator.cpp \
 ../monomial.cpp \
@@ -25,11 +26,11 @@ CPP_SRCS += \
 
 CC_DEPS += \
 ./googleTestsMain.d \
+./test_augMatrix.d \
 ./test_denseMatrix.d \
 ./test_directSolvers.d \
 ./test_iterativeSolvers.d \
 ./test_matrixGenerator.d \
-./test_matrixSolver.d \
 ./test_monomial.d \
 ./test_polynomial.d \
 ./test_rootDriverFunction.d \
@@ -37,17 +38,18 @@ CC_DEPS += \
 
 OBJS += \
 ./IterativeSolvers.o \
+./augMatrix.o \
 ./directSolvers.o \
 ./googleTestsMain.o \
 ./matrixGenerator.o \
 ./monomial.o \
 ./polynomial.o \
 ./rootSolvers.o \
+./test_augMatrix.o \
 ./test_denseMatrix.o \
 ./test_directSolvers.o \
 ./test_iterativeSolvers.o \
 ./test_matrixGenerator.o \
-./test_matrixSolver.o \
 ./test_monomial.o \
 ./test_polynomial.o \
 ./test_rootDriverFunction.o \
@@ -55,6 +57,7 @@ OBJS += \
 
 CPP_DEPS += \
 ./IterativeSolvers.d \
+./augMatrix.d \
 ./directSolvers.d \
 ./matrixGenerator.d \
 ./monomial.d \

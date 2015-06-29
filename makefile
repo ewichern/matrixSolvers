@@ -3,7 +3,7 @@ TARGET=$(OUTPUTNAME)
 DEBUGTARGET=testMatrixSolver
 ROOTTARGET=rootSolver
 
-CPPS=IterativeSolvers.cpp directSolvers.cpp matrixGenerator.cpp \
+CPPS=IterativeSolvers.cpp directSolvers.cpp augMatrix.cpp matrixGenerator.cpp \
 	rootSolvers.cpp monomial.cpp polynomial.cpp
 TESTS=googleTestsMain.cc test_denseMatrix.cc test_matrixGenerator.cc \
 	 test_iterativeSolvers.cc \
@@ -11,10 +11,12 @@ TESTS=googleTestsMain.cc test_denseMatrix.cc test_matrixGenerator.cc \
 	 test_monomial.cc \
 	 test_polynomial.cc \
 	 test_rootSolvers.cc \
-	 test_matrixSolver.cc \
 	 test_rootDriverFunction.cc \
-	./gtest/gtest-all.cc \
-	# test_sparseMatrix.cc
+	 test_augMatrix.cc \
+	 ./gtest/gtest-all.cc
+	#test_sparseMatrix.cc
+	#test_matrixSolver.cc
+
 #DIR=$(PWD)
 DISTR=Unix
 #INCLUDES=/home/erik/libraries/
@@ -24,7 +26,8 @@ DISTR=Unix
 #
 
 CPPFLAGS=-std=c++0x -I$(INCLUDES) -Wall -Wextra -fmessage-length=0
-CCFLAGS=-std=c++0x -I$(INCLUDES) -Og -ggdb3 -Wall -Wextra -fmessage-length=0
+CCFLAGS=-std=c++0x -I$(INCLUDES) -Og -ggdb3 -Wall -Wextra -fmessage-length=0 
+GCOVFLAGS=-fprofile-arcs -ftest-coverage
 CFLAGS=-g
 
 LINK=g++ $(LFLAGS)
@@ -84,7 +87,7 @@ release: $(TARGET)
 debug: CPPFLAGS += -Og -ggdb3
 debug: $(DEBUGTARGET) 
 
-gcov: CPPFLAGS += -fprofile-arcs -ftest-coverage
+gcov: CPPFLAGS += $(GCOVFLAGS)
 gcov: LFLAGS += -lgcov -coverage
 gcov: debug
 

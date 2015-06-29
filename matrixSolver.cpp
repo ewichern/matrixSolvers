@@ -6,6 +6,7 @@
  */
 
 #include "denseMatrix.h"
+#include "augMatrix.h"
 #include "matrixGenerator.h"
 #include "IterativeSolvers.h"
 #include "directSolvers.h"
@@ -185,14 +186,15 @@ string generateMatrixDataFiles(istream& input, matrix& A, matrix& b)
 	return filenameRoot;
 }
 
-string inputABfromFile(istream& input, matrix& A, matrix& b)
+string inputABfromFile(istream& input, augMatrix& mat)
 {
 	string inputFilename = getABinputFilename(input);
 	ifstream inFile(inputFilename);
 
 	if (inFile)
 	{
-		MatrixGenerator::readMatrixFromFile(inFile, A, b);
+//		MatrixGenerator::readMatrixFromFile(inFile, A, b);
+		mat.setAugMatrix(inFile);
 		cout << "Matrices loaded from \"" << inputFilename << "\"" << endl;
 		inFile.close();
 	}
@@ -204,14 +206,15 @@ string inputABfromFile(istream& input, matrix& A, matrix& b)
 	return inputFilename;
 }
 
-string inputXfromFile(istream& input, matrix& x)
+string inputXfromFile(istream& input, augMatrix& mat)
 {
 	string inputFilename = getXinputFilename(input);
 	ifstream inFile(inputFilename);
 
 	if (inFile)
 	{
-		MatrixGenerator::readMatrixFromFile(inFile, x);
+//		MatrixGenerator::readMatrixFromFile(inFile, x);
+		mat.setX(inFile);
 		cout << "Matrix loaded from \"" << inputFilename << "\"" << endl;
 		inFile.close();
 	}
@@ -253,7 +256,8 @@ void writeOutSolution(const matrix& x)
 {
 	std::cout << "Solution x saved to outputX.dat\n";
 	std::ofstream output ("outputX.dat");
-	MatrixGenerator::writeMatrixToFile(output, x);
+//	MatrixGenerator::writeMatrixToFile(output, x);
+	x.filePrintDenseMatrix(output);
 }
 
 void writeSquareDomain(const matrix& x)
@@ -276,12 +280,12 @@ void multiplyAx(const matrix& A, const matrix& x, matrix& b)
 	cout << "A * x = " << endl << b << endl;
 }
 
-int executeSolver(istream& input, int selection, matrix& A, matrix& x,
-		const matrix& b)
+int executeSolver(istream& input, int selection, augMatrix& mat)
 {
 	clock_t t_0, t_end;
 	int numIterations = -1;
-	x = matrix(A.numcols(), 1, 1);
+	mat.setX(matrix(mat.numcols(), 1, 0.1));
+
 	double omega = 1.4;
 
 	switch (selection)
@@ -376,7 +380,7 @@ string mainMenu(istream& input)
 	solvers solverSelection = jacobi;
 //int numIterations = -1;
 
-	matrix A, x, b;
+	augMatrix matrixData;
 
 	while (menuSelection != 0)
 	{
@@ -386,19 +390,19 @@ string mainMenu(istream& input)
 		switch (menuSelection)
 		{
 		case 1:
-			inputABfromFile(input, A, b);
+			inputABfromFile(input, matrixData);
 			break;
 		case 2:
-			inputXfromFile(input, x);
+			inputXfromFile(input, matrixData);
 			break;
 		case 3:
-			multiplyAx(A, x, b);
+			multiplyAx(matrixData);
 			break;
 		case 4:
-			generateMatrixDataFiles(input, A, b);
+			generateMatrixDataFiles(input, matrixData);
 			break;
 		case 5:
-			if (A.numrows() == 0 || b.numrows() == 0)
+			if (matrixData.numRows() == 0 || matrixData.numCols() == 0)
 			{
 				cout << "Load A and b matrices from file before "
 						<< "running solvers!" << endl << endl;
@@ -406,19 +410,19 @@ string mainMenu(istream& input)
 			}
 			solverSelection = solverMenu(input);
 			if (!(solverSelection == cancel))
-				executeSolver(input, solverSelection, A, x, b);
+				executeSolver(input, solverSelection, matrixData);
 			break;
 		case 6:
-			printSolution(x);
+			printSolution(matrixData.getX());
 			break;
 		case 7:
-			writeOutSolution(x);
+			writeOutSolution(matrixData.getX());
 			break;
 		case 8:
-			writeSquareDomain(x);
+			writeSquareDomain(matrixData.getX());
 			break;
 		case 9:
-			writeOutAb(A, b);
+			writeOutAb(matrixData.getA(), matrixData.getB());
 			break;
 		case 0:
 		default:
