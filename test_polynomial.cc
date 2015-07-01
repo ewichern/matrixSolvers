@@ -119,19 +119,19 @@ TEST_F (polynomialTests, constructor)
 
 	polynomial poly(numbers);
 //	std::cerr << "polynomial constructor - poly.size() (after construction): " << poly.size() << std::endl;
-	std::cerr << poly;
+//	std::cerr << poly;
 
 	EXPECT_EQ(4, poly.size());
 
 	std::vector<double> numbers1 {3, 0, -2, 1};
 
 	polynomial poly1(numbers1);
-	std::cerr << poly1;
+//	std::cerr << poly1;
 
 	EXPECT_EQ(4, poly1.size());
 
 	polynomial poly2(poly1);
-	std::cerr << poly2;
+//	std::cerr << poly2;
 
 	EXPECT_EQ(4, poly2.size());
 }
@@ -189,7 +189,7 @@ TEST_F (polynomialTests, evaluate)
 	std::vector<double> numbers1 {3, 0, -2, 1};
 
 	polynomial poly1(numbers1);
-	std::cerr << poly1;
+//	std::cerr << poly1;
 
 	EXPECT_EQ(4, poly1.size());
 
@@ -208,7 +208,7 @@ TEST_F (polynomialTests, polyDerivative)
 
 	poly.derivative();
 
-	std::cerr << poly << "\n";
+//	std::cerr << poly << "\n";
 }
 
 TEST_F (polynomialTests, equality)
@@ -227,8 +227,8 @@ TEST_F (polynomialTests, equality)
 
 	EXPECT_EQ(expected.str(), actual.str());
 	EXPECT_TRUE(poly == poly1);
-	std::cerr << poly << "\n";
-	std::cerr << poly1 << "\n";
+//	std::cerr << poly << "\n";
+//	std::cerr << poly1 << "\n";
 }
 
 TEST_F (polynomialTests, polynomialPrint)
@@ -243,7 +243,7 @@ TEST_F (polynomialTests, polynomialPrint)
 	std::string actual = testOutput.str();
 
 	EXPECT_EQ(expected, actual);
-	std::cerr << "Polynomial print test: " << poly << "\n";
+//	std::cerr << "Polynomial print test: " << poly << "\n";
 }
 
 TEST_F (polynomialTests, solveBisect)
@@ -261,11 +261,11 @@ TEST_F (polynomialTests, solveBisect)
 	double errLimit = 0.0001;
 
 	double root1 = poly.solveBisect(lower, upper, numIterations, errLimit);
-	std::cerr << "Root1 from new solveBisect implementation: " << root1 << std::endl;
-	std::cerr << "solved in " << numIterations << " iterations" << std::endl;
+//	std::cerr << "Root1 from new solveBisect implementation: " << root1 << std::endl;
+//	std::cerr << "solved in " << numIterations << " iterations" << std::endl;
 
 	double err = rootSolvers::relErr(root1, rootSolution1);
-	std::cerr << "Rel. error from new solveBisect implementation: " << err << std::endl;
+//	std::cerr << "Rel. error from new solveBisect implementation: " << err << std::endl;
 
 	EXPECT_LE(err, errLimit);
 
@@ -274,11 +274,11 @@ TEST_F (polynomialTests, solveBisect)
 	numIterations = 0;
 
 	double root2 = poly.solveBisect(lower, upper, numIterations, errLimit);
-	std::cerr << "Root2 from new solveBisect implementation: " << root2 << std::endl;
-	std::cerr << "solved in " << numIterations << " iterations" << std::endl;
+//	std::cerr << "Root2 from new solveBisect implementation: " << root2 << std::endl;
+//	std::cerr << "solved in " << numIterations << " iterations" << std::endl;
 
 	err = rootSolvers::relErr(root2, rootSolution2);
-	std::cerr << "Rel. error from new solveBisect implementation: " << err << std::endl;
+//	std::cerr << "Rel. error from new solveBisect implementation: " << err << std::endl;
 
 	EXPECT_LE(err, errLimit);
 }

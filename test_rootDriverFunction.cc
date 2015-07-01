@@ -78,16 +78,16 @@ TEST_F (rootDriverFunctionTests, getExpression)
 	auto itActual = actual1.begin();
 	for (auto itExpected = expected1.begin(); itExpected != expected1.end(); ++itExpected)
 	{
-		std::cerr << "expected1: " << *itExpected << "\n";
-		std::cerr << "actual1: " << *itActual << "\n";
+//		std::cerr << "expected1: " << *itExpected << "\n";
+//		std::cerr << "actual1: " << *itActual << "\n";
 		EXPECT_EQ(*itExpected, *itActual);
 		++itActual;
 	}
 	itActual = actual2.begin();
 	for (auto itExpected = expected2.begin(); itExpected != expected2.end(); ++itExpected)
 	{
-		std::cerr << "expected2: " << *itExpected << "\n";
-		std::cerr << "actual2: " << *itActual << "\n";
+//		std::cerr << "expected2: " << *itExpected << "\n";
+//		std::cerr << "actual2: " << *itActual << "\n";
 		EXPECT_EQ(*itExpected, *itActual);
 		++itActual;
 	}

@@ -145,13 +145,13 @@ TEST_F (monomialTests, print)
 {
 	std::string expected("5x^2\n");
 	monomial testMonomial(5,2);
-	std::cerr << "Monomial print test getCoefficient(): " << testMonomial.getCoefficient() << std::endl;
-	std::cerr << "Monomial print test getExponent(): " << testMonomial.getExponent() << std::endl;
+//	std::cerr << "Monomial print test getCoefficient(): " << testMonomial.getCoefficient() << std::endl;
+//	std::cerr << "Monomial print test getExponent(): " << testMonomial.getExponent() << std::endl;
 
 	std::ostringstream testOutput;
 
 	testOutput << testMonomial << std::endl;
-	std::cerr << testMonomial << std::endl;
+//	std::cerr << testMonomial << std::endl;
 
 	std::string actual = testOutput.str();
 

@@ -20,8 +20,7 @@ typedef denseMatrix<double> matrix;
 /*
  *
  */
-class augMatrix
-{
+class augMatrix {
 public:
 	augMatrix();
 	augMatrix(matrix, matrix);
@@ -47,14 +46,17 @@ public:
 	 * each value separated by whitespace or newline
 	 */
 	const matrix& getA() const;
+	matrix& getA();
 	void setA(const matrix& a);
 	void setA(std::ifstream& input);
 
 	const matrix& getX() const;
+	matrix& getX();
 	void setX(const matrix& x);
 	void setX(std::ifstream& input);
 
 	const matrix& getB() const;
+	matrix& getB();
 	void setB(const matrix& b);
 	void setB(std::ifstream& input);
 

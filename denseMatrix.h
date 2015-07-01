@@ -13,8 +13,7 @@
 using namespace std;
 
 template<typename Object>
-class denseMatrix
-{
+class denseMatrix {
 public:
 
 	denseMatrix(int rows, int cols);
@@ -27,8 +26,7 @@ public:
 	denseMatrix(const denseMatrix<Object>&);
 	denseMatrix(ifstream& input);
 
-	~denseMatrix()
-	{
+	~denseMatrix() {
 		array.clear();
 	}
 
@@ -36,10 +34,10 @@ public:
 	bool operator!=(const denseMatrix<Object>&) const;
 
 	denseMatrix<Object>& operator=(const denseMatrix<Object>&);
-	void setDenseMatrix (std::ifstream& input);
-	void writeFile (std::ofstream& output) const;
-	void writeGnuplotFile (std::ofstream&) const;
-	void writeDomainToFile (std::ofstream&) const;
+	void setDenseMatrix(std::ifstream& input);
+	void writeFile(std::ofstream& output) const;
+	void writeGnuplotFile(std::ofstream&) const;
+	void writeDomainToFile(std::ofstream&) const;
 
 	void eye();
 	void eye(int, int);
@@ -51,34 +49,29 @@ public:
 	denseMatrix<Object>& addRows(vector<Object>&, int, int);
 //	denseMatrix<Object>& transpose();
 
+	double relError(const denseMatrix<Object>&) const;
+
 	typedef typename std::vector<std::vector<Object>>::iterator arrayIterator;
 	typedef typename std::vector<std::vector<Object>>::const_iterator const_arrayIterator;
 
-	const vector<Object> & operator[](int row) const
-	{
+	const vector<Object> & operator[](int row) const {
 		return array.at(row);
 	}
-	vector<Object> & operator[](int row)
-	{
+	vector<Object> & operator[](int row) {
 		return array.at(row);
 	}
 
-	int numrows() const
-	{
+	int numrows() const {
 		// std::cerr << array.size() << endl;
 		return array.size();
 	}
 
-	int numcols() const
-	{
+	int numcols() const {
 		int nCols = 0;
 		// std::cerr << (numrows() ? array.at(0).size() : 0) << endl;
-		if (numrows() == 0)
-		{
+		if (numrows() == 0) {
 			nCols = 0;
-		}
-		else
-		{
+		} else {
 			//const_arrayIterator row = array.begin();
 			//nCols = row->size();
 
@@ -93,42 +86,35 @@ private:
 	vector<vector<Object>> array;
 };
 
-struct MatrixSizeException: public exception
-{
-	const char * what() const throw ()
-	{
+struct MatrixSizeException: public exception {
+	const char * what() const throw () {
 		return "Matrix size mismatch";
 	}
 };
 
 template<typename Object>
-denseMatrix<Object>::denseMatrix()
-{
+denseMatrix<Object>::denseMatrix() {
 }
 
 template<typename Object>
 denseMatrix<Object>::denseMatrix(int rows, int cols) :
-		array(rows)
-{
+		array(rows) {
 //	for (auto & thisRow : array)
 //		thisRow.resize(cols);
 
 //	typedef denseMatrix<Object>::iterator arrayIterator;
 
-	for (arrayIterator row = array.begin(); row != array.end(); ++row)
-	{
+	for (arrayIterator row = array.begin(); row != array.end(); ++row) {
 		row->resize(cols);
 	}
 }
 
 template<typename Object>
 denseMatrix<Object>::denseMatrix(int rows, int cols, const Object& defaultValue) :
-		array(rows)
-{
+		array(rows) {
 //	typedef denseMatrix<Object>::iterator arrayIterator;
 
-	for (arrayIterator row = array.begin(); row != array.end(); ++row)
-	{
+	for (arrayIterator row = array.begin(); row != array.end(); ++row) {
 		//*row = vector<Object>(cols, defaultValue);
 		row->assign(cols, defaultValue);
 	}
@@ -138,25 +124,19 @@ denseMatrix<Object>::denseMatrix(int rows, int cols, const Object& defaultValue)
 
 template<typename Object>
 denseMatrix<Object>::denseMatrix(const vector<vector<Object>> & v) :
-		array
-		{ v }
-{
+		array { v } {
 }
 
 template<typename Object>
 denseMatrix<Object>::denseMatrix(const vector<vector<Object>> & v,
 		const Object& defaultValue) :
-		array
-		{ v }
-{
+		array { v } {
 }
 
 template<typename Object>
 denseMatrix<Object>::denseMatrix(const vector<Object> & v,
-		const Object& defaultValue)
-{
-	if (array.size() != 0)
-	{
+		const Object& defaultValue) {
+	if (array.size() != 0) {
 		array.clear();
 	}
 	array.push_back(v);
@@ -164,15 +144,12 @@ denseMatrix<Object>::denseMatrix(const vector<Object> & v,
 
 template<typename Object>
 denseMatrix<Object>::denseMatrix(const denseMatrix<Object>& m) :
-		array
-		{ m.array }
-{
+		array { m.array } {
 
 }
 
 template<typename Object>
-denseMatrix<Object>::denseMatrix(ifstream& input)
-{
+denseMatrix<Object>::denseMatrix(ifstream& input) {
 	this->setDenseMatrix(input);
 }
 
@@ -188,16 +165,14 @@ denseMatrix<Object>::denseMatrix(ifstream& input)
 //Overloaded operators
 //Comparison operators
 template<typename Object>
-bool denseMatrix<Object>::operator==(const denseMatrix<Object>& m) const
-{
+bool denseMatrix<Object>::operator==(const denseMatrix<Object>& m) const {
 	if (numcols() != m.numcols() || numrows() != m.numrows())
 		return false;
 
 	const denseMatrix<Object>& self = *this;
 
 	for (int j = 0; j < m.numrows(); ++j)
-		for (int i = 0; i < m.numcols(); ++i)
-		{
+		for (int i = 0; i < m.numcols(); ++i) {
 			if (self[j][i] != m[j][i])
 				return false;
 		}
@@ -205,17 +180,14 @@ bool denseMatrix<Object>::operator==(const denseMatrix<Object>& m) const
 }
 
 template<typename Object>
-bool denseMatrix<Object>::operator!=(const denseMatrix<Object>& m) const
-{
+bool denseMatrix<Object>::operator!=(const denseMatrix<Object>& m) const {
 	return (!(*this == m));
 }
 
 template<typename Object>
 denseMatrix<Object>& denseMatrix<Object>::operator=(
-		const denseMatrix<Object>& right)
-{
-	if (!(*this == right))
-	{
+		const denseMatrix<Object>& right) {
+	if (!(*this == right)) {
 		array.clear();
 		array = right.array;
 	}
@@ -223,8 +195,7 @@ denseMatrix<Object>& denseMatrix<Object>::operator=(
 }
 
 template<typename Object>
-void denseMatrix<Object>::setDenseMatrix(std::ifstream& input)
-{
+void denseMatrix<Object>::setDenseMatrix(std::ifstream& input) {
 	double tempInputValue = 0.0;
 	int rows = 0, cols = 0;
 
@@ -233,13 +204,11 @@ void denseMatrix<Object>::setDenseMatrix(std::ifstream& input)
 	array.clear();
 	array.resize(rows);
 
-	for (int i = 0; i < rows; ++i)
-	{
+	for (int i = 0; i < rows; ++i) {
 		array.at(i).clear();
 		array.at(i).resize(cols);
 
-		for (int j = 0; j < cols; ++j)
-		{
+		for (int j = 0; j < cols; ++j) {
 			input >> tempInputValue;
 			array.at(i).at(j) = tempInputValue;
 		}
@@ -247,23 +216,19 @@ void denseMatrix<Object>::setDenseMatrix(std::ifstream& input)
 }
 
 template<typename Object>
-void denseMatrix<Object>::eye()
-{
+void denseMatrix<Object>::eye() {
 
 	denseMatrix<Object>& self = *this;
-	if (!(array.size() == array.at(0).size()))
-	{
+	if (!(array.size() == array.at(0).size())) {
 		throw std::logic_error("Matrix size mismatch");
 	}
 
-	else
-	{
+	else {
 		int tempSize = array.size();
 		array.clear();
 		array.resize(tempSize);
 
-		for (int i = 0; i < array.size(); ++i)
-		{
+		for (int i = 0; i < array.size(); ++i) {
 			array.at(i).assign(tempSize, 0.0);
 			self[i][i] = 1.0;
 		}
@@ -271,15 +236,13 @@ void denseMatrix<Object>::eye()
 }
 
 template<typename Object>
-void denseMatrix<Object>::eye(int rows, int cols)
-{
+void denseMatrix<Object>::eye(int rows, int cols) {
 
 	denseMatrix<Object>& self = *this;
 	array.clear();
 	array.resize(rows);
 
-	for (int i = 0; i < array.size(); ++i)
-	{
+	for (int i = 0; i < array.size(); ++i) {
 		array.at(i).assign(cols, 0.0);
 		self[i][i] = 1.0;
 	}
@@ -291,15 +254,12 @@ void denseMatrix<Object>::eye(int rows, int cols)
  */
 template<typename Object>
 denseMatrix<Object>& denseMatrix<Object>::augment(
-		const denseMatrix<Object>& right)
-{
-	if (!(array.size() == right.numrows()) || !(right.numcols() == 1))
-	{
+		const denseMatrix<Object>& right) {
+	if (!(array.size() == right.numrows()) || !(right.numcols() == 1)) {
 		throw std::logic_error("Matrix size mismatch");
 	}
 
-	for (int i = 0; i < array.size(); ++i)
-	{
+	for (int i = 0; i < array.size(); ++i) {
 		array.at(i).push_back(right[i][0]);
 	}
 
@@ -308,11 +268,9 @@ denseMatrix<Object>& denseMatrix<Object>::augment(
 }
 
 template<typename Object>
-denseMatrix<Object>& denseMatrix<Object>::swapRows(int rowOne, int rowTwo)
-{
+denseMatrix<Object>& denseMatrix<Object>::swapRows(int rowOne, int rowTwo) {
 	if ((rowOne < 0) || (rowOne > array.size()) || (rowTwo < 0)
-			|| (rowTwo > array.size()))
-	{
+			|| (rowTwo > array.size())) {
 		throw std::out_of_range(
 				"parameters given are outside of matrix boundaries");
 	}
@@ -323,10 +281,8 @@ denseMatrix<Object>& denseMatrix<Object>::swapRows(int rowOne, int rowTwo)
 
 template<typename Object>
 denseMatrix<Object>& denseMatrix<Object>::swapRows(std::vector<Object>& swapRow,
-		int rowOne)
-{
-	if ((rowOne < 0) || (rowOne > array.size()))
-	{
+		int rowOne) {
+	if ((rowOne < 0) || (rowOne > array.size())) {
 		throw std::out_of_range(
 				"parameters given are outside of matrix boundaries");
 	}
@@ -338,17 +294,15 @@ denseMatrix<Object>& denseMatrix<Object>::swapRows(std::vector<Object>& swapRow,
 }
 
 template<typename Object>
-denseMatrix<Object>& denseMatrix<Object>::multiplyRow(int rowNum, double scaler)
-{
-	if ((rowNum < 0) || (rowNum > array.size()))
-	{
+denseMatrix<Object>& denseMatrix<Object>::multiplyRow(int rowNum,
+		double scaler) {
+	if ((rowNum < 0) || (rowNum > array.size())) {
 		throw std::out_of_range(
 				"parameters given are outside of matrix boundaries");
 	}
 
 	vector<Object>& row = array.at(rowNum);
-	for (int i = 0; i < row.size(); ++i)
-	{
+	for (int i = 0; i < row.size(); ++i) {
 		row[i] = scaler * row[i];
 	}
 	return *this;
@@ -356,12 +310,10 @@ denseMatrix<Object>& denseMatrix<Object>::multiplyRow(int rowNum, double scaler)
 
 template<typename Object>
 denseMatrix<Object>& denseMatrix<Object>::addRows(int rowOne, int rowTwo,
-		int destinationRow)
-{
+		int destinationRow) {
 	if ((rowOne < 0) || (rowOne > array.size()) || (rowTwo < 0)
 			|| (rowTwo > array.size()) || (destinationRow < 0)
-			|| (destinationRow > array.size()))
-	{
+			|| (destinationRow > array.size())) {
 		throw std::out_of_range(
 				"parameters given are outside of matrix boundaries");
 	}
@@ -370,8 +322,7 @@ denseMatrix<Object>& denseMatrix<Object>::addRows(int rowOne, int rowTwo,
 	vector<Object>& row2 = array.at(rowTwo);
 	vector<Object>& writeRow = array.at(destinationRow);
 
-	for (int i = 0; i < row1.size(); ++i)
-	{
+	for (int i = 0; i < row1.size(); ++i) {
 		Object temp = row1[i] + row2[i];
 		writeRow[i] = temp;
 	}
@@ -380,11 +331,9 @@ denseMatrix<Object>& denseMatrix<Object>::addRows(int rowOne, int rowTwo,
 
 template<typename Object>
 denseMatrix<Object>& denseMatrix<Object>::addRows(vector<Object>& rowOne,
-		int rowTwo, int destinationRow)
-{
+		int rowTwo, int destinationRow) {
 	if ((rowTwo < 0) || (rowTwo > array.size()) || (destinationRow < 0)
-			|| (destinationRow > array.size()))
-	{
+			|| (destinationRow > array.size())) {
 		throw std::out_of_range(
 				"parameters given are outside of matrix boundaries");
 	}
@@ -392,8 +341,7 @@ denseMatrix<Object>& denseMatrix<Object>::addRows(vector<Object>& rowOne,
 	vector<Object>& row2 = array.at(rowTwo);
 	vector<Object>& writeRow = array.at(destinationRow);
 
-	for (int i = 0; i < row2.size(); ++i)
-	{
+	for (int i = 0; i < row2.size(); ++i) {
 		Object temp = rowOne[i] + row2[i];
 		writeRow[i] = temp;
 	}
@@ -401,8 +349,7 @@ denseMatrix<Object>& denseMatrix<Object>::addRows(vector<Object>& rowOne,
 }
 
 template<typename Object>
-denseMatrix<Object> transpose(const denseMatrix<Object>& m)
-{
+denseMatrix<Object> transpose(const denseMatrix<Object>& m) {
 //	std::cerr << "Transpose input matrix rows: " << m.numrows() << std::endl;
 //	std::cerr << "Transpose input matrix cols: " << m.numcols() << std::endl
 //			<< std::endl;
@@ -410,10 +357,8 @@ denseMatrix<Object> transpose(const denseMatrix<Object>& m)
 	std::unique_ptr<denseMatrix<Object> > solution(
 			new denseMatrix<Object>(m.numcols(), m.numrows()));
 
-	for (int i = 0; i < m.numrows(); ++i)
-	{
-		for (int j = 0; j < m.numcols(); ++j)
-		{
+	for (int i = 0; i < m.numrows(); ++i) {
+		for (int j = 0; j < m.numcols(); ++j) {
 //			std::cerr << "i,j: " << i << "," << j << std::endl;
 //			std::cerr << "m[i][j]: " << m[i][j] << std::endl;
 
@@ -428,31 +373,22 @@ denseMatrix<Object> transpose(const denseMatrix<Object>& m)
 
 template<typename Object>
 denseMatrix<Object> operator*(const denseMatrix<Object>& left,
-		const denseMatrix<Object>& right)
-{
+		const denseMatrix<Object>& right) {
 
-	if (left.numcols() != right.numrows())
-	{
+	if (left.numcols() != right.numrows()) {
 		throw std::logic_error("Matrix size mismatch");
-	}
-	else
-	{
+	} else {
 		std::unique_ptr<denseMatrix<Object> > solution(
 				new denseMatrix<Object>(left.numcols(), right.numcols()));
 
-		for (int i = 0; i < left.numrows(); ++i)
-		{
-			for (int j = 0; j < right.numcols(); ++j)
-			{
+		for (int i = 0; i < left.numrows(); ++i) {
+			for (int j = 0; j < right.numcols(); ++j) {
 
 				Object tempValue;
-				for (int k = 0; k < right.numrows(); ++k)
-				{
-					if (k == 0)
-					{
+				for (int k = 0; k < right.numrows(); ++k) {
+					if (k == 0) {
 						tempValue = (left[i][k]) * (right[k][j]);
-					}
-					else
+					} else
 						tempValue += (left[i][k]) * (right[k][j]);
 				}
 				(solution->operator[](i)[j]) = tempValue;
@@ -463,15 +399,12 @@ denseMatrix<Object> operator*(const denseMatrix<Object>& left,
 }
 
 template<typename Object>
-denseMatrix<Object> operator*(double scaler, const denseMatrix<Object>& m)
-{
+denseMatrix<Object> operator*(double scaler, const denseMatrix<Object>& m) {
 
 	std::unique_ptr<denseMatrix<Object> > solution(
 			new denseMatrix<Object>(m.numcols(), m.numcols()));
-	for (int i = 0; i < solution->numrows(); ++i)
-	{
-		for (int j = 0; j < solution->numcols(); ++j)
-		{
+	for (int i = 0; i < solution->numrows(); ++i) {
+		for (int j = 0; j < solution->numcols(); ++j) {
 
 			(solution->operator[](i)[j]) = scaler * m[i][j];
 		}
@@ -480,15 +413,12 @@ denseMatrix<Object> operator*(double scaler, const denseMatrix<Object>& m)
 }
 
 template<typename Object>
-denseMatrix<Object> operator*(const denseMatrix<Object>& m, double scaler)
-{
+denseMatrix<Object> operator*(const denseMatrix<Object>& m, double scaler) {
 
 	std::unique_ptr<denseMatrix<Object> > solution(
 			new denseMatrix<Object>(m.numcols(), m.numcols()));
-	for (int i = 0; i < solution->numrows(); ++i)
-	{
-		for (int j = 0; j < solution->numcols(); ++j)
-		{
+	for (int i = 0; i < solution->numrows(); ++i) {
+		for (int j = 0; j < solution->numcols(); ++j) {
 
 			(solution->operator[](i)[j]) = scaler * m[i][j];
 		}
@@ -498,24 +428,18 @@ denseMatrix<Object> operator*(const denseMatrix<Object>& m, double scaler)
 
 template<typename Object>
 denseMatrix<Object> operator+(const denseMatrix<Object>& left,
-		const denseMatrix<Object>& right)
-{
+		const denseMatrix<Object>& right) {
 
 	if (!(left.numrows() == right.numrows())
-			|| !(left.numcols() == right.numcols()))
-	{
+			|| !(left.numcols() == right.numcols())) {
 		throw std::logic_error("Matrix size mismatch");
-	}
-	else
-	{
+	} else {
 
 		std::unique_ptr<denseMatrix<Object> > solution(
 				new denseMatrix<Object>(left.numcols(), right.numcols()));
 
-		for (int i = 0; i < solution->numrows(); ++i)
-		{
-			for (int j = 0; j < solution->numcols(); ++j)
-			{
+		for (int i = 0; i < solution->numrows(); ++i) {
+			for (int j = 0; j < solution->numcols(); ++j) {
 
 				solution->operator [](i)[j] = left[i][j] + right[i][j];
 
@@ -527,24 +451,18 @@ denseMatrix<Object> operator+(const denseMatrix<Object>& left,
 
 template<typename Object>
 denseMatrix<Object> operator-(const denseMatrix<Object>& left,
-		const denseMatrix<Object>& right)
-{
+		const denseMatrix<Object>& right) {
 
 	if (!(left.numrows() == right.numrows())
-			|| !(left.numcols() == right.numcols()))
-	{
+			|| !(left.numcols() == right.numcols())) {
 		throw std::logic_error("Matrix size mismatch");
-	}
-	else
-	{
+	} else {
 
 		std::unique_ptr<denseMatrix<Object> > solution(
 				new denseMatrix<Object>(left.numcols(), right.numcols()));
 
-		for (int i = 0; i < solution->numrows(); ++i)
-		{
-			for (int j = 0; j < solution->numcols(); ++j)
-			{
+		for (int i = 0; i < solution->numrows(); ++i) {
+			for (int j = 0; j < solution->numcols(); ++j) {
 
 				solution->operator [](i)[j] = left[i][j] - right[i][j];
 
@@ -555,15 +473,12 @@ denseMatrix<Object> operator-(const denseMatrix<Object>& left,
 }
 
 template<typename Object>
-std::ostream& operator<<(std::ostream& out, const denseMatrix<Object>& m)
-{
-	for (int j = 0; j < m.numrows(); ++j)
-	{
-		for (int i = 0; i < m.numcols(); ++i)
-		{
+std::ostream& operator<<(std::ostream& out, const denseMatrix<Object>& m) {
+	for (int j = 0; j < m.numrows(); ++j) {
+		for (int i = 0; i < m.numcols(); ++i) {
 			if (i > 0)
 				out << ' ';
-			out << setprecision(m.numDigits) << setw(21);
+			out << fixed << setprecision(m.numDigits) << setw(21);
 			out << m[j][i];
 		}
 		out << "\n";
@@ -572,15 +487,14 @@ std::ostream& operator<<(std::ostream& out, const denseMatrix<Object>& m)
 }
 
 template<typename Object>
-void denseMatrix<Object>::writeFile (std::ofstream& output) const
-{
+void denseMatrix<Object>::writeFile(std::ofstream& output) const {
 	int rows = this->numrows();
 	int cols = this->numcols();
 
 	output << rows << "\n";
 	output << cols << "\n";
 
-	output << this;
+	output << *this;
 }
 
 /*
@@ -593,17 +507,14 @@ void denseMatrix<Object>::writeFile (std::ofstream& output) const
  * @return void
  */
 template<typename Object>
-void denseMatrix<Object>::writeDomainToFile (std::ofstream& output) const
-{
+void denseMatrix<Object>::writeDomainToFile(std::ofstream& output) const {
 	const denseMatrix<Object>& self = *this;
 	int bigN = self.numrows();
 	int littleN = sqrt(bigN);
 
-	for (int i = 0; i < bigN; ++i)
-	{
+	for (int i = 0; i < bigN; ++i) {
 		output << fixed << setprecision(17) << self[i][0] << " ";
-		if ((i % littleN) == (littleN - 1))
-		{
+		if ((i % littleN) == (littleN - 1)) {
 			output << "\n";
 		}
 	}
@@ -620,8 +531,7 @@ void denseMatrix<Object>::writeDomainToFile (std::ofstream& output) const
  * @return void
  */
 template<typename Object>
-void denseMatrix<Object>::writeGnuplotFile (std::ofstream& output) const
-{
+void denseMatrix<Object>::writeGnuplotFile(std::ofstream& output) const {
 	const denseMatrix<Object>& self = *this;
 	int bigN = self.numrows();
 	int littleN = sqrt(bigN);
@@ -629,10 +539,8 @@ void denseMatrix<Object>::writeGnuplotFile (std::ofstream& output) const
 
 	output << fixed << setprecision(17);
 
-	for (int i = 0; i < littleN; ++i)
-	{
-		for (int j = 0; j < littleN; ++j)
-		{
+	for (int i = 0; i < littleN; ++i) {
+		for (int j = 0; j < littleN; ++j) {
 			k = j * littleN + i;
 			output << i << " " << j << " " << self[k][0] << "\n";
 		}
@@ -640,13 +548,11 @@ void denseMatrix<Object>::writeGnuplotFile (std::ofstream& output) const
 }
 
 template<typename Object>
-double relError(const denseMatrix<Object>& est,
-		const denseMatrix<Object>& actual)
-{
+double denseMatrix<Object>::relError(const denseMatrix<Object>& right) const {
+	const denseMatrix<Object>& self = *this;
 
-	if (!(est.numrows() == actual.numrows())
-			|| !(est.numcols() == actual.numcols()))
-	{
+	if (!(self.numrows() == right.numrows())
+			|| !(self.numcols() == right.numcols())) {
 		throw std::logic_error("Matrix size mismatch");
 	}
 
@@ -658,13 +564,11 @@ double relError(const denseMatrix<Object>& est,
 	double diffSumOfSquares = 0.0;
 	double actualSumOfSquares = 0.0;
 
-	for (int i = 0; i < est.numrows(); ++i)
-	{
-		for (int j = 0; j < est.numcols(); ++j)
-		{
+	for (int i = 0; i < self.numrows(); ++i) {
+		for (int j = 0; j < self.numcols(); ++j) {
 			//double diffSquared = pow((diff[i][j]), 2.0);
-			double diffSquared = pow((est[i][j] - actual[i][j]), 2.0);
-			double actualSquared = pow(actual[i][j], 2.0);
+			double diffSquared = pow((self[i][j] - right[i][j]), 2.0);
+			double actualSquared = pow(right[i][j], 2.0);
 
 			diffSumOfSquares += diffSquared;
 			actualSumOfSquares += actualSquared;

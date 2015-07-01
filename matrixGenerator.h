@@ -12,22 +12,24 @@ using namespace std;
 typedef denseMatrix<double> matrix;
 typedef std::uniform_real_distribution<double> distribType;
 
-class MatrixGenerator
-{
+class MatrixGenerator {
 public:
 
 	MatrixGenerator();
 	MatrixGenerator(augMatrix&);
 	virtual ~MatrixGenerator();
 
+	augMatrix& getAugMatrix() const;
+
 	void randomFillMatrix(matrix&);
-	void generateSamples(int rows, int cols, string filenameRoot);
+	void generateSamples(int rows, int cols, string filename);
+
+	bool exists() const;
 
 private:
 	static const int numDigits = 2;
 
 	augMatrix* augMat;
-	std::random_device randDevice;
 	std::mt19937 generator;
 	distribType dist;
 

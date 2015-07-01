@@ -21,13 +21,11 @@ typedef denseMatrix<double> matrix;
 
 using namespace std;
 
-class directSolverTests: public ::testing::Test
-{
+class directSolverTests: public ::testing::Test {
 public:
 	matrix A1, b1, x1, A2, b2, x2;
 
-	directSolverTests()
-	{
+	directSolverTests() {
 		string testFile1 = "sampleData1";
 		string testFile2 = "sampleData2";
 
@@ -54,15 +52,13 @@ public:
 		bTwoInput.close();
 	}
 
-	virtual ~directSolverTests()
-	{
+	virtual ~directSolverTests() {
 
 	}
 
 };
 
-TEST_F (directSolverTests, findPivot)
-{
+TEST_F (directSolverTests, findPivot) {
 	int pivot = -1;
 
 	pivot = directSolvers::findPivot(A2, 0);
@@ -78,20 +74,19 @@ TEST_F (directSolverTests, findPivot)
 	EXPECT_EQ(3, pivot);
 }
 
-TEST_F (directSolverTests, gaussianElimination)
-{
+TEST_F (directSolverTests, gaussianElimination) {
 	matrix x2test(A2.numrows(), 1, 1.0);
 	directSolvers::gaussianElimination(A2, x2test, b2);
 
 //	EXPECT_TRUE(x2 == x2test);
 	double errLimit = 0.000001;
-	double err1 = relError(x2test, x2);
+	double err1 = x2.relError(x2test);
+//	double err1 = relError(x2test, x2);
 	cerr << "Calculated relative error: " << endl << err1 << endl;
 	EXPECT_LT(err1, errLimit);
 }
 
-TEST_F (directSolverTests, gaussianElimination2)
-{
+TEST_F (directSolverTests, gaussianElimination2) {
 //	matrix morrisA, morrisX, morrisB;
 	augMatrix morris;
 	matrix morrisX;
@@ -113,37 +108,37 @@ TEST_F (directSolverTests, gaussianElimination2)
 
 //	EXPECT_TRUE(x2 == x2test);
 	double errLimit = 0.00001;
-	double err1 = relError(morrisX, morrisXtest);
+	double err1 = morrisX.relError(morrisXtest);
+//	double err1 = relError(morrisX, morrisXtest);
 	cerr << "Calculated relative error: " << endl << err1 << endl;
 	EXPECT_LT(err1, errLimit);
 }
 
-TEST_F (directSolverTests, LUdecomposition)
-{
+TEST_F (directSolverTests, LUdecomposition) {
 	matrix x1test(A1.numrows(), 1, 1.0);
 	directSolvers::LUdecomposition(A1, x1test, b1);
 
 //	EXPECT_TRUE(x2 == x2test);
 	double errLimit = 0.000001;
-	double err1 = relError(x1test, x1);
+	double err1 = x1.relError(x1test);
+//	double err1 = relError(x1test, x1);
 	cerr << "Calculated relative error: " << endl << err1 << endl;
 	EXPECT_LT(err1, errLimit);
 }
 
-TEST_F (directSolverTests, LUdecomposition1)
-{
+TEST_F (directSolverTests, LUdecomposition1) {
 	matrix x2test(A2.numrows(), 1, 1.0);
 	directSolvers::LUdecomposition(A2, x2test, b2);
 
 //	EXPECT_TRUE(x2 == x2test);
 	double errLimit = 0.000001;
-	double err1 = relError(x2test, x2);
+	double err1 = x2.relError(x2test);
+//	double err1 = relError(x2test, x2);
 	cerr << "Calculated relative error: " << endl << err1 << endl;
 	EXPECT_LT(err1, errLimit);
 }
 
-TEST_F (directSolverTests, LUdecomposition2)
-{
+TEST_F (directSolverTests, LUdecomposition2) {
 //	matrix morrisA, morrisX, morrisB;
 	augMatrix morris;
 	matrix morrisX;
@@ -165,7 +160,8 @@ TEST_F (directSolverTests, LUdecomposition2)
 
 //	EXPECT_TRUE(x2 == x2test);
 	double errLimit = 0.00001;
-	double err1 = relError(morrisX, morrisXtest);
+	double err1 = morrisX.relError(morrisXtest);
+//	double err1 = relError(morrisX, morrisXtest);
 	cerr << "Calculated relative error: " << endl << err1 << endl;
 	EXPECT_LT(err1, errLimit);
 }

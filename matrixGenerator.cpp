@@ -13,72 +13,70 @@ using namespace std;
 
 typedef denseMatrix<double> matrix;
 
-MatrixGenerator::MatrixGenerator()
-{
-	augMat = new augMatrix();
+MatrixGenerator::MatrixGenerator() {
 	std::random_device randDevice;
-	std::mt19937 generator(randDevice());
-	distribType dist(min, max);
+	generator = std::mt19937(randDevice());
+	dist = distribType(min, max);
 }
 
-MatrixGenerator::MatrixGenerator(augMatrix& mat)
-{
-	augMat = mat;
+MatrixGenerator::MatrixGenerator(augMatrix& mat) {
+	augMat = &mat;
 	std::random_device randDevice;
-	std::mt19937 generator(randDevice());
-	distribType dist(min, max);
+	generator = std::mt19937(randDevice());
+	dist = distribType(min, max);
+
+//	std::random_device randDevice;
+//	std::mt19937 generator(randDevice());
+//	distribType dist(min, max);
 }
 
-MatrixGenerator::~MatrixGenerator()
-{
-
+MatrixGenerator::~MatrixGenerator() {
 }
 
-void MatrixGenerator::randomFillMatrix(matrix& mat)
-{
+augMatrix& MatrixGenerator::getAugMatrix() const {
+	return *augMat;
+}
 
-	for (int m = 0; m < mat.numrows(); ++m)
-	{
+bool MatrixGenerator::exists() const {
+	return true;
+}
+
+void MatrixGenerator::randomFillMatrix(matrix& mat) {
+
+	for (int m = 0; m < mat.numrows(); ++m) {
 
 		double rowTotal = 0;
 
-		for (int n = 0; n < mat.numcols(); ++n)
-		{
+		for (int n = 0; n < mat.numcols(); ++n) {
 			double newValue = (double) dist(generator);
+
+//			std::cerr << newValue << "\n";
+
 			newValue = round(newValue * 100) / 100.0;
 			rowTotal += std::abs(newValue);
 			mat[m][n] = newValue;
 		}
 
-		if (m < mat.numcols())
-		{
+		if (m < mat.numcols()) {
 			mat[m][m] = rowTotal;
 		}
 	}
 
 }
-/*
-void MatrixGenerator::generateSamples(int rows, int cols, string filename)
-{
-	this->filenameRoot = filename;
 
-	matrix aRand(rows, cols, 0.0);
-	matrix xRand(cols, 1, 0.0);
+void MatrixGenerator::generateSamples(int rows, int cols, string filename) {
+	matrix& A = augMat->getA();
+	matrix& X = augMat->getX();
+	matrix& B = augMat->getB();
 
-	randomFillMatrix(aRand, generator, dist);
-	randomFillMatrix(xRand, generator, dist);
+	randomFillMatrix(A);
+	randomFillMatrix(X);
 
-	matrix bRand(cols, 1, 0.0);
-	bRand = aRand * xRand;
+	B = A * X;
 
-//	std::cerr << "bRand: " << endl << bRand;
+	std::ofstream abOutput(filename + "AB.dat");
+	augMat->filePrintAugMatrix(abOutput);
 
-	ofstream output1(filenameRoot + "_Ab.dat");
-	writeMatrixToFile(output1, aRand, bRand);
-	output1.close();
-
-	ofstream output2(filenameRoot + "_x.dat");
-	writeMatrixToFile(output2, xRand);
-	output2.close();
+	std::ofstream xOutput(filename + "X.dat");
+	X.writeFile(xOutput);
 }
-*/

@@ -18,15 +18,13 @@ typedef denseMatrix<double> matrix;
 
 using namespace std;
 
-class augMatrixTests: public ::testing::Test
-{
+class augMatrixTests: public ::testing::Test {
 public:
 	augMatrix test1;
 	int m, n;
 	matrix id, x, b, idTest, xTest, bTest;
 
-	augMatrixTests()
-	{
+	augMatrixTests() {
 
 		m = 3;
 		n = 3;
@@ -34,17 +32,17 @@ public:
 		id.eye(m, n);
 		x = matrix(m, 1, 2);
 		b = matrix(m, 1, 2);
+
+		test1 = augMatrix(id, x, b);
 	}
 
-	virtual ~augMatrixTests()
-	{
+	virtual ~augMatrixTests() {
 
 	}
 
 };
 
-TEST_F (augMatrixTests, constructorDefault)
-{
+TEST_F (augMatrixTests, constructorDefault) {
 	augMatrix* testAug = new augMatrix();
 
 	EXPECT_TRUE(testAug);
@@ -54,8 +52,7 @@ TEST_F (augMatrixTests, constructorDefault)
 	delete testAug;
 }
 
-TEST_F (augMatrixTests, constructorMatrices)
-{
+TEST_F (augMatrixTests, constructorMatrices) {
 	augMatrix* testAug1 = new augMatrix(id, x, b);
 	augMatrix* testAug2 = new augMatrix(id, b);
 
@@ -71,9 +68,7 @@ TEST_F (augMatrixTests, constructorMatrices)
 	delete testAug2;
 }
 
-
-TEST_F (augMatrixTests, equality)
-{
+TEST_F (augMatrixTests, equality) {
 	augMatrix testAug2 = augMatrix(id, x, b);
 	augMatrix testAug1 = augMatrix(id, x, b);
 	augMatrix testAug0 = augMatrix();
@@ -82,8 +77,7 @@ TEST_F (augMatrixTests, equality)
 	EXPECT_FALSE((testAug2 == testAug0));
 }
 
-TEST_F (augMatrixTests, notEquals)
-{
+TEST_F (augMatrixTests, notEquals) {
 	augMatrix testAug2 = augMatrix(id, x, b);
 	augMatrix testAug1 = augMatrix(id, x, b);
 	augMatrix testAug0 = augMatrix();
@@ -92,8 +86,7 @@ TEST_F (augMatrixTests, notEquals)
 	EXPECT_TRUE((testAug2 != testAug0));
 }
 
-TEST_F (augMatrixTests, getters)
-{
+TEST_F (augMatrixTests, getters) {
 	augMatrix testAug = augMatrix(id, x, b);
 
 	idTest = testAug.getA();
@@ -106,8 +99,7 @@ TEST_F (augMatrixTests, getters)
 
 }
 
-TEST_F (augMatrixTests, setters)
-{
+TEST_F (augMatrixTests, setters) {
 	augMatrix testAug, testAug2;
 	string filePrefix = "sampleData1";
 
@@ -131,9 +123,9 @@ TEST_F (augMatrixTests, setters)
 	EXPECT_EQ(x, xTest);
 	EXPECT_EQ(b, bTest);
 
-	std::ifstream Ainput(filePrefix+"A.dat");
-	std::ifstream Binput(filePrefix+"B.dat");
-	std::ifstream Xinput(filePrefix+"x.dat");
+	std::ifstream Ainput(filePrefix + "A.dat");
+	std::ifstream Binput(filePrefix + "B.dat");
+	std::ifstream Xinput(filePrefix + "x.dat");
 
 	matrix A2(Ainput);
 	matrix B2(Binput);
@@ -143,9 +135,9 @@ TEST_F (augMatrixTests, setters)
 	Binput.close();
 	Xinput.close();
 
-	Ainput.open(filePrefix+"A.dat");
-	Binput.open(filePrefix+"B.dat");
-	Xinput.open(filePrefix+"x.dat");
+	Ainput.open(filePrefix + "A.dat");
+	Binput.open(filePrefix + "B.dat");
+	Xinput.open(filePrefix + "x.dat");
 
 	testAug2.setA(Ainput);
 	testAug2.setB(Binput);
@@ -164,16 +156,13 @@ TEST_F (augMatrixTests, setters)
 	EXPECT_EQ(X2, X2test);
 }
 
-TEST_F (augMatrixTests, assignment)
-{
-	test1 = augMatrix(id, x, b);
+TEST_F (augMatrixTests, assignment) {
 	augMatrix test2 = test1;
 
-	EXPECT_EQ (test1, test2);
+	EXPECT_EQ(test1, test2);
 }
 
-TEST_F (augMatrixTests, setAugMatrix)
-{
+TEST_F (augMatrixTests, setAugMatrix) {
 	ofstream inputDump("unitTestAugMatrix.dat");
 	inputDump << "3 3\n" << id << b;
 	inputDump.close();
@@ -194,8 +183,7 @@ TEST_F (augMatrixTests, setAugMatrix)
 	EXPECT_EQ(b, bTest);
 }
 
-TEST_F (augMatrixTests, filePrintAugMatrix)
-{
+TEST_F (augMatrixTests, filePrintAugMatrix) {
 	ifstream input("sampleData1Ab.dat");
 	augMatrix testAug = augMatrix(input);
 	input.close();
@@ -209,14 +197,35 @@ TEST_F (augMatrixTests, filePrintAugMatrix)
 
 	double inNum = -1, outNum = -2;
 
-	while ((inputTest >> inNum) && (outputTest >> outNum))
-	{
+	while ((inputTest >> inNum) && (outputTest >> outNum)) {
 //		std::cerr << inNum << std::endl;
 //		std::cerr << outNum << std::endl;
 
 		EXPECT_DOUBLE_EQ(inNum, outNum);
 		inNum = -1, outNum = -2;
 	}
+}
+
+TEST_F (augMatrixTests, changeLocations) {
+	const matrix& constA = test1.getA();
+	const matrix& constX = test1.getX();
+	const matrix& constB = test1.getB();
+
+	EXPECT_EQ(constA[0][0], 1);
+	EXPECT_EQ(constX[0][0], 2);
+	EXPECT_EQ(constB[0][0], 2);
+
+	matrix& A = test1.getA();
+	matrix& X = test1.getX();
+	matrix& B = test1.getB();
+
+	A[0][0] = 3;
+	X[0][0] = 3;
+	B[0][0] = 3;
+
+	EXPECT_EQ(constA[0][0], 3);
+	EXPECT_EQ(constX[0][0], 3);
+	EXPECT_EQ(constB[0][0], 3);
 }
 
 /*

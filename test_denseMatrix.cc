@@ -16,13 +16,11 @@ typedef denseMatrix<double> matrix;
 
 using namespace std;
 
-class denseMatrixTests: public ::testing::Test
-{
+class denseMatrixTests: public ::testing::Test {
 public:
 	matrix A1, A1again, A2, A2again, x1, x2, b1, b1again, b2, b2again;
 
-	denseMatrixTests()
-	{
+	denseMatrixTests() {
 		string testFile1 = "sampleData1";
 		string testFile2 = "sampleData2";
 
@@ -82,15 +80,13 @@ public:
 		 */
 	}
 
-	virtual ~denseMatrixTests()
-	{
+	virtual ~denseMatrixTests() {
 
 	}
 
 };
 
-TEST_F (denseMatrixTests, constructors)
-{
+TEST_F (denseMatrixTests, constructors) {
 	matrix* ptr = new matrix();
 	matrix* ptr2 = new matrix(6, 6);
 	matrix* ptr3 = new matrix(3, 3, 0.1);
@@ -99,8 +95,7 @@ TEST_F (denseMatrixTests, constructors)
 	delete ptr3;
 }
 
-TEST_F (denseMatrixTests, setDenseMatrix)
-{
+TEST_F (denseMatrixTests, setDenseMatrix) {
 	matrix test1;
 	int rows = 3, cols = 3;
 
@@ -112,10 +107,8 @@ TEST_F (denseMatrixTests, setDenseMatrix)
 	EXPECT_EQ(rows, test1.numrows());
 	EXPECT_EQ(cols, test1.numcols());
 
-	for (int i = 0; i < rows; ++i)
-	{
-		for (int j = 0; j < cols; ++j)
-		{
+	for (int i = 0; i < rows; ++i) {
+		for (int j = 0; j < cols; ++j) {
 			double testValue = test1[i][j];
 			if (i == j)
 				EXPECT_EQ(1, testValue);
@@ -125,8 +118,7 @@ TEST_F (denseMatrixTests, setDenseMatrix)
 	}
 }
 
-TEST_F (denseMatrixTests, filePrintDenseMatrix)
-{
+TEST_F (denseMatrixTests, filePrintDenseMatrix) {
 	ifstream input("sampleData1x.dat");
 	matrix test1(input);
 	input.close();
@@ -135,13 +127,12 @@ TEST_F (denseMatrixTests, filePrintDenseMatrix)
 	test1.writeFile(output);
 	output.close();
 
-	ifstream inputTest("sampleData1Ab.dat");
-	ifstream outputTest("unitTestAugMatrix.dat");
+	ifstream inputTest("sampleData1x.dat");
+	ifstream outputTest("unitTestDenseMatrix.dat");
 
 	double inNum = -1, outNum = -2;
 
-	while ((inputTest >> inNum) && (outputTest >> outNum))
-	{
+	while ((inputTest >> inNum) && (outputTest >> outNum)) {
 //		std::cerr << inNum << std::endl;
 //		std::cerr << outNum << std::endl;
 
@@ -150,8 +141,7 @@ TEST_F (denseMatrixTests, filePrintDenseMatrix)
 	}
 }
 
-TEST_F (denseMatrixTests, equals)
-{
+TEST_F (denseMatrixTests, equals) {
 	matrix test1(1, 1, 0.0);
 
 	EXPECT_EQ(test1, test1);
@@ -159,8 +149,7 @@ TEST_F (denseMatrixTests, equals)
 	EXPECT_EQ(b1, b1);
 }
 
-TEST_F (denseMatrixTests, not_equals)
-{
+TEST_F (denseMatrixTests, not_equals) {
 	matrix test1(1, 1, 0.0);
 	matrix test2(2, 1, 0.0);
 	matrix test3(1, 1, 1.0);
@@ -171,8 +160,7 @@ TEST_F (denseMatrixTests, not_equals)
 	EXPECT_NE(A1, A2);
 }
 
-TEST_F (denseMatrixTests, copy)
-{
+TEST_F (denseMatrixTests, copy) {
 	matrix test1(1, 1, -1);
 
 	matrix test1copy(test1);
@@ -184,8 +172,7 @@ TEST_F (denseMatrixTests, copy)
 	EXPECT_EQ(b1, b1copy);
 }
 
-TEST_F (denseMatrixTests, assign)
-{
+TEST_F (denseMatrixTests, assign) {
 	matrix test1(1, 1, -1);
 	matrix test1copy, A1copy, b1copy;
 
@@ -198,23 +185,18 @@ TEST_F (denseMatrixTests, assign)
 	EXPECT_EQ(b1, b1copy);
 }
 
-TEST_F (denseMatrixTests, multiplyRight)
-{
+TEST_F (denseMatrixTests, multiplyRight) {
 	matrix b1test, b2test;
 
-	try
-	{
+	try {
 		b1test = A1 * x1;
-	} catch (exception& e)
-	{
+	} catch (exception& e) {
 		e.what();
 	}
 
-	try
-	{
+	try {
 		b2test = A2 * x2;
-	} catch (exception& e)
-	{
+	} catch (exception& e) {
 		e.what();
 	}
 
@@ -222,8 +204,7 @@ TEST_F (denseMatrixTests, multiplyRight)
 	EXPECT_EQ(b2, b2test);
 }
 
-TEST_F (denseMatrixTests, eye)
-{
+TEST_F (denseMatrixTests, eye) {
 	matrix id1, id2;
 	id1.eye(3, 3);
 
@@ -235,8 +216,7 @@ TEST_F (denseMatrixTests, eye)
 	EXPECT_EQ(id1, id2);
 }
 
-TEST_F (denseMatrixTests, multiplyScaler)
-{
+TEST_F (denseMatrixTests, multiplyScaler) {
 	matrix idtest, id1, id2;
 	id1.eye(3, 3);
 	idtest = 2 * id1;
@@ -253,8 +233,7 @@ TEST_F (denseMatrixTests, multiplyScaler)
 	EXPECT_EQ(idtest, id1);
 }
 
-TEST_F (denseMatrixTests, add)
-{
+TEST_F (denseMatrixTests, add) {
 	matrix idtest, id1, id2;
 	id1.eye(3, 3);
 	id2.eye(3, 3);
@@ -268,8 +247,7 @@ TEST_F (denseMatrixTests, add)
 	EXPECT_EQ(idtest, id2);
 }
 
-TEST_F (denseMatrixTests, subtract)
-{
+TEST_F (denseMatrixTests, subtract) {
 	matrix idtest, id1, id2;
 	id1.eye(3, 3);
 
@@ -283,17 +261,14 @@ TEST_F (denseMatrixTests, subtract)
 	EXPECT_EQ(id1, idtest);
 }
 
-TEST_F (denseMatrixTests, augment)
-{
+TEST_F (denseMatrixTests, augment) {
 	matrix b1test(b1.numrows(), b1.numcols());
 
 //	std::cerr << "A1: " << endl << A1 << endl << endl << "b1: " << endl << b1
 //			<< endl << endl;
-	try
-	{
+	try {
 		A1.augment(b1);
-	} catch (exception& e)
-	{
+	} catch (exception& e) {
 		e.what();
 	}
 
@@ -304,16 +279,14 @@ TEST_F (denseMatrixTests, augment)
 
 	int lastCol = A1.numcols() - 1;
 
-	for (int i = 0; i < b1test.numrows(); ++i)
-	{
+	for (int i = 0; i < b1test.numrows(); ++i) {
 		b1test[i][0] = A1[i][lastCol];
 	}
 
 	EXPECT_TRUE(b1 == b1test);
 }
 
-TEST_F (denseMatrixTests, swapRows)
-{
+TEST_F (denseMatrixTests, swapRows) {
 	A1.swapRows(0, 1);
 
 	EXPECT_TRUE(A1[0] == A1again[1]);
@@ -326,8 +299,7 @@ TEST_F (denseMatrixTests, swapRows)
 
 }
 
-TEST_F (denseMatrixTests, multiplyRow)
-{
+TEST_F (denseMatrixTests, multiplyRow) {
 	A1.multiplyRow(0, 3.0);
 	EXPECT_FALSE(A1[0] == A1again[0]);
 
@@ -341,8 +313,7 @@ TEST_F (denseMatrixTests, multiplyRow)
 	EXPECT_TRUE(A1 == times3);
 }
 
-TEST_F (denseMatrixTests, addRows)
-{
+TEST_F (denseMatrixTests, addRows) {
 	double col0, col1, col2;
 	col0 = A1[0][0] + A1[1][0];
 	col1 = A1[0][1] + A1[1][1];
@@ -367,8 +338,7 @@ TEST_F (denseMatrixTests, addRows)
 	std::vector<double> rowOne = A1again[0];
 //	std::cerr << "rowOne * 2: " << endl;
 	for (std::vector<double>::iterator loc = rowOne.begin();
-			loc != rowOne.end(); ++loc)
-	{
+			loc != rowOne.end(); ++loc) {
 		*loc *= 2;
 //		std::cerr << *loc << endl;
 	}
@@ -382,17 +352,14 @@ TEST_F (denseMatrixTests, addRows)
 	EXPECT_TRUE(times3[0] == A1again[0]);
 }
 
-TEST_F (denseMatrixTests, transpose)
-{
+TEST_F (denseMatrixTests, transpose) {
 	matrix A1_T = transpose(A1);
 
 	EXPECT_EQ(A1.numrows(), A1_T.numcols());
 	EXPECT_EQ(A1.numcols(), A1_T.numrows());
 
-	for (int i = 0; i < A1.numrows(); ++i)
-	{
-		for (int j = 0; j < A1.numcols(); ++j)
-		{
+	for (int i = 0; i < A1.numrows(); ++i) {
+		for (int j = 0; j < A1.numcols(); ++j) {
 			EXPECT_EQ(A1[i][j], A1_T[j][i]);
 		}
 	}
@@ -402,10 +369,8 @@ TEST_F (denseMatrixTests, transpose)
 	EXPECT_EQ(b1.numrows(), b1_T.numcols());
 	EXPECT_EQ(b1.numcols(), b1_T.numrows());
 
-	for (int i = 0; i < b1.numrows(); ++i)
-	{
-		for (int j = 0; j < b1.numcols(); ++j)
-		{
+	for (int i = 0; i < b1.numrows(); ++i) {
+		for (int j = 0; j < b1.numcols(); ++j) {
 			EXPECT_EQ(b1[i][j], b1_T[j][i]);
 		}
 	}
