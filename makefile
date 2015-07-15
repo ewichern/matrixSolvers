@@ -25,8 +25,8 @@ DISTR=Unix
 #	Macro Definitions:
 #
 
-CPPFLAGS=-std=c++0x -I$(INCLUDES) -Wall -Wextra -fmessage-length=0
-CCFLAGS=-std=c++0x -I$(INCLUDES) -Og -ggdb3 -Wall -Wextra -fmessage-length=0 
+CPPFLAGS=-std=c++0x -I$(INCLUDES) -Wall -Wextra -Wno-sign-compare -fmessage-length=0
+CCFLAGS=-std=c++0x -I$(INCLUDES) -Og -ggdb3 -Wall -Wextra -Wno-sign-compare -fmessage-length=0 
 GCOVFLAGS=-fprofile-arcs -ftest-coverage
 CFLAGS=-g
 

@@ -2,13 +2,14 @@
  * augMatrix.cpp
  *
  *  Created on: Jun 21, 2015
- *      Author: erik
+ *      Author: Erik Wichern
+ *       Email: ewichern@gmail.com
+ *
  */
 
 #include <iostream>
 #include <fstream>
 #include <limits>
-#include <random>
 #include <cmath>
 #include <exception>
 #include <string>
@@ -93,34 +94,6 @@ void augMatrix::setNumRows(int numRows) {
 	this->numRows = numRows;
 }
 
-/*
- void augMatrix::setAugMatrix(std::ifstream& input)
- {
- int m = 0, n = 0;
- input >> m >> n;
-
- A = matrix(m, n);
- B = matrix(m, 1);
-
- double tempValue = 0.0;
-
- for (int i = 0; i < numRows; ++i)
- {
- for (int j = 0; j < numCols; ++j)
- {
- input >> tempValue;
- A[i][j] = tempValue;
- }
- }
-
- for (int i = 0; i < numRows; ++i)
- {
- input >> tempValue;
- B[i][0] = tempValue;
- }
- }
- */
-
 void augMatrix::setA(std::ifstream& input) {
 	input >> numRows >> numCols;
 	setAhelper(input);
@@ -177,13 +150,6 @@ void augMatrix::setBhelper(std::ifstream& input) {
 	}
 }
 
-/*
- * Reset stored augmented matrix data based on stream input
- *
- * @param input		requires stream input with data properly formatted and
- * 					sufficient to fill both A and B matrices
- * @return void
- */
 void augMatrix::setAugMatrix(std::ifstream& input) {
 	input >> numRows >> numCols;
 
