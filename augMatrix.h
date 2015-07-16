@@ -1,4 +1,4 @@
-/*
+/**
  * augMatrix.h
  *
  *  Created on: Jun 21, 2015
@@ -17,7 +17,7 @@ using namespace std;
 
 typedef denseMatrix<double> matrix;
 
-/*
+/**
  * Augmented matrix class
  *
  * Stores # rows, cols, and A, x, and b matrices.
@@ -26,7 +26,7 @@ typedef denseMatrix<double> matrix;
 class augMatrix {
 public:
 
-	/*
+	/**
 	 * Default constructor
 	 *
 	 * No parameters, initializes both rows/cols to zero. Does not
@@ -36,7 +36,7 @@ public:
 	 */
 	augMatrix();
 
-	/*
+	/**
 	 * AB Constructor
 	 *
 	 * Initializes rows/cols to a.numrows() and a.numcols()
@@ -49,7 +49,7 @@ public:
 	 */
 	augMatrix(matrix, matrix);
 
-	/*
+	/**
 	 * AXB Constructor
 	 *
 	 * Initializes rows/cols to a.numrows() and a.numcols()
@@ -65,7 +65,7 @@ public:
 	 */
 	augMatrix(matrix, matrix, matrix);
 
-	/*
+	/**
 	 * AB Constructor (stream input)
 	 *
 	 * File format:
@@ -83,7 +83,7 @@ public:
 	 */
 	augMatrix(std::ifstream&);
 
-	/*
+	/**
 	 * Destructor
 	 *
 	 * Doesn't do anything special. No pointers, matrices handled by their own
@@ -91,7 +91,7 @@ public:
 	 */
 	virtual ~augMatrix();
 
-	/*
+	/**
 	 * Reset stored augmented matrix data based on stream input
 	 *
 	 * File format:
@@ -105,7 +105,7 @@ public:
 	 */
 	void setAugMatrix(std::ifstream& input);
 
-	/*
+	/**
 	 * Assignment operator
 	 *
 	 * Copies rhs onto lhs argument when invoked as "lhs = rhs;"
@@ -116,7 +116,7 @@ public:
 	 */
 	augMatrix& operator=(const augMatrix&);
 
-	/*
+	/**
 	 * Prints A and B in proper format for file output
 	 *
 	 * Sends numRows and numCols, each followed by newline
@@ -130,28 +130,28 @@ public:
 	 */
 	void filePrintAugMatrix(std::ofstream& output) const;
 
-	/*
+	/**
 	 * File format:
 	 * integer sizes provided for rows*cols, each followed by \n
 	 * then sufficient values to fill A OR B,
 	 * each value separated by whitespace or newline
 	 */
 
-	/*
+	/**
 	 * getter for matrix A
 	 *
 	 * @return		const matrix reference to matrix A
 	 */
 	const matrix& getA() const;
 
-	/*
+	/**
 	 * getter for matrix A
 	 *
 	 * @return		matrix reference to matrix A
 	 */
 	matrix& getA();
 
-	/*
+	/**
 	 * setter for matrix A
 	 * @param	a	const matrix reference to the matrix that will be copied
 	 * 				onto A
@@ -159,7 +159,7 @@ public:
 	 */
 	void setA(const matrix& a);
 
-	/*
+	/**
 	 * setter for matrix A
 	 *
 	 * Overwrites matrix A with information from stream input.
@@ -172,21 +172,21 @@ public:
 	 */
 	void setA(std::ifstream& input);
 
-	/*
+	/**
 	 * getter for matrix X
 	 *
 	 * @return		const matrix reference to matrix X
 	 */
 	const matrix& getX() const;
 
-	/*
+	/**
 	 * getter for matrix X
 	 *
 	 * @return		matrix reference to matrix X
 	 */
 	matrix& getX();
 
-	/*
+	/**
 	 * setter for matrix X
 	 * @param	x	const matrix reference to the matrix that will be copied
 	 * 				onto X
@@ -194,7 +194,7 @@ public:
 	 */
 	void setX(const matrix& x);
 
-	/*
+	/**
 	 * setter for matrix X
 	 *
 	 * Overwrites matrix X with information from stream input.
@@ -207,21 +207,21 @@ public:
 	 */
 	void setX(std::ifstream& input);
 
-	/*
+	/**
 	 * getter for matrix B
 	 *
 	 * @return		const matrix reference to matrix B
 	 */
 	const matrix& getB() const;
 
-	/*
+	/**
 	 * getter for matrix B
 	 *
 	 * @return		matrix reference to matrix B
 	 */
 	matrix& getB();
 
-	/*
+	/**
 	 * setter for matrix B
 	 * @param	b	const matrix reference to the matrix that will be copied
 	 * 				onto B
@@ -229,7 +229,7 @@ public:
 	 */
 	void setB(const matrix& b);
 
-	/*
+	/**
 	 * setter for matrix B
 	 *
 	 * Overwrites matrix B with information from stream input.
@@ -242,14 +242,14 @@ public:
 	 */
 	void setB(std::ifstream& input);
 
-	/*
+	/**
 	 * getter for private data member numCols
 	 *
 	 * @return		number of columns in matrix A
 	 */
 	int numcols() const;
 
-	/*
+	/**
 	 * setter for private data member numCols
 	 *
 	 * WARNING: COULD LEAD TO PROBLEMS (unreachable values in matrix)
@@ -259,14 +259,14 @@ public:
 	 */
 	void setNumCols(int numCols);
 
-	/*
+	/**
 	 * getter for private data member numRows
 	 *
 	 * @return		number of rows (same for all three matrices)
 	 */
 	int numrows() const;
 
-	/*
+	/**
 	 * setter for private data member numRows
 	 *
 	 * WARNING: COULD LEAD TO PROBLEMS (unreachable values in matrix)
@@ -277,7 +277,7 @@ public:
 	 */
 	void setNumRows(int numRows);
 
-	/*
+	/**
 	 * Prompt the user for numRows and numCols
 	 *
 	 * Primarily used when generating random matrices for testing.
@@ -290,7 +290,7 @@ public:
 	 */
 	void askForMatrixSize(std::istream& input);
 
-	/*
+	/**
 	 * Equality operator
 	 *
 	 * Use is "lhs == rhs" or "left.operator==(right)"
@@ -305,7 +305,7 @@ public:
 	 */
 	bool operator==(const augMatrix&) const;
 
-	/*
+	/**
 	 * NE operator
 	 *
 	 * Use is "lhs != rhs" or "left.operator!=(right)"

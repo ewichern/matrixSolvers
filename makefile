@@ -113,6 +113,8 @@ clean:
 	-rm -f *.gcov
 	-rm -f *.gcda
 	-rm -f *.gcno
+	-rm -rf docs/
+	-rm -f doxygen.log
 
 test: test.o matrixGenerator.o rootSolvers.o polynomial.o monomial.o
 	$(LINK) -o $@ test.o matrixGenerator.o rootSolvers.o polynomial.o monomial.o
@@ -125,6 +127,9 @@ make.dep: $(DEPENDENCIES)
 	
 tests.dep: $(TESTDEPENDENCIES)
 	-cat $(TESTDEPENDENCIES) > $@
+
+docs:
+	-doxygen Doxyfile
 
 include make.dep
 include tests.dep
