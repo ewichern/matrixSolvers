@@ -24,14 +24,21 @@ class directSolverTests: public ::testing::Test
 {
 public:
 	matrix A1, b1, x1, A2, b2, x2;
+	const char* data1AB = "testData/sampleData1Ab.dat";
+	const char* data1x = "testData/sampleData1x.dat";
+	const char* data2AB = "testData/sampleData2Ab.dat";
+	const char* data2x = "testData/sampleData2x.dat";
+	const char* identity = "testData/eye.dat";
+	const char* identityTimes2 = "testData/eyeTimes2.dat";
+	const char* morrisData = "testData/SAMPLEdata.txt";
+	const char* morrisXsol = "testData/SAMPLEsol.txt";
+
 
 	directSolverTests()
 	{
 
-		string testFile1 = "sampleData1";
-
-		ifstream a1b1input(testFile1 + "Ab.dat");
-		ifstream x1input(testFile1 + "x.dat");
+		ifstream a1b1input(data1AB);
+		ifstream x1input(data1x);
 
 		MatrixGenerator::readMatrixFromFile(a1b1input, A1, b1);
 		a1b1input.close();
@@ -39,10 +46,8 @@ public:
 		MatrixGenerator::readMatrixFromFile(x1input, x1);
 		x1input.close();
 
-		string testFile2 = "sampleData2";
-
-		ifstream a2b2input(testFile2 + "Ab.dat");
-		ifstream x2input(testFile2 + "x.dat");
+		ifstream a2b2input(data2AB);
+		ifstream x2input(data2x);
 
 		MatrixGenerator::readMatrixFromFile(a2b2input, A2, b2);
 		a2b2input.close();
@@ -92,11 +97,13 @@ TEST_F (directSolverTests, gaussianElimination2)
 {
 	matrix morrisA, morrisX, morrisB;
 
-	ifstream morrisSample("SAMPLEdata.txt");
-	ifstream morrisSol("SAMPLEsol.txt");
+	ifstream morrisSample(morrisData);
+	ifstream morrisSol(morrisXsol);
 
 	MatrixGenerator::readMatrixFromFile(morrisSample, morrisA, morrisB);
 	MatrixGenerator::readMatrixFromFile(morrisSol, morrisX);
+	morrisSample.close();
+	morrisSol.close();
 
 	matrix morrisXtest(morrisA.numrows(), 1);
 
@@ -137,8 +144,8 @@ TEST_F (directSolverTests, LUdecomposition2)
 {
 	matrix morrisA, morrisX, morrisB;
 
-	ifstream morrisSample("SAMPLEdata.txt");
-	ifstream morrisSol("SAMPLEsol.txt");
+	ifstream morrisSample(morrisData);
+	ifstream morrisSol(morrisXsol);
 
 	MatrixGenerator::readMatrixFromFile(morrisSample, morrisA, morrisB);
 	MatrixGenerator::readMatrixFromFile(morrisSol, morrisX);

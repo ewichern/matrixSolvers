@@ -35,23 +35,27 @@ public:
 TEST_F (rootDriverFunctionTests, printRootMenuOptions)
 {
 	int menuOutput = 999;
+	string input1 = "20 \n 4";
+	string input2 = "-414 \n 3";
+	string input3 = "asdf;aadsf -01234=5 \n 2";
+	string input4 = "9999 \n 1";
 
-	stringstream input("20 \n 4");
+	stringstream input(input1);
 	menuOutput = printRootMenuOptions(input);
 	EXPECT_EQ(4, menuOutput);
 //	std::cerr << "menuOutput: " << menuOutput << endl;
 
-	input.str("-414 \n 3");
+	input.str(input2);
 	menuOutput = printRootMenuOptions(input);
 	EXPECT_EQ(3, menuOutput);
 //	std::cerr << "menuOutput: " << menuOutput << endl;
 
-	input.str("asdf;aadsf -01234=5 \n 2");
+	input.str(input3);
 	menuOutput = printRootMenuOptions(input);
 	EXPECT_EQ(2, menuOutput);
 //	std::cerr << "menuOutput: " << menuOutput << endl;
 
-	input.str("9999 \n 1");
+	input.str(input4);
 	menuOutput = printRootMenuOptions(input);
 	EXPECT_EQ(1, menuOutput);
 //	std::cerr << "menuOutput: " << menuOutput << endl;

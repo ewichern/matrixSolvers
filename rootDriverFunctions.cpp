@@ -146,6 +146,9 @@ void executeRootSolver(istream& input, int selection, const polynomial expr)
 		solution = rootSolvers::newton(expr, root_guess, numIterations, errLim);
 		break;
 	default:
+		getBrackets(lower, upper, input);
+		solution = rootSolvers::bisection(expr, lower, upper, numIterations,
+				errLim);
 		break;
 	}
 
@@ -160,7 +163,7 @@ std::string rootMainMenu(std::istream& input)
 	int menuSelection = -1;
 	std::stringstream menuHistory;
 
-	solvers solverSelection = bisection;
+//	solvers solverSelection = bisection;
 
 	polynomial expression;
 

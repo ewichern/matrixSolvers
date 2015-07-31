@@ -21,6 +21,19 @@ class matrixSolverTests: public ::testing::Test
 {
 public:
 
+	const char* data1AB = "testData/sampleData1Ab.dat";
+	const char* data1x = "testData/sampleData1x.dat";
+	const char* data2AB = "testData/sampleData2Ab.dat";
+	const char* data2x = "testData/sampleData2x.dat";
+	const char* identity = "testData/eye.dat";
+	const char* identityTimes2 = "testData/eyeTimes2.dat";
+	const char* morrisData = "testData/SAMPLEdata.txt";
+	const char* morrisXsol = "testData/SAMPLEsol.txt";
+	const char* unitTest = "testData/unitTest.dat";
+	const string filenameRoot = "testData/unitTest";
+	const string testFilename = "googleTestGetFilename";
+
+
 	matrixSolverTests()
 	{
 
@@ -36,23 +49,28 @@ public:
 TEST_F (matrixSolverTests, printMenuOptions)
 {
 	int menuOutput = 999;
+	string input1 = "20 \n 4";
+	string input2 = "-414 \n 3";
+	string input3 = "asdf;aadsf -01234=5 \n 2";
+	string input4 = "9999 \n 1";
 
-	stringstream input("20 \n 4");
+	stringstream input(input1);
 	menuOutput = printMenuOptions(input);
 	EXPECT_EQ(4, menuOutput);
+
 //	std::cerr << "menuOutput: " << menuOutput << endl;
 
-	input.str("-414 \n 3");
+	input.str(input2);
 	menuOutput = printMenuOptions(input);
 	EXPECT_EQ(3, menuOutput);
 //	std::cerr << "menuOutput: " << menuOutput << endl;
 
-	input.str("asdf;aadsf -01234=5 \n 2");
+	input.str(input3);
 	menuOutput = printMenuOptions(input);
 	EXPECT_EQ(2, menuOutput);
 //	std::cerr << "menuOutput: " << menuOutput << endl;
 
-	input.str("9999 \n 1");
+	input.str(input4);
 	menuOutput = printMenuOptions(input);
 	EXPECT_EQ(1, menuOutput);
 //	std::cerr << "menuOutput: " << menuOutput << endl;
@@ -63,39 +81,39 @@ TEST_F (matrixSolverTests, getFilename)
 {
 	string output = "";
 
-	stringstream input("googleTestGetFilename");
+	stringstream input(testFilename);
 	output = getFilename(input);
 
-	EXPECT_EQ("googleTestGetFilename", output);
+	EXPECT_EQ(testFilename, output);
 }
 
 TEST_F (matrixSolverTests, getFilenameRoot)
 {
 	string output = "";
 
-	stringstream input("googleTestGetFilename");
+	stringstream input(testFilename);
 	output = getFilenameRoot(input);
 
-	EXPECT_EQ("googleTestGetFilename", output);
+	EXPECT_EQ(testFilename, output);
 }
 
 TEST_F (matrixSolverTests, getABinputFilename)
 {
 	string output = "";
 
-	stringstream input("googleTestGetFilename");
+	stringstream input(testFilename);
 	output = getABinputFilename(input);
 
-	EXPECT_EQ("googleTestGetFilename", output);
+	EXPECT_EQ(testFilename, output);
 }
 
 TEST_F (matrixSolverTests, inputABfromFile)
 {
 	string failureOutput = "fail";
-	string successOutput = "SAMPLEdata.txt";
+	string successOutput = morrisData;
 
 	string inputFileName = "";
-	stringstream input1("notAfilename");
+	stringstream input1("notAvalidFilename");
 	stringstream input2(successOutput);
 	matrix A, b;
 
@@ -122,7 +140,7 @@ TEST_F (matrixSolverTests, inputABfromFile)
 TEST_F (matrixSolverTests, inputXfromFile)
 {
 	string failureOutput = "fail";
-	string successOutput = "SAMPLEsol.txt";
+	string successOutput = morrisData;
 
 	string inputFileName = "";
 	stringstream input1("notAfilename");
@@ -149,7 +167,7 @@ TEST_F (matrixSolverTests, inputXfromFile)
 TEST_F (matrixSolverTests, generateMatrixDataFiles)
 {
 	int m = 6, n = 6;
-	string filenameInput = "unitTest1";
+	string filenameInput = filenameRoot;
 
 	string filenameOutput = "";
 	stringstream input;
@@ -177,7 +195,7 @@ TEST_F (matrixSolverTests, generateMatrixDataFiles)
 TEST_F (matrixSolverTests, executeSolver)
 {
 	int m = 6, n = 6;
-	string filenameInput = "unitTest2";
+	string filenameInput = filenameRoot;
 
 	string filenameOutput = "";
 	stringstream input;

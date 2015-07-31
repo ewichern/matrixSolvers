@@ -22,11 +22,21 @@ class matrixGeneratorTests: public ::testing::Test
 {
 public:
 	matrix A1, b1;
+	const char* data1AB = "testData/sampleData1Ab.dat";
+	const char* data1x = "testData/sampleData1x.dat";
+	const char* data2AB = "testData/sampleData2Ab.dat";
+	const char* data2x = "testData/sampleData2x.dat";
+	const char* identity = "testData/eye.dat";
+	const char* identityTimes2 = "testData/eyeTimes2.dat";
+	const char* morrisData = "testData/SAMPLEdata.txt";
+	const char* morrisXsol = "testData/SAMPLEsol.txt";
+	const char* unitTest = "testData/unitTest.dat";
+	string filenameRoot = "testData/unitTest";
 
 	matrixGeneratorTests()
 	{
 
-		ifstream a1b1input("sampleData1Ab.dat");
+		ifstream a1b1input(data1AB);
 
 		MatrixGenerator::readMatrixFromFile(a1b1input, A1, b1);
 		a1b1input.close();
@@ -44,11 +54,11 @@ TEST_F (matrixGeneratorTests, writeToFile)
 	matrix id1, idTest;
 	id1.eye(3, 3);
 
-	ofstream output("unitTest.dat");
+	ofstream output(unitTest);
 	MatrixGenerator::writeMatrixToFile(output, id1);
 	output.close();
 
-	ifstream input("unitTest.dat");
+	ifstream input(unitTest);
 	MatrixGenerator::readMatrixFromFile(input, idTest);
 	input.close();
 
@@ -59,11 +69,11 @@ TEST_F (matrixGeneratorTests, writeToFile2)
 {
 	matrix A1test, b1test;
 
-	ofstream output("unitTest.dat");
+	ofstream output(unitTest);
 	MatrixGenerator::writeMatrixToFile(output, A1, b1);
 	output.close();
 
-	ifstream input("unitTest.dat");
+	ifstream input(unitTest);
 	MatrixGenerator::readMatrixFromFile(input, A1test, b1test);
 	input.close();
 
@@ -79,7 +89,6 @@ TEST_F (matrixGeneratorTests, generateSamples)
 
 	double min = -100.0;
 	double max = 100.0;
-	string filenameRoot = "unitTest";
 
 	std::random_device randDevice;
 	std::mt19937 generator(randDevice());
